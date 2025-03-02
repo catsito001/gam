@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<!-- Open Graph Tags (WhatsApp/Facebook) -->
+<meta property="og:title" content="Aprende Inglés con Historias Interactivas">
+<meta property="og:description" content="Juega y practica inglés con actividades divertidas">
+<meta property="og:image" content="https://egamply.web.app/images/portada1.jpg">
+<meta property="og:url" content="https://egamply.web.app">
+<meta property="og:type" content="website">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Para navegadores antiguos -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aprende Inglés con Historias Interactivas">
+<meta name="twitter:description" content="Juega y practica inglés con actividades divertidas">
+<meta name="twitter:image" content="https://egamply.web.app/images/portada1.jpg">
+
+<script>
+    // Forzar re-scraping al compartir
+    if(window.location.search.includes('ref=share')) {
+        const timestamp = Date.now();
+        document.querySelector('meta[property="og:image"]').content = `https://egamply.web.app/images/portada1.jpg?t=${timestamp}`;
+    }
+</script>
+
+
+
+    <title>Inglés Interactivo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/4.5.6/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+    
+    
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <section id="storiesList" style="display: none;"></section>
+
+    <main class="story-view" id="storyView" style="display: none;">
+        <div class="story-header">
+            <button id="backToStoriesButton" class="back-button">
+                <i class="icon ion-ios-arrow-back"></i>
+            </button>
+            <div class="header-content">
+                <h1 id="storyTitle"></h1>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0/0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-container">
+            <div class="text-cards-container" id="textCardsContainer"></div>
+        </div>
+
+        <div class="bottom-controls">
+            <div class="nav-controls">
+                <button id="prevCardBtn" class="nav-button">
+                    <i class="icon ion-ios-arrow-back"></i>
+                </button>
+                <button class="audio-main-button" id="mainAudioButton">
+                    <i class="icon ion-ios-play"></i>
+                </button>
+                <button id="nextCardBtn" class="nav-button">
+                    <i class="icon ion-ios-arrow-forward"></i>
+                </button>
+            </div>
+
+            <div class="share-buttons">
+            <button id="startGames" class="games-button">
+                <i class="icon ion-ios-game-controller"></i>
+                ACTIVIDADES Y JUEGOS
+            </button>
+            <button id="shareWhatsApp" class="share-button whatsapp">
+                <i class="icon ion-logo-whatsapp"></i>
+                COMPARTIR
+            </button>
+        </div>
+        </div>
+    </main>
+
+    <section class="games-view" id="gamesView" style="display: none;">
+        <div class="games-header">
+            <button id="backToStory" class="back-button">
+                <i class="icon ion-ios-arrow-back"></i>
+            </button>
+            <h2 id="gameTitle"></h2>
+        </div>
+        <div class="game-content" id="gameContent"></div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+    <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=2BrwcrAMD0kY306x5cgy6MEj_loSrsA4VaoQoBV0YlHP9DKZqXhC0PGdeC77OUXyRmlpSdARrYWN1N79PLJccFgOZGIKJrQqm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAfLMI7cV3LKTAsyzFPQwQa9wfJRauVVIGrRFfpisPxb9i9tYJAZpbUbTbZ8AH9ePyMJlzNoFFfhMu5qfON8vmTm8POeX8RlaA&lib=MIJccFtnbkTSF0x2qIfOS00_EvQiFty4u';
+        const PEXELS_API_KEY = 'aV5EuNmfMhHpLQYMjCOQp6YWmU6RAF5M6at5jDTRpe0pLwxk1SZzPhSC';
+    </script>
+    <script src="app.js"></script>
+    <script type="module" src="games.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+   
+    
+</body>
+</html>
