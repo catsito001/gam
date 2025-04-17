@@ -74,13 +74,16 @@
     /* Loading Screen               */
     /* ============================ */
     .loading-screen {
-      position: fixed;
-      inset: 0;
-      background: var(--surface-100);
-      display: grid;
-      place-items: center;
-      z-index: 999;
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--surface-100);
+  display: grid; /* Centrado con grid */
+  place-items: center;
+  z-index: 9999;
+}
     .spinner {
       width: 48px;
       height: 48px;
@@ -97,11 +100,11 @@
     .stories-view { 
       max-width: 1400px; 
       margin: 0 auto; 
-      padding: 2rem; 
+      padding: 1rem; 
     }
     .stories-header { 
       text-align: center; 
-      padding: 1rem 0; 
+      padding: 0.2rem 0; 
     }
     .stories-header h1 { 
       font-size: 2.5rem; 
@@ -121,7 +124,7 @@
       background: #2d2d2d;
       border: 1px solid #3d3d3d;
       border-radius: var(--radius-md);
-      padding: 1.5rem;
+      padding: 0.5rem;
       transition: var(--transition);
       box-shadow: var(--shadow-md);
       position: relative;
@@ -179,15 +182,16 @@
       border-bottom: 1px solid #3d3d3d;
     }
     .header-left { 
-      flex: 0 0 auto; 
-      margin-right: 1rem; 
+      display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Si deseas que ambos queden a la izquierda */
     }
     .header-left button {
       background: var(--gradient-purple);
       color: white;
       border: none;
       width: 50px;
-      height: 50px;
+      height: 35px;
       border-radius: var(--radius-md);
       cursor: pointer;
       transition: var(--transition);
@@ -195,10 +199,12 @@
     .header-left button:hover { transform: scale(1.1); }
     .header-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
+      font-size: 0.9rem;
       font-weight: 600;
       text-align: left;
       white-space: normal;
+      margin-left: 10px;
+
     }
     .header-content { 
       flex: 1; 
@@ -223,6 +229,7 @@
       background: #333;
       border-radius: 6px;
       overflow: hidden;
+      margin-left: 10px;
     }
     .progress {
       height: 100%;
@@ -259,23 +266,26 @@
     .text-card.active { display: block; }
     .sentence-container { margin-bottom: 0.1rem; }
     .english-text {
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       line-height: 2rem;
       margin: 0.5rem 0;
       position: relative;
+      background: #464161;
+      border-radius: 5px;
+      
     }
     .full-translation {
       font-size: 0.8rem;
       background: #333;
       color: #d1d5db;
-      padding: 1rem;
+      padding: 0.4rem;
       border-radius: var(--radius-md);
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       border-left: 4px solid var(--primary-500);
     }
     /* Botones de toggle para traducciones y lista */
-    .toggle-container { text-align: right; margin-top: 1rem; }
-    .toggle-btn-wrapper { display: inline-block; margin-left: 1rem; }
+    .toggle-container { text-align: right; margin-top: 0.1rem; }
+    .toggle-btn-wrapper { display: inline-block; }
     
     /* ============================ */
     /* Controles y Popups           */
@@ -441,7 +451,7 @@
       border: none;
       border-radius: 30px;
       padding: 12px 20px;
-      font-size: 2.5rem;
+      font-size: 1.5rem;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
@@ -766,6 +776,7 @@
       z-index: 10;
       margin-bottom: 4px;
       display: none;
+      line-height: 0.8rem;
     }
     .phrasal-verb-inline .translation-tooltip {
       
@@ -780,19 +791,95 @@
     /* ============================ */
     .vocabulary-container { margin-top: 0.5rem; }
     .vocabulary-title { font-size: 0.9rem; margin-bottom: 0.3rem; color: #a1a1aa; }
-    .vocabulary-words { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .vocabulary-word {
-      display: flex;
+    .vocabulary-words { 
+      display: flex; 
+      flex-wrap: nowrap; 
+      gap: 0.5rem; 
+      overflow-x: auto;
+      scroll-behavior: smooth;
+    }
+
+
+
+
+    .select-voice {
+  position: relative;
+  
+  padding: 5px 10px; /* Ajusta a lo que necesites */
+  max-width: 50px;  /* O el ancho que prefieras para este select */
+  background-color: #318c8f !important; /* Fondo sólido */
+  /* Si prefieres gradiente, descomenta la siguiente línea y comenta la anterior */
+  /* background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; */
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 9px 9px 8px 15px !important; /* Espacio a la izquierda para el ícono y a la derecha para la flecha */
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  outline: none !important;
+  background-image: none !important;
+  display: inline-block;
+  margin-right: 2px;
+  margin-top: 8px;
+}
+
+    /* Contenedor de vocabulario: posición relativa para colocar botones */
+.vocabulary-container {
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+/* Título del vocabulario */
+.vocabulary-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: #a1a1aa;
+}
+
+
+
+/* Cada bloque de vocabulario no se encoge y se alinea al inicio de la vista */
+.vocabulary-word {
+  display: flex;
       align-items: center;
       background: #464161;
       padding: 0.4rem;
       border-radius: 4px;
       transition: background 0.3s;
       font-size: 0.8rem;
-      min-width: 120px;
+      
       gap: 0.1rem;
-     
-    }
+}
+
+/* Botones de control del carrusel */
+.vocab-carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  padding: 0.3rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.vocab-carousel-control.left {
+  left: 0;
+}
+
+.vocab-carousel-control.right {
+  right: 0;
+}
+
+
+
+
     .vocabulary-word:hover { background: #3d3d3d; }
     .vocabulary-image {
       flex-shrink: 0;
@@ -823,18 +910,19 @@
   margin-top: 0.5rem;
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: 0.2rem;
 }
 
 .header-right .play-btn,
 .header-right .saved-list-btn {
   border: none;
   border-radius: var(--radius-md);
-  padding: 6px 12px;
+  padding: 6px 6px;
   font-weight: 600;
   color: white;
   cursor: pointer;
   transition: background 0.3s;
+  margin-right: 6px;
 }
 
 .header-right .play-btn {
@@ -868,25 +956,212 @@
   margin-left: 4px;
 }
 
+
+
+
+
+
+
+
+/* Carrusel de imágenes */
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.carousel-inner {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  transition: transform 0.5s ease;
+  /* Se muestra horizontalmente sin wrap */
+  flex-wrap: nowrap;
+}
+
+.carousel-item {
+  flex-shrink: 0;
+  width: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-item.active {
+  display: flex;
+}
+
+/* Botones de control del carrusel */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.carousel-control.prev {
+  left: 5px;
+}
+
+.carousel-control.next {
+  right: 5px;
+}
+
+/* Estilos para las imágenes */
 .story-image {
-  width: 70%;
-  max-height: 250px;
+  /* Se adapta al tamaño del contenedor */
+  max-height: 250px;   /* valor para escritorio, se ajusta en móviles con media queries */
+  width: auto;
   object-fit: cover;
   border-radius: var(--radius-md);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease;
 }
+
+/* Responsividad: en móviles, reduce la altura pero mantiene la fila horizontal */
+@media (max-width: 600px) {
+  .story-image {
+    max-height: 150px;
+  }
+}
+
+
+
+/* En dispositivos móviles, se ajusta el tamaño de las imágenes sin romper la fila horizontal */
+@media (max-width: 600px) {
+  .story-image {
+    max-height: 150px;    /* Menor altura para dispositivos pequeños */
+    /* Puedes ajustar otros valores (p.ej. margenes o flex-basis) si lo crees necesario */
+  }
+}
+
 
 .story-card:hover .story-image {
   transform: scale(1.05);
 }
 
 .image-container {
-      display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow-x: auto;   /* Muestra scroll horizontal si es necesario */
+  flex-wrap: nowrap;  /* Evita que se envuelvan a una nueva línea */
+  justify-content: flex-start;
+  padding: 0.5rem;
     }
 
+
+
+/* Forzar que el select tenga apariencia de botón */
+.custom-select {
+  background-color: #6366f1 !important; /* Fondo sólido */
+  /* Si prefieres gradiente, descomenta la siguiente línea y comenta la anterior */
+  /* background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; */
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 9px 30px 8px 26px !important; /* Espacio a la izquierda para el ícono y a la derecha para la flecha */
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  outline: none !important;
+  background-image: none !important;
+}
+
+/* Elimina el outline al enfocar */
+.custom-select:focus {
+  outline: none !important;
+}
+
+/* Estilos para las opciones (nota: algunos navegadores ignoran estos estilos) */
+.custom-select option {
+  background-color: #6366f1;
+  color: white;
+}
+
+/* Contenedor del select para agrupar el ícono y eliminar la flecha nativa */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+/* Ícono de velocidad a la izquierda */
+.speed-icon {
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: white;
+  pointer-events: none;
+}
+
+
+/* Flecha personalizada a la derecha */
+.select-wrapper::after {
+  content: "\f078"; /* Unicode de FontAwesome para flecha hacia abajo */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  position: absolute;
+  right: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: white;
+}
+
     
+
+
+
+.english-text.size1 {
+  font-size: 1.8rem;
+  line-height: 2.6rem;
+}
+.english-text.size2 {
+  font-size: 1.4rem;
+  line-height: 2rem;
+}
+.english-text.size3 {
+  font-size: 1.3rem;
+  line-height: 2rem;
+}
+
+
+
+
+
+.story-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* espacio entre imagen y texto */
+}
+.story-card-image {
+  flex: 0 0 auto;
+  width: 100px;   /* ancho fijo para la imagen, ajustable según diseño */
+  height: 100px;  /* alto fijo */
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.story-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;  /* para que la imagen se ajuste sin deformarse */
+}
+.story-card-text {
+  flex: 1;  /* ocupa el resto del espacio */
+}
+
+
     /* ============================ */
     /* Fin de la integración CSS    */
     /* ============================ */
@@ -915,11 +1190,20 @@
     <header class="story-header">
       <div class="header-left">
         <button id="backToStoriesButton"><i class="fas fa-arrow-left"></i></button>
+        <select id="globalVoiceSelect" class="select-voice">
+          <option value="">Cargando voces...</option>
+        </select>
       </div>
       <div class="header-content">
         <div class="header-title" id="storyTitle">
-          Este es un título muy largo que se mostrará en varias líneas sin recorte
+          Este es un título muy largo que se mostrará en varias líneas sin recorte 
         </div>
+
+
+    
+
+
+
         <div class="progress-container">
           <div class="progress-bar">
             <div class="progress" id="progressBar"></div>
@@ -927,8 +1211,28 @@
           </div>
         </div>
         <div class="header-right">
+            <!-- Dropdown de velocidad del speech -->
+            <div class="select-wrapper">
+              <i class="fas fa-tachometer-alt speed-icon"></i>
+              <select id="speedSelect" class="custom-select">
+                <option value="0.75">Lento</option>
+                <option value="1" selected>Normal</option>
+                <option value="1.25">Rápido</option>
+              </select>
+            </div>
+             <!-- Nuevo dropdown para elegir cantidad de sentences (size) -->
+  <div class="select-wrapper">
+    <i class="fas fa-text-height speed-icon"></i>
+    <select id="sizeSelect" class="custom-select">
+      <option value="1" selected>Tamaño 1</option>
+      <option value="2">Tamaño 2</option>
+      <option value="3">Tamaño 3</option>
+    </select>
+  </div>
+            
+
           <button id="playBtn" class="play-btn">
-            <i class="fas fa-gamepad"></i> Practicar y Jugar
+            <i class="fas fa-gamepad"></i> Play
           </button>
           <button id="savedListBtn" class="saved-list-btn">
             <i class="fas fa-list"></i><span id="savedCount">0</span>
@@ -953,7 +1257,7 @@
   </div>
   
   <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=2BrwcrAMD0kY306x5cgy6MEj_loSrsA4VaoQoBV0YlHP9DKZqXhC0PGdeC77OUXyRmlpSdARrYWN1N79PLJccFgOZGIKJrQqm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAfLMI7cV3LKTAsyzFPQwQa9wfJRauVVIGrRFfpisPxb9i9tYJAZpbUbTbZ8AH9ePyMJlzNoFFfhMu5qfON8vmTm8POeX8RlaA&lib=MIJccFtnbkTSF0x2qIfOS00_EvQiFty4u';
+const WORKER_URL = 'https://mi-worker.saturninocok.workers.dev/';
     const PEXELS_API_KEY = 'aV5EuNmfMhHpLQYMjCOQp6YWmU6RAF5M6at5jDTRpe0pLwxk1SZzPhSC';
     
     class StoryManager {
@@ -965,7 +1269,7 @@
         this.speech = null;
         this.isPlaying = false;
         this.currentHighlightTimeout = null;
-        this.selectedLanguage = 'en-US';
+        this.selectedLanguage = 'en-GB';
         this.selectedSpeed = '1';
         this.savedWords = [];
         this.savedSentences = [];
@@ -981,57 +1285,130 @@
         this.memoryLock = false;
         this.memoryMatches = 0;
         this.memoryTotalPairs = 0;
+
+        this.isSpeakingNow = false;
+
         this.init();
       }
       
       async init() {
+
+
+           // Si hay una velocidad guardada, se carga
+    const storedSpeed = localStorage.getItem('selectedSpeed');
+    if (storedSpeed) {
+      this.selectedSpeed = storedSpeed;
+    }
+    // Actualizamos el dropdown con la velocidad almacenada
+    const speedSelect = document.getElementById('speedSelect');
+    if (speedSelect) {
+      speedSelect.value = this.selectedSpeed;
+      // Agregamos el evento para detectar cambios
+      speedSelect.addEventListener('change', (e) => {
+        this.selectedSpeed = e.target.value;
+        localStorage.setItem('selectedSpeed', this.selectedSpeed);
+        console.log("Velocidad del speech actualizada a:", this.selectedSpeed);
+      });
+    }
+
+
+
+    // NUEVO: Tamaño (número de oraciones por tarjeta)
+  const storedSize = localStorage.getItem('selectedSize');
+  this.selectedSize = storedSize ? storedSize : "1";
+  const sizeSelect = document.getElementById('sizeSelect');
+  if (sizeSelect) {
+    sizeSelect.value = this.selectedSize;
+    sizeSelect.addEventListener('change', (e) => {
+      this.selectedSize = e.target.value;
+      localStorage.setItem('selectedSize', this.selectedSize);
+      console.log("Tamaño (número de oraciones por tarjeta) actualizado a:", this.selectedSize);
+      // Al cambiar el tamaño se re-renderizan las tarjetas
+      this.renderStoryCards();
+
+      // … y se actualiza el tamaño de los textos
+    this.updateEnglishTextFontSize();
+    });
+  }
+
+
+
         await this.loadStories();
         this.hideLoading();
         this.showStoriesList();
         this.setupEventListeners();
+
+        // Carga el selector global de voces
+  this.loadGlobalVoices();
+
+
       }
       
       async loadStories() {
-        try {
-          const response = await axios.get(GOOGLE_SCRIPT_URL);
-          const data = response.data;
-          this.stories = data.split('||')
-            .map(chunk => {
-              try {
-                const json = chunk.slice(chunk.indexOf('{'), chunk.lastIndexOf('}') + 1);
-                return JSON.parse(json);
-              } catch(e) { console.error('Error parsing chunk:', chunk); return null; }
-            })
-            .filter(Boolean)
-            .flatMap(obj => obj.stories);
-        } catch (error) { console.error('Error loading stories:', error); }
-      }
-      
+  try {
+    // Llamamos a tu Worker en lugar de Google Script
+    const { data } = await axios.get(WORKER_URL);
+    if (!data.success) {
+      // En caso de que tu Worker haya devuelto un error
+      console.error('Worker error:', data.error);
+      return;
+    }
+    // data.stories ya es un array con **todas** las historias
+    this.stories = data.stories;
+  } catch (error) {
+    console.error('Error loading stories from Worker:', error);
+  }
+} 
       hideLoading() { document.querySelector('.loading-screen').style.display = 'none'; }
       
       showStoriesList() {
-        const container = document.getElementById('storiesContainer');
-        container.innerHTML = '';
-        this.stories.forEach((story, index) => {
-          const card = document.createElement('div');
-          card.className = 'story-card';
-          const [eng, spa] = story.title.split('<').map(s => s.replace('>', '').trim());
-          card.innerHTML = `<h3>${eng}</h3>${spa ? `<p>${spa}</p>` : ''}`;
-          card.addEventListener('click', () => this.showStory(index));
-          container.appendChild(card);
-        });
-        document.getElementById('storiesList').style.display = 'block';
-      }
+  const container = document.getElementById('storiesContainer');
+  container.innerHTML = '';
+  this.stories.forEach((story, index) => {
+    const card = document.createElement('div');
+    card.className = 'story-card';
+    
+    // Suponiendo que el título original está en "title" y la imagen adicional en "titleImage"
+    // Separamos el título para usar solo la parte en inglés en el listado
+    const eng = story.title.split('<')[0].trim();
+    const spa = story.title.split('<')[1] ? story.title.split('<')[1].replace('>', '').trim() : '';
+    
+    card.innerHTML = `
+      <div class="story-card-inner">
+        <div class="story-card-image">
+          <img src="${story.titleImage ? story.titleImage : 'https://via.placeholder.com/100?text=No+Image'}" alt="${eng}">
+        </div>
+        <div class="story-card-text">
+          <h3>${eng}</h3>
+          ${spa ? `<p>${spa}</p>` : ''}
+        </div>
+      </div>
+    `;
+    
+    card.addEventListener('click', () => this.showStory(index));
+    container.appendChild(card);
+  });
+  document.getElementById('storiesList').style.display = 'block';
+}
       
       async showStory(storyIndex) {
-        this.currentStory = this.stories[storyIndex];
-        this.normalizeTranslationKeys();
-        this.extractVocabulary();
-        document.getElementById('storiesList').style.display = 'none';
-        document.getElementById('storyView').style.display = 'block';
-        document.getElementById('storyTitle').textContent = this.currentStory.title.split('<')[0].trim();
-        await this.renderStoryCards();
-      }
+  // Asegura que el spinner esté en el body y se muestre centrado
+  showSpinner();
+
+  this.currentStory = this.stories[storyIndex];
+  this.normalizeTranslationKeys();
+  this.extractVocabulary();
+
+  document.getElementById('storiesList').style.display = 'none';
+  document.getElementById('storyView').style.display = 'block';
+  document.getElementById('storyTitle').textContent = this.currentStory.title.split('<')[0].trim();
+
+  // Renderizar tarjetas de la historia y esperar a que termine
+  await this.renderStoryCards();
+
+  // Ocultar el spinner una vez que la historia esté cargada
+  hideSpinner();
+}
       
       normalizeTranslationKeys() {
         const norm = {};
@@ -1052,99 +1429,365 @@
         }
       }
       
-      async renderStoryCards() {
-        const container = document.getElementById('textCardsContainer');
-        container.innerHTML = '';
-        this.cards = [];
-        this.currentCardIndex = 0;
-        for (const textObj of this.currentStory.text) {
-          let imageHTML = '';
-          if (textObj.image) {
-            try {
-              const response = await axios.get(
-                `https://api.pexels.com/v1/search?query=${encodeURIComponent(textObj.image)}&per_page=1`,
-                { headers: { Authorization: PEXELS_API_KEY } }
-              );
-              if (response.data.photos && response.data.photos.length > 0) {
-                const photo = response.data.photos[0];
-                imageHTML = `<div class="image-container"><img src="${photo.src.medium}" alt="${textObj.image}" class="story-image" loading="lazy"></div>`;
-              }
-            } catch (error) {
-              console.error('Error loading image from Pexels:', error);
-              imageHTML = `<div class="image-container"><img src="https://via.placeholder.com/600x250?text=${encodeURIComponent(textObj.image)}" alt="${textObj.image}" class="story-image"></div>`;
-            }
+    
+
+// Actualiza el tamaño de fuente de los elementos .english-text según el valor global this.selectedSize.
+updateEnglishTextFontSize() {
+  const englishElements = document.querySelectorAll('.text-card .english-text');
+  englishElements.forEach(el => {
+    el.classList.remove('size1', 'size2', 'size3');
+    if (this.selectedSize === "1") {
+      el.classList.add('size1'); // font-size: 1.8rem
+    } else if (this.selectedSize === "2") {
+      el.classList.add('size2'); // font-size: 1.3rem
+    } else if (this.selectedSize === "3") {
+      el.classList.add('size3'); // font-size: 0.8rem
+    }
+  });
+}
+
+// Inicializa el carrusel para un contenedor dado.
+initializeCarousel(carousel) {
+  if (!carousel) return;
+  let currentIndex = 0;
+  const items = carousel.querySelectorAll('.carousel-item');
+  const totalItems = items.length;
+  if (totalItems === 0) return;
+  
+  const showItem = index => {
+    items.forEach((item, i) => {
+      if (i === index) item.classList.add('active');
+      else item.classList.remove('active');
+    });
+  };
+  
+  // Auto-slider: cambia de imagen cada 5 segundos.
+  let interval = setInterval(() => {
+    currentIndex = (currentIndex + 1) % totalItems;
+    showItem(currentIndex);
+  }, 5000);
+  
+  // Botones manuales.
+  const btnPrev = carousel.querySelector('.carousel-control.prev');
+  const btnNext = carousel.querySelector('.carousel-control.next');
+  if (btnPrev) {
+    btnPrev.addEventListener('click', () => {
+      clearInterval(interval);
+      currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+      showItem(currentIndex);
+      // Reinicia el intervalo.
+      interval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalItems;
+        showItem(currentIndex);
+      }, 5000);
+    });
+  }
+  if (btnNext) {
+    btnNext.addEventListener('click', () => {
+      clearInterval(interval);
+      currentIndex = (currentIndex + 1) % totalItems;
+      showItem(currentIndex);
+      // Reinicia el intervalo.
+      interval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalItems;
+        showItem(currentIndex);
+      }, 5000);
+    });
+  }
+}
+
+// Método que carga las imágenes de Pexels para cada imagen en el carrusel.
+loadStoryImages() {
+  document.querySelectorAll('.carousel-container img').forEach(img => {
+    const query = img.getAttribute('data-image-query');
+    // Si ya se cargó una URL en src (porque textObj.image era una URL), no hace nada.
+    if (img.getAttribute('src') && (img.getAttribute('src').startsWith("http://") || img.getAttribute('src').startsWith("https://"))) {
+      return;
+    }
+    if (query) {
+      // Si el valor del query es en sí mismo una URL, se carga directamente.
+      if (/^https?:\/\//i.test(query)) {
+        img.src = query;
+      } else {
+        axios.get(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1`,
+          { headers: { Authorization: PEXELS_API_KEY } })
+        .then(response => {
+          if (response.data.photos && response.data.photos.length > 0) {
+            const photo = response.data.photos[0];
+            img.src = photo.src.medium;
+          } else {
+            img.src = `https://via.placeholder.com/600x250?text=${encodeURIComponent(query)}`;
           }
-          const vocab = this.getVocabularyForSentence(textObj.english, this.currentStory.vocabulary);
-          let vocabHTML = '';
-          if (vocab.length) {
-            vocabHTML = `<div class="vocabulary-container">
-              <p class="vocabulary-title">Vocabulary:</p>
-              <div class="vocabulary-words">
-                ${vocab.map(w => {
-                  const trans = this.currentStory.translation[w] || "";
-                  return `<div class="vocabulary-word" data-word="${w}" data-translation="${trans}">
+        })
+        .catch(error => {
+          console.error('Error loading image for', query, error);
+          img.src = `https://via.placeholder.com/600x250?text=${encodeURIComponent(query)}`;
+        });
+      }
+    }
+  });
+}
+
+// Método que renderiza las tarjetas de la historia.
+async renderStoryCards() {
+  const container = document.getElementById('textCardsContainer');
+  container.innerHTML = '';
+  this.cards = [];
+  this.currentCardIndex = 0;
+  
+  // Agrupar las oraciones según this.selectedSize (groupSize = número de oraciones por tarjeta).
+  const groupSize = parseInt(this.selectedSize, 10) || 1;
+  const groupedTexts = [];
+  for (let i = 0; i < this.currentStory.text.length; i += groupSize) {
+    groupedTexts.push(this.currentStory.text.slice(i, i + groupSize));
+  }
+  
+  // Por cada grupo se crea un card.
+  for (const group of groupedTexts) {
+    let combinedEnglish = "";
+    let combinedSpanish = "";
+    let carouselItemsHTML = ""; // Acumula las imágenes envueltas en "carousel-item".
+    let imageCount = 0;
+    let vocabSet = new Set();
+    
+    group.forEach(textObj => {
+      // Cada oración se envuelve en un <div>.
+      combinedEnglish += `<div>${this.addWordSpans(textObj.english, textObj.phrasal_verbs)}</div>`;
+      combinedSpanish += `<div>${textObj.spanish}</div>`;
+      
+      if (textObj.image) {
+          // Si el string comienza con "http://" o "https://", se usa como URL directamente.
+  let isURL = /^https?:\/\//i.test(textObj.image);
+  if (isURL) {
+    carouselItemsHTML += `<div class="carousel-item ${imageCount === 0 ? "active" : ""}">
+                            <img src="${textObj.image}" alt="${textObj.image}" class="story-image" loading="lazy">
+                          </div>`;
+  } else {
+    // Si no es una URL, se asume que es una palabra, se deja src vacío y se asigna data-image-query.
+    carouselItemsHTML += `<div class="carousel-item ${imageCount === 0 ? "active" : ""}">
+                            <img src="" data-image-query="${textObj.image}" alt="${textObj.image}" class="story-image" loading="lazy">
+                          </div>`;
+  }
+  imageCount++;
+      }
+      
+      let vocab = this.getVocabularyForSentence(textObj.english, this.currentStory.vocabulary);
+      vocab.forEach(word => vocabSet.add(word));
+    });
+    
+    // Si hay al menos una imagen, se envuelven todas en UN contenedor de carrusel.
+    let combinedImageHTML = "";
+    if (imageCount > 0) {
+      combinedImageHTML = `<div class="carousel-container">
+                              <div class="carousel-inner">
+                                ${carouselItemsHTML}
+                              </div>
+                              <button class="carousel-control prev"><i class="fas fa-chevron-left"></i></button>
+                              <button class="carousel-control next"><i class="fas fa-chevron-right"></i></button>
+                            </div>`;
+    }
+    
+    // Construir HTML para el vocabulario, si lo hay.
+    let vocabHTML = "";
+if (vocabSet.size) {
+  vocabHTML = `<div class="vocabulary-container">
+    <p class="vocabulary-title">Vocabulary:</p>
+    <button class="vocab-carousel-control left"><i class="fas fa-chevron-left"></i></button>
+    <div class="vocabulary-words">
+      ${[...vocabSet].map(w => {
+          const trans = this.currentStory.translation[w] || "";
+          return `<div class="vocabulary-word" data-word="${w}" data-translation="${trans}">
                     <div class="vocabulary-image"><img src="" alt="${w}"></div>
-                    <div class="vocabulary-text" style="margin-left:0.1rem; padding:0.1rem 0;">
+                    <div class="vocabulary-text">
                       <strong>${w}</strong>
                       <span class="vocabulary-translation">${trans}</span>
                     </div>
                   </div>`;
-                }).join('')}
-              </div>
-            </div>`;
-          }
-          const card = document.createElement('div');
-          card.className = 'text-card';
-          card.dataset.sentence = textObj.english;
-          card.dataset.fullTranslation = textObj.spanish;
-          card.innerHTML = `
-            ${imageHTML}
-            <div class="sentence-container">
-              <div class="english-text">
-                ${this.addWordSpans(textObj.english, textObj.phrasal_verbs)}
-              </div>
-              <div class="full-translation">${textObj.spanish}</div>
-<div class="toggle-container">
-  <div class="toggle-btn-wrapper">
-    <button class="toggle-sentence-add btn-professional">
-      <i class="fas fa-plus"></i> A lista
-    </button>
-  </div>
-  <div class="toggle-btn-wrapper">
-    <button class="toggle-word-translation btn-professional">
-      <i class="fas fa-language"></i> Traducir Palabras
-    </button>
-  </div>
-</div>
-
-              ${vocabHTML}
-            </div>
-          `;
-          container.appendChild(card);
-          this.cards.push(card);
-          card.querySelector('.toggle-word-translation').addEventListener('click', () => {
-            if (card.classList.contains('show-translations')) {
-              card.classList.remove('show-translations');
-              card.querySelector('.toggle-word-translation').innerHTML = '<i class="fas fa-language"></i> Traducir Palabras';
-            } else {
-              card.classList.add('show-translations');
-              card.querySelector('.toggle-word-translation').innerHTML = '<i class="fas fa-language"></i> Ocultar Traducciones';
-            }
-          });
-          card.querySelector('.toggle-sentence-add').addEventListener('click', () => {
-            const sent = card.dataset.sentence, fullTrans = card.dataset.fullTranslation;
-            if (!this.savedSentences.some(item => item.sentence === sent)) {
-              this.savedSentences.push({ sentence: sent, translation: fullTrans });
-            }
-            document.getElementById('savedCount').textContent = this.savedSentences.length + this.savedWords.length;
-            alert("Oración agregada a la lista.");
-          });
-        }
-        this.showCard(0);
-        this.setupWordInteractions();
-        this.loadVocabularyImages();
+      }).join('')}
+    </div>
+    <button class="vocab-carousel-control right"><i class="fas fa-chevron-right"></i></button>
+  </div>`;
+}
+    
+    // Crear el card combinando carrusel, textos y vocabulario.
+    const card = document.createElement('div');
+    card.className = 'text-card';
+    card.dataset.sentence = group.map(t => t.english).join(" ");
+    card.dataset.fullTranslation = group.map(t => t.spanish).join(" ");
+    card.innerHTML = `
+      ${combinedImageHTML}
+      <div class="sentence-container">
+        <div class="english-text">
+          ${combinedEnglish}
+        </div>
+        <div class="full-translation">
+          ${combinedSpanish}
+        </div>
+        <div class="toggle-container">
+          <div class="toggle-btn-wrapper">
+            <button class="toggle-sentence-add btn-professional">
+              <i class="fas fa-plus"></i> A lista
+            </button>
+          </div>
+          <div class="toggle-btn-wrapper">
+            <button class="toggle-word-translation btn-professional">
+              <i class="fas fa-language"></i> Traducir Palabras
+            </button>
+          </div>
+        </div>
+        ${vocabHTML}
+      </div>
+    `;
+    container.appendChild(card);
+    this.cards.push(card);
+    
+    // Configurar eventos para el card.
+    card.querySelector('.toggle-word-translation').addEventListener('click', () => {
+      if (card.classList.contains('show-translations')) {
+        card.classList.remove('show-translations');
+        card.querySelector('.toggle-word-translation').innerHTML = '<i class="fas fa-language"></i> Traducir Palabras';
+      } else {
+        card.classList.add('show-translations');
+        card.querySelector('.toggle-word-translation').innerHTML = '<i class="fas fa-language"></i> Ocultar Traducciones';
       }
-      
+    });
+    card.querySelector('.toggle-sentence-add').addEventListener('click', () => {
+      const sent = card.dataset.sentence;
+      const fullTrans = card.dataset.fullTranslation;
+      if (!this.savedSentences.some(item => item.sentence === sent)) {
+        this.savedSentences.push({ sentence: sent, translation: fullTrans });
+      }
+      document.getElementById('savedCount').textContent = this.savedSentences.length + this.savedWords.length;
+      alert("Oración agregada a la lista.");
+    });
+    
+    // Si existe un carrusel en el card, inicializarlo.
+    const carousel = card.querySelector('.carousel-container');
+    if (carousel) {
+      this.initializeCarousel(carousel);
+    }
+  }
+  
+  // Mostrar la primera tarjeta y configurar interacciones.
+  this.showCard(0);
+  this.setupWordInteractions();
+  this.loadVocabularyImages();
+  this.loadStoryImages();
+  this.updateEnglishTextFontSize();
+  this.setupVocabularyCarousel(); // CONFIGURA el "carrusel" de vocabulario
+}
+
+
+
+setupVocabularyCarousel() {
+  document.querySelectorAll('.vocabulary-container').forEach(container => {
+    const vocabWords = container.querySelector('.vocabulary-words');
+    // Botones de control para scroll manual
+    const leftBtn = container.querySelector('.vocab-carousel-control.left');
+    const rightBtn = container.querySelector('.vocab-carousel-control.right');
+
+    const images = vocabWords.querySelectorAll('img');
+    let loadedCount = 0;
+    let autoScrollInterval; // Variable para almacenar el intervalo del auto-scroll
+
+    // Función que comprueba si se han cargado todas las imágenes y, en ese caso, inicia el auto-scroll.
+    const maybeStart = () => {
+      if (loadedCount === images.length) {
+        startAutoScroll();
+      }
+    };
+
+    // Verifica la carga de cada imagen y cuenta cuántas ya están cargadas.
+    images.forEach(img => {
+      if (img.complete) {
+        loadedCount++;
+      } else {
+        img.addEventListener('load', () => {
+          loadedCount++;
+          maybeStart();
+        });
+      }
+    });
+    // Si todas ya están cargadas desde el inicio.
+    maybeStart();
+
+    // Listener para detener el auto-scroll si se hace click en el contenedor (o en alguno de sus descendientes)
+    container.addEventListener('click', (e) => {
+      if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+        console.log("Auto-scroll detenido por click en el contenedor");
+      }
+    }, true); // fase de captura, para detectar antes que otros handlers
+
+    // Listener específico para cada vocabulary-word
+    vocabWords.querySelectorAll('.vocabulary-word').forEach(wordElem => {
+      wordElem.addEventListener('click', (e) => {
+        if (autoScrollInterval) {
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
+          console.log("Auto-scroll detenido por click en un vocabulary-word");
+        }
+      });
+    });
+
+    // Listener para el botón izquierdo
+    if (leftBtn) {
+      leftBtn.addEventListener('click', (e) => {
+        if (autoScrollInterval) {
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
+        }
+        // Ajusta el valor de desplazamiento (por ejemplo, -100 px) según tus necesidades
+        vocabWords.scrollBy({ left: -100, behavior: 'smooth' });
+      });
+    }
+
+    // Listener para el botón derecho
+    if (rightBtn) {
+      rightBtn.addEventListener('click', (e) => {
+        if (autoScrollInterval) {
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
+        }
+        // Desplaza 100 px a la derecha, por ejemplo
+        vocabWords.scrollBy({ left: 100, behavior: 'smooth' });
+      });
+    }
+
+    // Función que inicia el auto-scroll.
+    function startAutoScroll() {
+      const checkBoundaries = () => {
+        const buffer = 10;
+        const left = vocabWords.scrollLeft;
+        const client = vocabWords.clientWidth;
+        const scroll = vocabWords.scrollWidth;
+        const atStart = left <= buffer;
+        const atEnd = left + client >= scroll - buffer;
+        
+        return { atStart, atEnd };
+      };
+
+      autoScrollInterval = setInterval(() => {
+        const { atEnd } = checkBoundaries();
+        if (atEnd) {
+          // Si se alcanza el final, detener el auto-scroll.
+          clearInterval(autoScrollInterval);
+          autoScrollInterval = null;
+          console.log("Se detiene el auto-scroll al llegar al final");
+        } else {
+          vocabWords.scrollBy({ left: 1, behavior: 'auto' });
+        }
+      }, 30);
+    }
+  });
+}
+
+
+
+
+
+
       getVocabularyForSentence(sentence, vocabList) {
         if (!vocabList) return [];
         const lowerSentence = sentence.toLowerCase();
@@ -1206,84 +1849,149 @@
       }
       
       updateProgress() {
-        const total = this.currentStory.text.length;
-        const current = this.currentCardIndex + 1;
-        const progressPercentage = (current / total) * 100;
-        document.getElementById('progressBar').style.width = progressPercentage + '%';
-        document.getElementById('progressText').textContent = `${current} de ${total}`;
-      }
+  const total = this.cards.length;
+  const current = this.currentCardIndex + 1;
+  const progressPercentage = (current / total) * 100;
+  document.getElementById('progressBar').style.width = progressPercentage + '%';
+  document.getElementById('progressText').textContent = `${current} de ${total}`;
+}
       
-      setupWordInteractions() {
-        const activeCard = this.cards[this.currentCardIndex];
-        if (activeCard) {
-          activeCard.querySelectorAll('.highlight-word, .phrasal-verb-inline, .vocabulary-inline, .vocabulary-word')
-            .forEach(word => {
-              word.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.speakText(word.getAttribute('data-word') || word.textContent.trim());
-                this.showWordPopup(e.currentTarget);
-              });
-            });
-        }
-      }
-      
-      speakText(textToSpeak) {
-        if (!textToSpeak) return;
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+setupWordInteractions() {
+  const activeCard = this.cards[this.currentCardIndex];
+  if (activeCard) {
+    activeCard.querySelectorAll('.highlight-word, .phrasal-verb-inline, .vocabulary-inline, .vocabulary-word')
+      .forEach(word => {
+        word.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.showWordPopup(e.currentTarget); // 👈 solo esto
+        });
+      });
+  }
+}
+
+
+speakText(textToSpeak) {
+  if (!textToSpeak) return;
+
+  // Esperar hasta que speechSynthesis esté completamente inactivo
+  const waitUntilFree = () => {
+    if (!speechSynthesis.speaking && !speechSynthesis.pending) {
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+      if (this.selectedVoice) {
+        utterance.voice = this.selectedVoice;
+      } else {
         utterance.lang = 'en-US';
-        window.speechSynthesis.speak(utterance);
       }
-      
-      showWordPopup(wordElement) {
-        const existingPopup = document.querySelector('.word-popup');
-        if (existingPopup) { existingPopup.remove(); }
-        const word = wordElement.getAttribute('data-word') || wordElement.textContent.trim();
-        const translation = wordElement.getAttribute('data-translation') || "";
-        const popup = document.createElement('div');
-        popup.className = 'word-popup';
-        popup.innerHTML = `
-          <div class="popup-content">
-            <h2>${word}</h2>
-            <p>${translation}</p>
-            <div class="popup-image"></div>
-            <button class="popup-close btn-professional">OK</button>
-            <button class="popup-add btn-professional">Agregar</button>
-          </div>
-        `;
-        document.body.appendChild(popup);
-        window.speechSynthesis.cancel();
-        this.speakText(word);
-        axios.get(`https://api.pexels.com/v1/search?query=${encodeURIComponent(word)}&per_page=1`, { headers: { Authorization: PEXELS_API_KEY } })
-          .then(response => {
-            if (response.data.photos && response.data.photos.length > 0) {
-              const photo = response.data.photos[0];
-              const imgDiv = popup.querySelector('.popup-image');
-              imgDiv.innerHTML = `<img src="${photo.src.small}" alt="${word}">`;
-            } else {
-              const imgDiv = popup.querySelector('.popup-image');
-              imgDiv.innerHTML = `<img src="https://via.placeholder.com/150?text=${encodeURIComponent(word)}" alt="${word}">`;
-            }
-          })
-          .catch(error => {
-            console.error("Error fetching image for word:", error);
-            const imgDiv = popup.querySelector('.popup-image');
-            imgDiv.innerHTML = `<img src="https://via.placeholder.com/150?text=${encodeURIComponent(word)}" alt="${word}">`;
-          });
-        popup.querySelector('.popup-close').addEventListener('click', (e) => {
-          e.stopPropagation();
-          popup.remove();
-        }, { once: true });
-        popup.querySelector('.popup-add').addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (!this.savedWords.some(item => item.word === word)) {
-            this.savedWords.push({ word, translation });
-            document.getElementById('savedCount').textContent = this.savedSentences.length + this.savedWords.length;
-          }
-          popup.remove();
-        }, { once: true });
-        popup.addEventListener('click', (e) => e.stopPropagation());
-      }
-      
+
+      utterance.rate = parseFloat(this.selectedSpeed) || 1;
+
+      this.isSpeakingNow = true;
+
+      utterance.addEventListener('end', () => {
+        this.isSpeakingNow = false;
+      });
+
+      utterance.addEventListener('error', () => {
+        this.isSpeakingNow = false;
+      });
+
+      console.log("✅ Hablando (espera activa):", textToSpeak, "con voz:", utterance.voice?.name || utterance.lang);
+      speechSynthesis.speak(utterance);
+    } else {
+      // Esperar un poco más si aún está hablando
+      console.log("⏳ Esperando a que termine el audio anterior...");
+      setTimeout(waitUntilFree, 100);
+    }
+  };
+
+  waitUntilFree(); // iniciar espera inteligente
+}
+
+
+
+showWordPopup(wordElement) {
+  // Remover cualquier popup existente
+  const existingPopup = document.querySelector('.word-popup');
+  if (existingPopup) { existingPopup.remove(); }
+
+  // Obtener palabra y traducción
+  const word = wordElement.getAttribute('data-word') || wordElement.textContent.trim();
+  const translation = wordElement.getAttribute('data-translation') || "";
+
+  // Crear popup
+  const popup = document.createElement('div');
+  popup.className = 'word-popup';
+  popup.innerHTML = `
+    <div class="popup-content">
+      <h2>${word}</h2>
+      <p>${translation}</p>
+      <div class="popup-image"></div>
+      <button class="popup-close btn-professional">OK</button>
+      <button class="popup-add btn-professional">Agregar</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+
+  // Cancelar cualquier speech en curso
+  window.speechSynthesis.cancel();
+
+  // Si se estaba reproduciendo el audio principal, cancelarlo y actualizar el ícono
+  if (this.isPlaying) {
+    this.isPlaying = false;
+    const mainBtnIcon = document.getElementById("mainAudioButton").querySelector("i");
+    if (mainBtnIcon && mainBtnIcon.classList.contains("fa-pause")) {
+      mainBtnIcon.classList.replace("fa-pause", "fa-play");
+    }
+  }
+
+  // ✅ Reproducir la palabra con voz seleccionada o en-US por defecto
+  this.speakText(word);
+
+  // Obtener la imagen correspondiente a la palabra desde Pexels
+  axios.get(`https://api.pexels.com/v1/search?query=${encodeURIComponent(word)}&per_page=1`, {
+    headers: { Authorization: PEXELS_API_KEY }
+  })
+  .then(response => {
+    const imgDiv = popup.querySelector('.popup-image');
+    if (response.data.photos && response.data.photos.length > 0) {
+      const photo = response.data.photos[0];
+      imgDiv.innerHTML = `<img src="${photo.src.small}" alt="${word}">`;
+    } else {
+      imgDiv.innerHTML = `<img src="https://via.placeholder.com/150?text=${encodeURIComponent(word)}" alt="${word}">`;
+    }
+  })
+  .catch(error => {
+    console.error("Error fetching image for word:", error);
+    const imgDiv = popup.querySelector('.popup-image');
+    imgDiv.innerHTML = `<img src="https://via.placeholder.com/150?text=${encodeURIComponent(word)}" alt="${word}">`;
+  });
+
+  // Listener para cerrar el popup
+  popup.querySelector('.popup-close').addEventListener('click', (e) => {
+    e.stopPropagation();
+    popup.remove();
+  }, { once: true });
+
+  // Listener para agregar palabra a la lista
+  popup.querySelector('.popup-add').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!this.savedWords.some(item => item.word === word)) {
+      this.savedWords.push({ word, translation });
+      document.getElementById('savedCount').textContent = this.savedSentences.length + this.savedWords.length;
+    }
+    popup.remove();
+  }, { once: true });
+
+  // Prevenir propagación del click
+  popup.addEventListener('click', (e) => e.stopPropagation());
+}
+
+
+
+
+
+
       showSavedListPopup() {
         const existingPopup = document.querySelector('.saved-list-popup');
         if (existingPopup) { existingPopup.remove(); }
@@ -1353,102 +2061,181 @@
         popup.addEventListener('click', (e) => e.stopPropagation());
       }
       
+
       playCurrentCardAudio() {
-        this.stopSpeech();
-        const text = this.currentStory.text[this.currentCardIndex].english;
-        this.speech = new SpeechSynthesisUtterance(text);
-        this.speech.lang = this.selectedLanguage;
-        this.speech.rate = parseFloat(this.selectedSpeed);
-        const voices = window.speechSynthesis.getVoices().filter(v => v.lang === this.selectedLanguage);
-        if (voices.length > 0) { this.speech.voice = voices[0]; }
-        const currentCard = this.cards[this.currentCardIndex];
-        const words = currentCard.querySelectorAll('.highlight-word, .phrasal-verb-inline, .vocabulary-inline');
-        const userAgent = navigator.userAgent;
-        const isEdge = userAgent.includes('Edg/');
-        const isChrome = !isEdge && userAgent.includes('Chrome');
-        if (isEdge) {
-          const wordsArray = text.split(' ');
-          const boundaries = [];
-          let offset = 0;
-          for (let i = 0; i < wordsArray.length; i++) {
-            boundaries.push({ start: offset, end: offset + wordsArray[i].length });
-            offset += wordsArray[i].length + 1;
-          }
-          this.speech.onboundary = (event) => {
-            if (event.name === 'word' && typeof event.charIndex === 'number') {
-              let wordIndex = boundaries.findIndex(b => event.charIndex >= b.start && event.charIndex < b.end);
-              if (wordIndex === -1) wordIndex = 0;
-              words.forEach(w => w.classList.remove('active'));
-              words[wordIndex].classList.add('active');
-            }
-          };
-          this.speech.onstart = () => {
-            this.isPlaying = true;
-            const mainBtnIcon = document.getElementById('mainAudioButton').querySelector('i');
-            if (mainBtnIcon) mainBtnIcon.classList.replace('fa-play', 'fa-pause');
-          };
-        } else if (isChrome) {
-          let currentWord = 0;
-          this.speech.onstart = () => {
-            this.isPlaying = true;
-            const mainBtnIcon = document.getElementById('mainAudioButton').querySelector('i');
-            if (mainBtnIcon) mainBtnIcon.classList.replace('fa-play', 'fa-pause');
-            const wordDurations = this.calculateExactWordDurations(text, window.speechSynthesis.getVoices()[0]?.voiceURI || '', parseFloat(this.selectedSpeed));
-            const highlightNextWord = () => {
-              if (currentWord < words.length) {
-                words.forEach(w => w.classList.remove('active'));
-                words[currentWord].classList.add('active');
-                const delay = wordDurations[currentWord];
-                this.currentHighlightTimeout = setTimeout(highlightNextWord, delay);
-                currentWord++;
-              }
-            };
-            setTimeout(highlightNextWord, 50);
-          };
-        } else {
-          if ('onboundary' in this.speech) {
-            const wordsArray = text.split(/\s+/);
-            let boundaries = [];
-            let offset = 0;
-            wordsArray.forEach(word => {
-              boundaries.push({ start: offset, end: offset + word.length });
-              offset += word.length + 1;
-            });
-            this.speech.onboundary = (event) => {
-              if (event.name === 'word' && typeof event.charIndex === 'number') {
-                let wordIndex = boundaries.findIndex(b => event.charIndex >= b.start && event.charIndex < b.end);
-                if (wordIndex === -1) wordIndex = 0;
-                words.forEach(w => w.classList.remove('active'));
-                words[wordIndex].classList.add('active');
-              }
-            };
-          }
-          this.speech.onstart = () => {
-            this.isPlaying = true;
-            const mainBtnIcon = document.getElementById('mainAudioButton').querySelector('i');
-            if (mainBtnIcon) mainBtnIcon.classList.replace('fa-play', 'fa-pause');
-          };
+  // Detener cualquier reproducción previa
+  this.stopSpeech();
+
+  const currentCard = this.cards[this.currentCardIndex];
+  const englishElement = currentCard.querySelector('.english-text');
+  if (!englishElement) {
+    console.error("No se encontró el elemento '.english-text' en la tarjeta actual.");
+    return;
+  }
+
+  // Cada oración está en un <div> dentro de .english-text
+  const sentenceDivs = englishElement.querySelectorAll('div');
+  if (!sentenceDivs.length) {
+    console.error("No se encontraron oraciones (divs) dentro de .english-text.");
+    return;
+  }
+
+  // Arreglos para almacenar el texto de cada oración y sus nodos de palabras.
+  const sentences = [];
+  const sentencesWordsNodes = [];
+  sentenceDivs.forEach(div => {
+    const sentenceText = div.innerText.trim();
+    sentences.push(sentenceText);
+    const wordNodes = div.querySelectorAll('.highlight-word, .phrasal-verb-inline, .vocabulary-inline');
+    sentencesWordsNodes.push(Array.from(wordNodes));
+  });
+
+  // Función recursiva para reproducir cada oración
+  const speakSentence = (index) => {
+    if (index >= sentences.length) {
+      // Quitar resaltado
+      sentencesWordsNodes.flat().forEach(node => node.classList.remove("active"));
+      this.showFullTranslation();
+      this.isPlaying = false;
+
+      // Cambiar icono a "play"
+      const mainBtnIcon = document.getElementById("mainAudioButton").querySelector("i");
+      if (mainBtnIcon) {
+        mainBtnIcon.classList.replace("fa-pause", "fa-play");
+      }
+      return;
+    }
+
+    const sentenceText = sentences[index];
+    const wordNodesForSentence = sentencesWordsNodes[index];
+    const utterance = new SpeechSynthesisUtterance(sentenceText);
+
+    // ✅ Usar voz seleccionada globalmente
+    if (this.selectedVoice) {
+      utterance.voice = this.selectedVoice;
+      console.log("🔊 Usando voz global:", this.selectedVoice.name);
+    } else {
+      utterance.lang = 'en-US';
+      console.warn("⚠️ No hay voz seleccionada, se usará 'en-US'.");
+    }
+
+    // Asignar velocidad
+    utterance.rate = parseFloat(this.selectedSpeed) || 1;
+
+    // Calcular límites de palabras para boundary
+    const sentenceWords = sentenceText.split(/\s+/);
+    const localBoundaries = [];
+    let offset = 0;
+    sentenceWords.forEach(word => {
+      localBoundaries.push({ start: offset, end: offset + word.length });
+      offset += word.length + 1;
+    });
+
+    let hasFiredBoundary = false;
+
+    utterance.addEventListener('boundary', (event) => {
+      if (event.name === 'word' && typeof event.charIndex === 'number') {
+        hasFiredBoundary = true;
+        let localIndex = localBoundaries.findIndex(b => event.charIndex >= b.start && event.charIndex < b.end);
+        if (localIndex === -1) localIndex = 0;
+
+        wordNodesForSentence.forEach(node => node.classList.remove("active"));
+        if (wordNodesForSentence[localIndex]) {
+          wordNodesForSentence[localIndex].classList.add("active");
         }
-        this.speech.onend = () => {
-          this.isPlaying = false;
-          const mainBtnIcon = document.getElementById('mainAudioButton').querySelector('i');
-          if (mainBtnIcon) mainBtnIcon.classList.replace('fa-pause', 'fa-play');
-          words.forEach(w => w.classList.remove('active'));
-          this.showFullTranslation();
-        };
-        window.speechSynthesis.speak(this.speech);
       }
-      
-      calculateExactWordDurations(text, voiceURI, rate) {
-        const avgCharsPerSecond = 15;
-        const words = text.split(' ');
-        return words.map(word => {
-          const wordLength = word.replace(/[^a-zA-Z]/g, '').length;
-          const duration = (wordLength / avgCharsPerSecond) * 1000;
-          return duration / rate;
-        });
+    });
+
+    utterance.addEventListener('start', () => {
+      this.isPlaying = true;
+      const mainBtnIcon = document.getElementById("mainAudioButton").querySelector("i");
+      if (mainBtnIcon) {
+        mainBtnIcon.classList.replace("fa-play", "fa-pause");
       }
-      
+
+      // Fallback en Chrome si boundary no funciona
+      if (navigator.userAgent.includes("Chrome")) {
+        setTimeout(() => {
+          if (!hasFiredBoundary) {
+            let currentWord = 0;
+            const wordDurations = this.calculateExactWordDurations(sentenceText, "", parseFloat(this.selectedSpeed));
+            const simulateHighlight = () => {
+              if (currentWord < sentenceWords.length) {
+                wordNodesForSentence.forEach(node => node.classList.remove("active"));
+                if (wordNodesForSentence[currentWord]) {
+                  wordNodesForSentence[currentWord].classList.add("active");
+                }
+                const delay = wordDurations[currentWord] || 300;
+                currentWord++;
+                setTimeout(simulateHighlight, delay);
+              }
+            };
+            simulateHighlight();
+          }
+        }, 50);
+      }
+    });
+
+    utterance.addEventListener('end', () => {
+      wordNodesForSentence.forEach(node => node.classList.remove("active"));
+      speakSentence(index + 1);
+    });
+
+    // ✅ Cancelar y reproducir
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+  };
+
+  speakSentence(0);
+}
+
+
+
+
+
+
+
+
+// Función que actualiza el tamaño de los elementos .english-text
+updateEnglishTextFontSize() {
+  // Busca todos los contenedores de texto en las tarjetas (ya renderizadas)
+  const englishElements = document.querySelectorAll('.text-card .english-text');
+  englishElements.forEach(el => {
+    el.classList.remove('size1', 'size2', 'size3');
+    if (this.selectedSize === "1") {
+      el.classList.add('size1'); // font-size: 1.8rem
+    } else if (this.selectedSize === "2") {
+      el.classList.add('size2'); // font-size: 1.3rem
+    } else if (this.selectedSize === "3") {
+      el.classList.add('size3'); // font-size: 0.8rem
+    }
+  });
+}
+
+
+
+calculateExactWordDurations(text, voiceURI, rate) {
+  const avgCharsPerSecond = 15;
+  const words = text.split(' ');
+  return words.map(word => {
+    const wordLength = word.replace(/[^a-zA-Z]/g, '').length;
+    const duration = (wordLength / avgCharsPerSecond) * 1000;
+    return duration / rate;
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
       showFullTranslation() {
         // Lógica adicional si se desea
       }
@@ -1473,9 +2260,22 @@
         });
         document.getElementById('prevCardBtn').addEventListener('click', () => {
           if (this.currentCardIndex > 0) { this.showCard(this.currentCardIndex - 1); }
+
+          setTimeout(() => {
+            this.setupVocabularyCarousel();
+  }, 200); // 100 milisegundos de retraso
+
+
+
         });
         document.getElementById('nextCardBtn').addEventListener('click', () => {
-          if (this.currentCardIndex < this.cards.length - 1) { this.showCard(this.currentCardIndex + 1); }
+          if (this.currentCardIndex < this.cards.length - 1) { this.showCard(this.currentCardIndex + 1); } 
+
+          setTimeout(() => {
+            this.setupVocabularyCarousel();
+  }, 200); // 100 milisegundos de retraso
+
+
         });
         document.getElementById('backToStoriesButton').addEventListener('click', () => {
           this.stopSpeech();
@@ -1569,13 +2369,31 @@
       
       renderOrderingQuestion() {
   const gameData = this.currentStory.games.find(g => g.game1).game1;
-  const totalSentences = gameData.sentences.length;
-  if (this.game1Index >= totalSentences) {
+  
+  // Se combinan las oraciones guardadas (savedSentences) y las predeterminadas, colocando primero las guardadas
+  let sentences = [];
+  if (this.savedSentences.length > 0) {
+    // Extraemos las oraciones guardadas
+    sentences = this.savedSentences.map(item => item.sentence);
+  }
+  // Luego agregamos las oraciones por defecto
+  sentences = sentences.concat([...gameData.sentences]);
+  
+  // Mostramos en consola la data final de oraciones
+  console.log("Juego 1 - Sentences:", sentences);
+  
+  // Actualizamos las traducciones para oraciones guardadas:
+  this.savedSentences.forEach(item => {
+    this.currentStory.translation[item.sentence.toLowerCase()] = item.translation;
+  });
+  
+  // Verificamos si ya se han agotado todas las oraciones
+  if (this.game1Index >= sentences.length) {
     document.getElementById('gameContent').innerHTML = `
       <div class="card ordering-game-card">
         <div class="card-header">
           <h2 class="ordering-game-title">${gameData.title}</h2>
-          <div class="ordering-progress">${totalSentences}/${totalSentences}</div>
+          <div class="ordering-progress">${sentences.length}/${sentences.length}</div>
         </div>
         <div class="card-body">
           <p>Juego terminado. ¡Felicidades!</p>
@@ -1583,17 +2401,25 @@
       </div>`;
     return;
   }
-  const sentence = gameData.sentences[this.game1Index];
+  
+  // Se obtiene la oración actual (ya sea de las guardadas o predeterminadas)
+  const sentence = sentences[this.game1Index];
+  console.log("Juego 1 - Oración actual:", sentence);
+  
   this.correctWords = sentence.split(" ");
-  // Creamos la pool como una copia del arreglo de palabras (ya mezcladas)
+  
+  // Se crea la pool de palabras mezcladas
   this.availablePoolWords = this.shuffleArray([...this.correctWords]);
+  console.log("Juego 1 - Pool de palabras:", this.availablePoolWords);
+  
   this.orderingAnswer = [];
+  
   const container = document.getElementById('gameContent');
   container.innerHTML = `
     <div class="card ordering-game-card">
       <div class="card-header">
         <h2 class="ordering-game-title">${gameData.title}</h2>
-        <div class="ordering-progress">${this.game1Index + 1}/${totalSentences}</div>
+        <div class="ordering-progress">${this.game1Index + 1}/${sentences.length}</div>
       </div>
       <div class="card-body">
         <p class="ordering-instruction"><strong>Ordena las palabras:</strong></p>
@@ -1605,24 +2431,23 @@
       </div>
     </div>`;
   
-  // Renderizamos la pool y la respuesta
+  // Renderizamos la pool y la respuesta actual
   this.renderPool();
   this.renderOrderingAnswer();
-
-  // Evento para "Reintentar": reinicia respuesta y vuelve a renderizar la pool
+  
+  // Evento para "Reintentar": reinicia la respuesta y la pool
   const retryButton = document.querySelector('.retry-btn');
   retryButton.addEventListener('click', () => {
-    // Reiniciamos la respuesta y reestablecemos la pool a su estado original
     this.orderingAnswer = [];
     this.availablePoolWords = this.shuffleArray([...this.correctWords]);
+    console.log("Juego 1 - Nueva pool tras reintentar:", this.availablePoolWords);
     this.renderPool();
     this.renderOrderingAnswer();
     document.querySelector('.ordering-result').textContent = '';
   });
-  
-  // Comprobamos si ya se seleccionaron todas las palabras
-  // (La comprobación se hace dentro de renderPool al actualizar la respuesta)
 }
+
+
 
 
 
@@ -1800,40 +2625,63 @@ renderOrderingAnswer() {
       
       /* Juego 3: Memory Cards (Se mantiene sin cambios) */
       launchMemoryCardsGame() {
-        const gameData = this.currentStory.games.find(g => g.game3).game3;
-        const vocabulary = gameData.vocabulary;
-        let cards = [];
-        vocabulary.forEach((word, index) => {
-          cards.push({ pairId: index, word: word });
-          cards.push({ pairId: index, word: word });
-        });
-        this.memoryTotalPairs = vocabulary.length;
-        this.memoryMatches = 0;
-        cards = this.shuffleArray(cards);
-        const container = document.getElementById('gameContent');
-        container.innerHTML = `<h2>${gameData.title}</h2>
-          <div id="game3Container">
-            ${cards.map((card, i) => {
-              return `<div class="memory-card" data-pair="${card.pairId}" data-index="${i}">
-                        <div class="card-back">?</div>
-                        <div class="card-face">
-                          <div class="card-image" data-query="${card.word}"></div>
-                          <div class="card-text">${card.word}</div>
-                        </div>
-                      </div>`;
-            }).join('')}
-          </div>
-          <p id="memoryResult"></p>`;
-        this.cards = Array.from(document.querySelectorAll('.memory-card'));
-        this.cards.forEach(cardEl => {
-          cardEl.addEventListener('click', () => {
-            const word = cardEl.querySelector('.card-text').textContent;
-            this.speakText(word);
-            this.handleMemoryCardClick(cardEl);
-          });
-        });
-        this.loadMemoryCardImages();
-      }
+  const gameData = this.currentStory.games.find(g => g.game3).game3;
+  
+  // Obtenemos el vocabulario por defecto del juego 3
+  let vocabulary = [...gameData.vocabulary];
+  
+  // Si hay palabras guardadas, se agregan al vocabulario
+  if (this.savedWords.length > 0) {
+    vocabulary = vocabulary.concat(this.savedWords.map(item => item.word));
+  }
+  
+  // Eliminamos duplicados (comparando en minúsculas)
+  vocabulary = [...new Set(vocabulary.map(word => word.toLowerCase()))];
+  
+  // Mostramos en consola el vocabulario final que se usará
+  console.log("Juego 3 - Vocabulary:", vocabulary);
+  
+  // Creamos las tarjetas (duplicadas para formar parejas)
+  let cards = [];
+  vocabulary.forEach((word, index) => {
+    cards.push({ pairId: index, word: word });
+    cards.push({ pairId: index, word: word });
+  });
+  
+  // Se mezclan las tarjetas
+  cards = this.shuffleArray(cards);
+  
+  // Mostramos en consola la data de las tarjetas
+  console.log("Juego 3 - Cards:", cards);
+  
+  const container = document.getElementById('gameContent');
+  container.innerHTML = `<h2>${gameData.title}</h2>
+    <div id="game3Container">
+      ${cards.map((card, i) => {
+        return `<div class="memory-card" data-pair="${card.pairId}" data-index="${i}">
+                  <div class="card-back">?</div>
+                  <div class="card-face">
+                    <div class="card-image" data-query="${card.word}"></div>
+                    <div class="card-text">${card.word}</div>
+                  </div>
+                </div>`;
+      }).join('')}
+    </div>
+    <p id="memoryResult"></p>`;
+  
+  // Se asignan los eventos para cada tarjeta
+  this.cards = Array.from(document.querySelectorAll('.memory-card'));
+  this.cards.forEach(cardEl => {
+    cardEl.addEventListener('click', () => {
+      const word = cardEl.querySelector('.card-text').textContent;
+      this.speakText(word);
+      this.handleMemoryCardClick(cardEl);
+    });
+  });
+  
+  this.loadMemoryCardImages();
+}
+
       
       handleMemoryCardClick(cardEl) {
         if (this.memoryLock || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
@@ -2043,8 +2891,124 @@ renderOrderingAnswer() {
           }, 1500);
         }
       }
+
+
+
+
+
+
+      loadGlobalVoices() {
+  const selectEl = document.getElementById('globalVoiceSelect');
+  if (!selectEl) {
+    console.warn("No se encontró el selector global de voces (#globalVoiceSelect).");
+    return;
+  }
+
+  // Función para forzar la inicialización de las voces
+  const forceVoiceInit = (callback) => {
+    const dummy = new SpeechSynthesisUtterance('');
+    dummy.volume = 0;
+    speechSynthesis.speak(dummy);
+    setTimeout(callback, 250);
+  };
+
+  const populate = () => {
+    const voices = speechSynthesis.getVoices();
+    console.log("🔊 Voces disponibles:", voices);
+
+    if (!voices.length) {
+      selectEl.innerHTML = '<option value="">No hay voces disponibles</option>';
+      return;
+    }
+
+    // Vaciar el select
+    selectEl.innerHTML = "";
+    voices.forEach(voice => {
+      const option = document.createElement('option');
+      option.value = voice.voiceURI;
+      // Texto completo que se usará en el desplegable:
+      const fullText = `${voice.name} (${voice.lang})`;
+      // Guardamos el nombre completo en data-full
+      option.setAttribute('data-full', fullText);
+      // Establecemos inicialmente el texto que se verá cuando el select esté cerrado
+      option.textContent = "Voz";
+      selectEl.appendChild(option);
+    });
+
+    // Seleccionamos por defecto una voz (por ejemplo, en-US o la primera disponible)
+    const preferredLang = 'en-US';
+    const defaultVoice = voices.find(v => v.lang === preferredLang) || voices[0];
+    this.selectedVoice = defaultVoice;
+    selectEl.value = defaultVoice.voiceURI;
+    console.log("✅ Voz inicial seleccionada (en-US o fallback):", defaultVoice.name);
+
+    // Cuando se abre el select, se actualiza para mostrar los nombres completos
+    selectEl.addEventListener('mousedown', () => {
+      Array.from(selectEl.options).forEach(option => {
+        // Se restaura el texto completo para cada opción
+        option.textContent = option.getAttribute('data-full');
+      });
+    });
+
+    // Cuando se cambia la selección o se pierde el foco, se reemplaza el texto del option seleccionado por "Voz"
+    const restoreLabel = () => {
+      const selectedOption = selectEl.selectedOptions[0];
+      if (selectedOption) {
+        selectedOption.textContent = "Voz";
+      }
+    };
+
+    selectEl.addEventListener('change', () => {
+      // Actualizamos la voz seleccionada según su value (voiceURI)
+      const selected = voices.find(v => v.voiceURI === selectEl.value);
+      if (selected) {
+        this.selectedVoice = selected;
+        console.log("🔁 Voz cambiada por el usuario:", selected.name);
+      }
+      restoreLabel();
+    });
+
+    selectEl.addEventListener('blur', restoreLabel);
+  };
+
+  forceVoiceInit(populate);
+}
+
+
+
+
+
+
+
+
     }
     
+
+
+
+
+    function showSpinner() {
+  const spinner = document.querySelector('.loading-screen');
+  // Mover el spinner al final del body si no está allí
+  if (spinner.parentElement !== document.body) {
+    document.body.appendChild(spinner);
+  }
+  spinner.style.display = 'grid';
+}
+
+function hideSpinner() {
+  const spinner = document.querySelector('.loading-screen');
+  spinner.style.display = 'none';
+}
+
+
+window.speechSynthesis.onvoiceschanged = function() {
+  const voces = window.speechSynthesis.getVoices();
+  console.log(voces); // Ver todas las voces instaladas
+};
+
+
+
     document.addEventListener('DOMContentLoaded', () => {
       const manager = new StoryManager();
     });
