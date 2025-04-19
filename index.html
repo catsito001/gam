@@ -1257,7 +1257,13 @@
   </div>
   
   <script>
-const WORKER_URL = 'https://mi-worker.saturninocok.workers.dev/';
+
+const API_BASE                 = 'https://mi-worker.saturninocok.workers.dev'
+const STORIES_LIST_URL         = `${API_BASE}/stories`
+const STORY_DATA_URL           = id => `${API_BASE}/stories/${id}`
+const STORY_TRANSLATION_URL    = id => `${API_BASE}/stories/${id}/translation`
+
+
     const PEXELS_API_KEY = 'aV5EuNmfMhHpLQYMjCOQp6YWmU6RAF5M6at5jDTRpe0pLwxk1SZzPhSC';
     
     class StoryManager {
@@ -1290,75 +1296,69 @@ const WORKER_URL = 'https://mi-worker.saturninocok.workers.dev/';
 
         this.init();
       }
-      
+
       async init() {
-
-
-           // Si hay una velocidad guardada, se carga
+    // Cargar velocidad previa
     const storedSpeed = localStorage.getItem('selectedSpeed');
-    if (storedSpeed) {
-      this.selectedSpeed = storedSpeed;
-    }
-    // Actualizamos el dropdown con la velocidad almacenada
-    const speedSelect = document.getElementById('speedSelect');
-    if (speedSelect) {
-      speedSelect.value = this.selectedSpeed;
-      // Agregamos el evento para detectar cambios
-      speedSelect.addEventListener('change', (e) => {
-        this.selectedSpeed = e.target.value;
-        localStorage.setItem('selectedSpeed', this.selectedSpeed);
-        console.log("Velocidad del speech actualizada a:", this.selectedSpeed);
-      });
-    }
+    if (storedSpeed) this.selectedSpeed = storedSpeed;
+    document.getElementById('speedSelect')?.addEventListener('change', e => {
+      this.selectedSpeed = e.target.value;
+      localStorage.setItem('selectedSpeed', this.selectedSpeed);
+    });
 
-
-
-    // NUEVO: Tamaño (número de oraciones por tarjeta)
-  const storedSize = localStorage.getItem('selectedSize');
-  this.selectedSize = storedSize ? storedSize : "1";
-  const sizeSelect = document.getElementById('sizeSelect');
-  if (sizeSelect) {
-    sizeSelect.value = this.selectedSize;
-    sizeSelect.addEventListener('change', (e) => {
+    // Cargar tamaño previo
+    const storedSize = localStorage.getItem('selectedSize');
+    this.selectedSize = storedSize || "1";
+    document.getElementById('sizeSelect')?.addEventListener('change', e => {
       this.selectedSize = e.target.value;
       localStorage.setItem('selectedSize', this.selectedSize);
-      console.log("Tamaño (número de oraciones por tarjeta) actualizado a:", this.selectedSize);
-      // Al cambiar el tamaño se re-renderizan las tarjetas
       this.renderStoryCards();
-
-      // … y se actualiza el tamaño de los textos
-    this.updateEnglishTextFontSize();
+      this.updateEnglishTextFontSize();
     });
+
+    // ---- AQUÍ CAMBIO ----
+    await this.loadStoriesList();     // reemplaza loadStories()
+    this.hideLoading();
+    this.showStoriesList();
+    this.setupEventListeners();
+    this.loadGlobalVoices();
   }
-
-
-
-        await this.loadStories();
-        this.hideLoading();
-        this.showStoriesList();
-        this.setupEventListeners();
-
-        // Carga el selector global de voces
-  this.loadGlobalVoices();
-
-
-      }
       
-      async loadStories() {
+ 
+
+  async loadStoriesList() {
+      console.log('🔍 [loadStoriesList] llamando a:', STORIES_LIST_URL);  // ← CORRECCIÓN
+
   try {
-    // Llamamos a tu Worker en lugar de Google Script
-    const { data } = await axios.get(WORKER_URL);
-    if (!data.success) {
-      // En caso de que tu Worker haya devuelto un error
-      console.error('Worker error:', data.error);
-      return;
-    }
-    // data.stories ya es un array con **todas** las historias
-    this.stories = data.stories;
-  } catch (error) {
-    console.error('Error loading stories from Worker:', error);
+    const { data } = await axios.get(STORIES_LIST_URL);
+    // Asignamos siempre el array, sin condicionar a data.success
+    this.stories = data.stories || [];
+    console.log('✅ [loadStoriesList] recibidas', this.stories.length, 'stories:', this.stories);
+  } catch (err) {
+    console.error('❌ [loadStoriesList] error:', err);
   }
-} 
+}
+
+// 2) Cuando seleccionas una historia:
+async loadStoryDetail(id) {
+  console.log(`🔍 [loadStoryDetail] llamando a: ${STORY_DATA_URL(id)} y ${STORY_TRANSLATION_URL(id)}`);
+  try {
+    const [ detailResp, transResp ] = await Promise.all([
+      axios.get(STORY_DATA_URL(id)),
+      axios.get(STORY_TRANSLATION_URL(id))
+    ]);
+    // Asignamos siempre, independientemente de algún flag
+    const storyObj = detailResp.data.story;
+    storyObj.translation = transResp.data.translation;
+    this.currentStory = storyObj;
+    console.log('✅ [loadStoryDetail] story:', this.currentStory);
+  } catch (err) {
+    console.error('❌ [loadStoryDetail] error:', err);
+  }
+}
+
+
+      
       hideLoading() { document.querySelector('.loading-screen').style.display = 'none'; }
       
       showStoriesList() {
@@ -1391,24 +1391,27 @@ const WORKER_URL = 'https://mi-worker.saturninocok.workers.dev/';
   document.getElementById('storiesList').style.display = 'block';
 }
       
-      async showStory(storyIndex) {
-  // Asegura que el spinner esté en el body y se muestre centrado
-  showSpinner();
+async showStory(storyIndex) {
+    showSpinner();  // tu función existente para mostrar el spinner
 
-  this.currentStory = this.stories[storyIndex];
-  this.normalizeTranslationKeys();
-  this.extractVocabulary();
+    // Cargar datos de la historia seleccionada
+    await this.loadStoryDetail(storyIndex);
 
-  document.getElementById('storiesList').style.display = 'none';
-  document.getElementById('storyView').style.display = 'block';
-  document.getElementById('storyTitle').textContent = this.currentStory.title.split('<')[0].trim();
+    // Normalizar y extraer vocabulario (igual que antes)
+    this.normalizeTranslationKeys();
+    this.extractVocabulary();
 
-  // Renderizar tarjetas de la historia y esperar a que termine
-  await this.renderStoryCards();
+    // Pasar a la vista
+    document.getElementById('storiesList').style.display = 'none';
+    document.getElementById('storyView').style.display   = 'block';
+    document.getElementById('storyTitle').textContent    =
+      this.currentStory.title.split('<')[0].trim();
 
-  // Ocultar el spinner una vez que la historia esté cargada
-  hideSpinner();
-}
+    // Renderizar tarjetas e imágenes
+    await this.renderStoryCards();
+
+    hideSpinner();  // tu función existente para ocultar el spinner
+  }
       
       normalizeTranslationKeys() {
         const norm = {};
@@ -2973,6 +2976,10 @@ renderOrderingAnswer() {
 
   forceVoiceInit(populate);
 }
+
+
+
+
 
 
 
