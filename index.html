@@ -1424,7 +1424,26 @@ this.wordTimeouts = [];
         this.init();
       }
 
-      async init() {
+
+
+
+      loadGlobalVoices() {
+    // 1) Cargo de localStorage (si ya había selección)
+    const stored = localStorage.getItem('selectedGender');
+    if (stored === 'm' || stored === 'w') {
+      this.selectedGender = stored;
+    }
+
+    // 2) Apunto al <select> y le pongo el valor
+    const sel = document.getElementById('globalVoiceSelect');
+    if (sel) {
+      sel.value = this.selectedGender;
+
+  
+    }
+  }
+
+      async init() {  
     // Cargar velocidad previa
     const storedSpeed = localStorage.getItem('selectedSpeed');
    
@@ -1481,41 +1500,94 @@ this.wordTimeouts = [];
   }
 }
 
-// 2) Cuando seleccionas una historia:
 async loadStoryDetail(id) {
-  console.log(`🔍 [loadStoryDetail] cargando story ${id}`);
   try {
-    // 1) Cargo datos y traducción de la story
+    // ——— Paso 1: carga historia + traducción —————————————————————
     const [detailResp, transResp] = await Promise.all([
       axios.get(STORY_DATA_URL(id)),
       axios.get(STORY_TRANSLATION_URL(id))
     ]);
-    const storyObj = detailResp.data.story;
-    storyObj.translation = transResp.data.translation;
-    this.currentStory = storyObj;
+    this.currentStory = {
+      ...detailResp.data.story,
+      translation: transResp.data.translation
+    };
 
-    // 2) Extraigo el título en inglés (antes de cualquier '<…>')
-    const rawTitle = this.currentStory.title.split('<')[0].trim();
-    // 3) Codifico para URL y formo la carpeta
-    const folder = encodeURIComponent(rawTitle);
+    // ——— Paso 2: carpeta “folder” —————————————————————————————
+    const rawTitle     = this.currentStory.title.split('<')[0].trim();
+    const folder       = encodeURIComponent(rawTitle);
+    this.currentFolder = folder;
 
-    // 4) Genero las URLs de marks y audio dentro de data/<TÍTULO>/
-      const gender = this.selectedGender || 'm';
-const marksUrl = `data/${folder}/${gender}/marks.json`;
-const audioUrl = `data/${folder}/${gender}/speech.mp3`;
+    // ——— Paso 3: helper estricto para status = 200 ——————————————————
+    const exists200 = async url => {
+      try {
+        const resp = await axios.get(url, {
+          // **solo aceptamos 200**, cualquier otro status lanza
+          validateStatus: status => status === 200
+        });
+        console.log(`✅ [EXISTS] ${url} → ${resp.status}`);
+        return true;
+      } catch (e) {
+        // aquí cae con 404, 301, 500…
+        console.warn(`❌ [MISSING] ${url}`);
+        return false;
+      }
+    };
 
-    // 5) Cargo el JSON de marcas y creo el elemento Audio
-    const marksResp = await axios.get(marksUrl);
-    this.marks = marksResp.data;            // [{ word, start, end }, …]
-    this.audio = new Audio(audioUrl);       // audio.preload = 'auto' por defecto
-    this.audio.preload = 'auto';                          
-this.audio.playbackRate = parseFloat(this.selectedSpeed);  
+    // ——— Paso 4: comprueba para cada género ————————————————————————
+    const genders   = ['m','w'];
+    const available = [];
+    for (const g of genders) {
+      const base     = `data/${folder}/${g}`;
+      const jsonUrl  = `${base}/marks.json`;
+      const audioUrl = `${base}/speech.mp3`;
 
-    console.log('✅ Audio y marks cargados desde carpeta:', folder);
+      const jsonOk  = await exists200(jsonUrl);
+      const audioOk = await exists200(audioUrl);
+
+      console.log(`→ género ${g}: marks.json? ${jsonOk}, speech.mp3? ${audioOk}`);
+      if (jsonOk && audioOk) available.push(g);
+    }
+
+    // ——— Paso 5: actualiza selectedGender si ya no existe ——————————
+    if (!available.includes(this.selectedGender)) {
+      this.selectedGender = available[0] || 'm';
+    }
+
+    // ——— Paso 6: reconstruye el <select> SOLO con lo disponible ——————
+    const sel = document.getElementById('globalVoiceSelect');
+    sel.innerHTML = '';
+    available.forEach(g => {
+      sel.add(new Option(
+        g === 'm' ? 'Voz hombre' : 'Voz mujer',
+        g,
+        g === this.selectedGender,
+        g === this.selectedGender
+      ));
+    });
+    // fallback: si por algún motivo no hay ninguno
+    if (available.length === 0) {
+      ['m','w'].forEach(g => sel.add(new Option(
+        g === 'm' ? 'Voz hombre' : 'Voz mujer',
+        g
+      )));
+      this.selectedGender = sel.value;
+    }
+
+    // ——— Paso 7: carga marks y audio definitivo ————————————————
+    const g = this.selectedGender;
+    const marksUrl = `data/${folder}/${g}/marks.json`;
+    const audioUrl = `data/${folder}/${g}/speech.mp3`;
+    this.marks = (await axios.get(marksUrl)).data;
+    this.audio = new Audio(audioUrl);
+    this.audio.preload      = 'auto';
+    this.audio.playbackRate = parseFloat(this.selectedSpeed);
+
+    console.log(`🎉 Cargado correctamente voz “${g}” para carpeta “${folder}”`);
   } catch (err) {
-    console.error('❌ [loadStoryDetail] error al cargar story, marks o audio:', err);
+    console.error('🔥 Error en loadStoryDetail:', err);
   }
 }
+
 
 
       
@@ -1524,19 +1596,27 @@ this.audio.playbackRate = parseFloat(this.selectedSpeed);
       showStoriesList() {
   const container = document.getElementById('storiesContainer');
   container.innerHTML = '';
+
   this.stories.forEach((story, index) => {
+    // Título en inglés y español
+    const eng = story.title.split('<')[0].trim();
+    const spa = (story.title.split('<')[1] || '').replace('>', '').trim();
+
+    // Carpeta donde buscar img/0.jpg
+    const folder     = encodeURIComponent(eng);
+    const localCover = `data/${folder}/img/0.jpg`;
+    const fallback   = story.titleImage || 'https://via.placeholder.com/100?text=No+Image';
+
     const card = document.createElement('div');
     card.className = 'story-card';
-    
-    // Suponiendo que el título original está en "title" y la imagen adicional en "titleImage"
-    // Separamos el título para usar solo la parte en inglés en el listado
-    const eng = story.title.split('<')[0].trim();
-    const spa = story.title.split('<')[1] ? story.title.split('<')[1].replace('>', '').trim() : '';
-    
     card.innerHTML = `
       <div class="story-card-inner">
         <div class="story-card-image">
-          <img src="${story.titleImage ? story.titleImage : 'https://via.placeholder.com/100?text=No+Image'}" alt="${eng}">
+          <img
+            src="${localCover}"
+            onerror="this.onerror=null;this.src='${fallback}';"
+            alt="${eng}"
+          >
         </div>
         <div class="story-card-text">
           <h3>${eng}</h3>
@@ -1544,10 +1624,10 @@ this.audio.playbackRate = parseFloat(this.selectedSpeed);
         </div>
       </div>
     `;
-    
     card.addEventListener('click', () => this.showStory(index));
     container.appendChild(card);
   });
+
   document.getElementById('storiesList').style.display = 'block';
 }
       
@@ -1744,7 +1824,7 @@ async renderStoryCards() {
   this.cards = [];
   this.currentCardIndex = 0;
 
-  // 0) Asignar a cada textObj su trozo EXACTO de marcas
+  // 1) Preparo las marcas para cada textObj
   const marksCopy = [...this.marks];
   this.currentStory.text.forEach(textObj => {
     const cleanWords = textObj.english
@@ -1755,17 +1835,18 @@ async renderStoryCards() {
     textObj.marks = marksCopy.splice(0, cleanWords.length);
   });
 
-  // 1) Agrupar según tamaño seleccionado
+  // 2) Agrupo según el tamaño de tarjetas
   const groupSize = parseInt(this.selectedSize, 10) || 1;
   const grouped = [];
   for (let i = 0; i < this.currentStory.text.length; i += groupSize) {
     grouped.push(this.currentStory.text.slice(i, i + groupSize));
   }
 
-  // 2) Offset global de marcas
   let globalIdx = 0;
+  let paragraphIndex = 0;
+  const folder = this.currentFolder;
 
-  // 3) Construir tarjetas
+  // 3) Construyo cada tarjeta
   for (const group of grouped) {
     let engHTML = '';
     let spaHTML = '';
@@ -1774,41 +1855,70 @@ async renderStoryCards() {
     const vocabMap = {};
     const vocabSet = new Set();
 
+    // 3.1) Cobro texto, imágenes y vocabulario
     group.forEach(obj => {
       engHTML += `<div>${this.addWordSpans(obj.english, obj.phrasal_verbs, obj.vocabulary)}</div>`;
       spaHTML += `<div>${obj.spanish}</div>`;
-      if (obj.image) {
-        const isURL = /^https?:\/\//i.test(obj.image);
-        imgsHTML += `
-          <div class="carousel-item ${imgCount===0?'active':''}">
-            <img src="${isURL?obj.image:''}" ${!isURL?`data-image-query="${obj.image}"`:''} class="story-image" loading="lazy">
-          </div>`;
-        imgCount++;
+
+      // imagen local numerada
+      paragraphIndex++;
+      const localPath = `data/${folder}/img/${paragraphIndex}.jpg`;
+      const isURL = /^https?:\/\//i.test(obj.image);
+      imgsHTML += `
+        <div class="carousel-item ${imgCount === 0 ? 'active' : ''}">
+          <img
+            src="${localPath}"
+            class="story-image"
+            loading="lazy"
+            onerror="this.onerror=null;${isURL
+              ? `this.src='${obj.image}';`
+              : `this.removeAttribute('src');this.setAttribute('data-image-query','${obj.image}');`}"
+          >
+        </div>`;
+      imgCount++;
+
+      // vocabulario & phrasal verbs
+      if (obj.vocabulary) {
+        Object.entries(obj.vocabulary).forEach(([w, t]) => {
+          vocabMap[w.toLowerCase()] = t;
+          vocabSet.add(w.toLowerCase());
+        });
       }
-      if (obj.vocabulary) Object.entries(obj.vocabulary).forEach(([w,t]) => { vocabMap[w.toLowerCase()] = t; vocabSet.add(w.toLowerCase()); });
-      if (obj.phrasal_verbs) Object.entries(obj.phrasal_verbs).forEach(([pv,t]) => { vocabMap[pv.toLowerCase()] = t; vocabSet.add(pv.toLowerCase()); });
+      if (obj.phrasal_verbs) {
+        Object.entries(obj.phrasal_verbs).forEach(([pv, t]) => {
+          vocabMap[pv.toLowerCase()] = t;
+          vocabSet.add(pv.toLowerCase());
+        });
+      }
     });
 
-    const carouselHTML = imgCount>0 ? `
-      <div class="carousel-container">
-        <div class="carousel-inner">${imgsHTML}</div>
-        <button class="carousel-control prev"><i class="fas fa-chevron-left"></i></button>
-        <button class="carousel-control next"><i class="fas fa-chevron-right"></i></button>
-      </div>` : '';
+    // 3.2) HTML del carrusel
+    const carouselHTML = imgCount > 0
+      ? `<div class="carousel-container">
+           <div class="carousel-inner">${imgsHTML}</div>
+           <button class="carousel-control prev"><i class="fas fa-chevron-left"></i></button>
+           <button class="carousel-control next"><i class="fas fa-chevron-right"></i></button>
+         </div>`
+      : '';
 
-    const vocabHTML = vocabSet.size>0 ? `
-      <div class="vocabulary-container">
-        <p class="vocabulary-title">Vocabulary:</p>
-        <button class="vocab-carousel-control left"><i class="fas fa-chevron-left"></i></button>
-        <div class="vocabulary-words">${[...vocabSet].map(w=>`
-          <div class="vocabulary-word" data-word="${w}" data-translation="${vocabMap[w]}">
-            <div class="vocabulary-image"><img src="" alt="${w}" loading="lazy"></div>
-            <div class="vocabulary-text"><strong>${w}</strong><span class="vocabulary-translation">${vocabMap[w]}</span></div>
-          </div>`).join('')}</div>
-        <button class="vocab-carousel-control right"><i class="fas fa-chevron-right"></i></button>
-      </div>` : '';
+    // 3.3) HTML de vocabulario
+    const vocabHTML = vocabSet.size > 0
+      ? `<div class="vocabulary-container">
+           <p class="vocabulary-title">Vocabulary:</p>
+           <button class="vocab-carousel-control left"><i class="fas fa-chevron-left"></i></button>
+           <div class="vocabulary-words">
+             ${[...vocabSet].map(w => `
+               <div class="vocabulary-word" data-word="${w}" data-translation="${vocabMap[w]}">
+                 <div class="vocabulary-image"><img src="" alt="${w}" loading="lazy"></div>
+                 <div class="vocabulary-text"><strong>${w}</strong><span class="vocabulary-translation">${vocabMap[w]}</span></div>
+               </div>
+             `).join('')}
+           </div>
+           <button class="vocab-carousel-control right"><i class="fas fa-chevron-right"></i></button>
+         </div>`
+      : '';
 
-    // Crear card
+    // 3.4) Creo el elemento card
     const card = document.createElement('div');
     card.className = 'text-card';
     card.innerHTML = `
@@ -1823,47 +1933,58 @@ async renderStoryCards() {
         ${vocabHTML}
       </div>`;
 
-    // Registrar offset de marcas
-    card.dataset.markStart = globalIdx;
-    const count = group.reduce((s,o)=>s + (Array.isArray(o.marks)?o.marks.length:0), 0);
-    globalIdx += count;
+// 3.5) Marcas de tiempo
+card.dataset.markStart = globalIdx;
 
+// Cuenta cuántos spans de palabras hay en esta tarjeta
+const sentenceDivs = Array.from(card.querySelectorAll('.english-text > div'));
+const wordsCount = sentenceDivs
+  .map(div =>
+    Array.from(div.querySelectorAll(
+      '.highlight-word, .phrasal-verb-inline, .vocabulary-inline'
+    )).length
+  )
+  .reduce((a, b) => a + b, 0);
+
+globalIdx += wordsCount;
+
+    // 4) Inserto en DOM y guardo referencia
     container.appendChild(card);
     this.cards.push(card);
 
-    // Eventos de toggles
-    card.querySelector('.toggle-word-translation').addEventListener('click', () => {
+    // 5) Eventos de toggles
+    const btnTranslate = card.querySelector('.toggle-word-translation');
+    btnTranslate.addEventListener('click', () => {
       card.classList.toggle('show-translations');
-      card.querySelector('.toggle-word-translation').innerHTML =
-        card.classList.contains('show-translations')
-          ? '<i class="fas fa-language"></i> Ocultar Traducciones'
-          : '<i class="fas fa-language"></i> Traducir Palabras';
+      btnTranslate.innerHTML = card.classList.contains('show-translations')
+        ? '<i class="fas fa-language"></i> Ocultar Traducciones'
+        : '<i class="fas fa-language"></i> Traducir Palabras';
     });
-    card.querySelector('.toggle-sentence-add').addEventListener('click', () => {
+    const btnAdd = card.querySelector('.toggle-sentence-add');
+    btnAdd.addEventListener('click', () => {
       const sent = card.querySelector('.english-text').innerText.trim();
       const trans = card.querySelector('.full-translation').innerText.trim();
-      if (!this.savedSentences.some(x=>x.sentence===sent)) this.savedSentences.push({sentence:sent,translation:trans});
+      if (!this.savedSentences.some(x => x.sentence === sent)) {
+        this.savedSentences.push({ sentence: sent, translation: trans });
+      }
       document.getElementById('savedCount').textContent = this.savedSentences.length + this.savedWords.length;
       alert('Oración agregada a la lista.');
     });
 
-    // Inicializar carrusel
-    const carousel = card.querySelector('.carousel-container');
-    if (carousel) this.initializeCarousel(carousel);
+    // 6) Inicializo carrusel si existe
+    if (carouselHTML) {
+      const carousel = card.querySelector('.carousel-container');
+      this.initializeCarousel(carousel);
+    }
   }
 
-  // Mostrar y enganchar interacciones
+  // 7) Arranco la vista
   this.showCard(0);
   this.setupWordInteractions();
   this.loadVocabularyImages();
   this.loadStoryImages();
   this.updateEnglishTextFontSize();
   this.setupVocabularyCarousel();
-
-
-
-
-
 }
 
 
@@ -2036,6 +2157,35 @@ setupVocabularyCarousel() {
       result += `<span class="highlight-word" data-word="${cleanSuffix}">${suffixRaw}</span> `;
       continue;
     }
+
+
+    // 1a) Caso especial sufijo ’t o 't:
+const apostropheTMatch = raw.match(/^(.*?)([’']t)$/);
+if (apostropheTMatch) {
+  const [ , baseRawT, suffixRawT ] = apostropheTMatch;
+  const cleanBaseT  = baseRawT.toLowerCase();
+  const cleanSuffixT = suffixRawT.toLowerCase();
+
+  // Span para la parte base con posible tooltip
+  const baseTooltipT = vocabObj[cleanBaseT] || '';
+  const baseClassesT = 'highlight-word' + (baseTooltipT ? ' vocabulary-inline' : '');
+  result += `<span class="${baseClassesT}" data-word="${cleanBaseT}"` +
+            (baseTooltipT ? ` data-translation="${baseTooltipT}"` : '') +
+            `>${baseRawT}` +
+            (baseTooltipT
+              ? `<span class="translation-tooltip">${baseTooltipT}</span>`
+              : ''
+            ) +
+            `</span> `;
+
+  // Span para el sufijo ’t/'t
+  result += `<span class="highlight-word" data-word="${cleanSuffixT}">${suffixRawT}</span> `;
+  continue;
+}
+
+
+
+
 
     // 2) Phrasal verbs de dos palabras
     if (phrasalVerbs && i < words.length - 1) {
@@ -2566,22 +2716,24 @@ calculateExactWordDurations(text, voiceURI, rate) {
 
         document.getElementById('globalVoiceSelect')
   .addEventListener('change', async e => {
-    // 1) Actualiza el género
     this.selectedGender = e.target.value;
+    localStorage.setItem('selectedGender', this.selectedGender);
 
-    // 2) Si no hay historia abierta, salimos
+    // Si no hay historia cargada, no hacemos nada
     if (this.currentIndex == null) return;
 
-    // 3) Para todo audio y limpia timeouts + highlights
-    this.stopSpeech();                             // pausar y limpiar todos los timeouts/marks :contentReference[oaicite:0]{index=0}&#8203;:contentReference[oaicite:1]{index=1}
+    // 1) Pausar audio y limpiar highlights/timeouts
+    this.stopSpeech();
 
-    // 4) Recarga marks + audio con la carpeta m/ o w/
-    await this.loadStoryDetail(this.currentIndex);  // recarga this.audio y this.marks con la nueva voz :contentReference[oaicite:2]{index=2}&#8203;:contentReference[oaicite:3]{index=3}
+    // 2) Recargar marks.json y audio con la nueva voz
+    await this.loadStoryDetail(this.currentIndex);
 
-    // 5) Lanza la reproducción automática de la tarjeta actual
-    this.playCurrentCardAudio();                   // reproduce desde el comienzo de la frase activa :contentReference[oaicite:4]{index=4}&#8203;:contentReference[oaicite:5]{index=5}
+    // 3) (Opcional) Si cambian los textos o vocabulario, renderiza de nuevo
+    // await this.renderStoryCards();
+
+    // 4) Volver a reproducir la tarjeta actual, aplicando los marks correctamente
+    this.playCurrentCardAudio();
   });
-
 
 
 
