@@ -3,6 +3,8 @@
     {
       "title": "The Seed of Hope <La Semilla de la Esperanza>",
       "titleImage": "https://example.com/tree-of-hope.jpg",
+      "info": "tema: phrasal verbs",
+      "level": "intermedio",
       "text": [
         {
           "english": "After a fierce storm wiped out his village, Lucas came across a lone sapling clinging to life among the ruins.",
@@ -272,6 +274,8 @@
   {
     "title": "Leo and Luna's Sunny Day <El Día Soleado de Leo y Luna>",
     "titleImage": "https://example.com/kittens_playing_sunny.jpg",
+    "info": "tema: greetings",
+    "level": "fundamental",
     "text": [
       {
         "english": "One sunny morning, a little kitten named Leo woke up. (Good morning, world!) he purred softly.",
@@ -371,7 +375,7 @@
       },
       {
         "english": "My name is Leo. It's nice to meet you, Luna, he replied happily. They started to chase butterflies together.",
-        "spanish": "Mi nombre es Leo. Encantado de conocerte, Luna, respondió felizmente. Empezaron a perseguir mariposas juntos.",
+        "spanish": "Mi nombre es Leo. Encantado de conocerte, Luna,- respondió felizmente. Empezaron a perseguir mariposas juntos.",
         "image": "kittens_meeting",
         "phrasal_verbs": {},
         "vocabulary": {

@@ -105,7 +105,7 @@
     }
     .stories-header { 
       text-align: center; 
-      padding: 0.2rem 0; 
+      padding: 1rem 0; 
     }
     .stories-header h1 { 
       font-size: 2.5rem; 
@@ -268,7 +268,7 @@
     .sentence-container { margin-bottom: 0.1rem; }
     .english-text {
       font-size: 1.4rem;
-      line-height: 2rem;
+      line-height: 2.4rem;
       margin: 0.5rem 0;
       position: relative;
       background: #292828;
@@ -1188,6 +1188,15 @@
   height: 275px; /* igual que tu max-height de .story-image */
 }
 
+
+@media screen and (min-width: 768px) {
+  .carousel-container,
+  .carousel-container .carousel-item {
+    height: 400px !important;
+  }
+}
+
+
 /* 2) Convierte la imagen en “cover” fullscreen dentro del contenedor */
 .story-image {
   position: absolute !important;
@@ -1271,6 +1280,74 @@
   0%, 100% { transform: translate(-50%, 0); }
   50%      { transform: translate(-50%, 10px); }
 }
+
+
+
+
+.level-label {
+  display: inline-block;
+  background-color: #3b82f6;    /* azul intenso */
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Texto de info */
+.story-info {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #d1d5db;               /* gris claro */
+  line-height: 1.3;
+}
+
+
+
+.stories-filter-tabs {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  display: flex;        /* activa flex layout */
+  flex-wrap: wrap;      /* permite que los ítems pasen a la siguiente fila */
+  gap: 0.5rem 1rem;      /* espacio entre botones (fila y columna) */
+  justify-content: center; /* opcional: centra los botones */
+}
+
+.stories-filter-tabs button {
+  background: transparent;
+  border: none;
+  font-size: 0.8rem;       /* letras pequeñas */
+  color: #6b7280;           /* gris medio */
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+ 
+  border: 2px solid #fff !important;
+  color: #fff !important;
+}
+
+.stories-filter-tabs button.active {
+  background-color: #134ead;  /* azul intenso */
+  color: white;
+}
+
+.no-topics {
+  font-style: italic;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 300px;
+}
+
+
+
+
+
+
+
+
+
   </style>
   
   
@@ -1287,6 +1364,20 @@
     <div class="stories-header">
       <h1>Interactive English Stories</h1>
       <p>Select a story to begin</p>
+
+      <div class="stories-filter-tabs">
+        <button data-level="" class="active">Todos</button>
+        <button data-level="fundamental">Fundamental</button>
+        <button data-level="basico">Básico</button>
+        <button data-level="intermedio">Intermedio</button>
+        <button data-level="avanzado">Avanzado</button>
+        <button data-level="otros">Otros</button>
+      </div>
+      <div id="noTopicsMessage" class="no-topics" style="display: none;">
+        Aún no se agregaron temas
+      </div>
+
+
     </div>
     <div class="stories-grid" id="storiesContainer"></div>
   </section>
@@ -1415,9 +1506,12 @@ const STORY_TRANSLATION_URL    = id => `${API_BASE}/stories/${id}/translation`
         this.selectedGender = 'm';
 
         this.audio = null;                   // HTMLAudioElement para el audio pregrabado
-this.marks = [];                     // Array con los marks de tiempo
-this.audioHighlightInterval = null;  // Intervalo para resaltar palabras
-this.wordTimeouts = [];      
+
+
+this.audio = null;                   // HTMLAudioElement para el audio pregrabado
+    this.marks = [];                     // Array con los marks de tiempo
+    this.wordTimeouts = [];   
+    this.pausedTime = 0; 
 
         this.isSpeakingNow = false;
 
@@ -1483,6 +1577,23 @@ this.wordTimeouts = [];
     this.showStoriesList();
     this.setupEventListeners();
     this.loadGlobalVoices();
+
+
+    document.querySelectorAll('.stories-filter-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // 4.1) Marcar activo
+    document.querySelector('.stories-filter-tabs button.active')
+      .classList.remove('active');
+    btn.classList.add('active');
+
+    // 4.2) Volver a renderizar con el nivel
+    const level = btn.getAttribute('data-level');
+    this.showStoriesList(level);
+  });
+});
+
+
+
   }
       
  
@@ -1593,65 +1704,98 @@ async loadStoryDetail(id) {
       
       hideLoading() { document.querySelector('.loading-screen').style.display = 'none'; }
       
-      showStoriesList() {
+      showStoriesList(filterLevel = '') {
+  // 1) Referencia al contenedor y lo limpiamos
   const container = document.getElementById('storiesContainer');
   container.innerHTML = '';
 
-  this.stories.forEach((story, index) => {
-    // Título en inglés y español
-    const eng = story.title.split('<')[0].trim();
-    const spa = (story.title.split('<')[1] || '').replace('>', '').trim();
+  // 2) Filtramos según el nivel (si filterLevel es cadena vacía, no filtramos)
+  const filtered = filterLevel
+    ? this.stories.filter(s => s.level.toLowerCase() === filterLevel)
+    : this.stories;
 
-    // Carpeta donde buscar img/0.jpg
-    const folder     = encodeURIComponent(eng);
-    const localCover = `data/${folder}/img/0.jpg`;
-    const fallback   = story.titleImage || 'https://via.placeholder.com/100?text=No+Image';
+  // 3) Mostramos/u ocultamos el mensaje si no hay resultados
+  const msg = document.getElementById('noTopicsMessage');
+  if (filtered.length === 0) {
+    msg.style.display = 'block';
+  } else {
+    msg.style.display = 'none';
 
-    const card = document.createElement('div');
-    card.className = 'story-card';
-    card.innerHTML = `
-      <div class="story-card-inner">
-        <div class="story-card-image">
-          <img
-            src="${localCover}"
-            onerror="this.onerror=null;this.src='${fallback}';"
-            alt="${eng}"
-          >
+    // 4) Recorremos solo las historias filtradas y creamos cada tarjeta
+    filtered.forEach((story, index) => {
+      // Extraemos título inglés y traducción española
+      const eng = story.title.split('<')[0].trim();
+      const spa = (story.title.split('<')[1] || '')
+        .replace('>', '')
+        .trim();
+
+      // Calculamos la ruta de la imagen de portada
+      const folder     = encodeURIComponent(eng);
+      const localCover = `data/${folder}/img/0.jpg`;
+      const fallback   = story.titleImage
+        || 'https://via.placeholder.com/100?text=No+Image';
+
+      // Creamos el elemento tarjeta
+      const card = document.createElement('div');
+      card.className = 'story-card';
+      card.innerHTML = `
+        <div class="story-card-inner">
+          <div class="story-card-image">
+            <img
+              src="${localCover}"
+              onerror="this.onerror=null;this.src='${fallback}';"
+              alt="${eng}"
+            >
+          </div>
+          <div class="story-card-text">
+            <h3>${eng}</h3>
+            ${spa ? `<p class="story-title-translation">${spa}</p>` : ''}
+            <span class="level-label">${story.level}</span>
+            <p class="story-info">${story.info}</p>
+          </div>
         </div>
-        <div class="story-card-text">
-          <h3>${eng}</h3>
-          ${spa ? `<p>${spa}</p>` : ''}
-        </div>
-      </div>
-    `;
-    card.addEventListener('click', () => this.showStory(index));
-    container.appendChild(card);
-  });
+      `;
+      // Al hacer click, abrimos la historia correspondiente
+      card.addEventListener('click', () => this.showStory(index));
+      container.appendChild(card);
+    });
+  }
 
+  // 5) Asegurarnos de que la sección de lista esté visible
   document.getElementById('storiesList').style.display = 'block';
 }
+
+
+
+
       
 async showStory(storyIndex) {
-    showSpinner();  // tu función existente para mostrar el spinner
-    this.currentIndex = storyIndex; 
-    // Cargar datos de la historia seleccionada
-    await this.loadStoryDetail(storyIndex);
+  showSpinner();  
+  this.currentIndex = storyIndex; 
 
-    // Normalizar y extraer vocabulario (igual que antes)
-    
+  // ↓↓ AÑADE ESTO para limpiar cualquier estado de pausa/resume
+  this.pausedTime = 0;
+  this.resumeSentenceIndex = null;
+  this.isPlaying = false;
+  // y opcionalmente restaurar el icono a “play”
+  const mainIcon = document.getElementById('mainAudioButton').querySelector('i');
+  if (mainIcon) mainIcon.classList.replace('fa-pause','fa-play');
 
-    // Pasar a la vista
-    document.getElementById('storiesList').style.display = 'none';
-    document.getElementById('storyView').style.display   = 'block';
-    document.getElementById('storyTitle').textContent    =
-      this.currentStory.title.split('<')[0].trim();
+  // Cargar datos de la historia seleccionada
+  await this.loadStoryDetail(storyIndex);
 
-    // Renderizar tarjetas e imágenes
-    await this.renderStoryCards();
+  // Pasar a la vista
+  document.getElementById('storiesList').style.display = 'none';
+  document.getElementById('storyView').style.display   = 'block';
+  document.getElementById('storyTitle').textContent    =
+    this.currentStory.title.split('<')[0].trim();
 
-    hideSpinner();
-    this.showHint();  // tu función existente para ocultar el spinner
-  }
+  // Renderizar tarjetas e imágenes
+  await this.renderStoryCards();
+
+  hideSpinner();
+  this.showHint();  
+}
       
       normalizeTranslationKeys() {
         const norm = {};
@@ -2510,92 +2654,90 @@ showWordPopup(wordElement) {
       
 
       playCurrentCardAudio() {
-  // 1) Parar audio y limpiar timeouts previos
+  // limpia cualquier estado previo
   this.stopSpeech();
 
   const card = this.cards[this.currentCardIndex];
   const sentenceDivs = Array.from(card.querySelectorAll('.english-text > div'));
   const sentencesWords = sentenceDivs.map(div =>
-    Array.from(div.querySelectorAll(
-      '.highlight-word, .phrasal-verb-inline, .vocabulary-inline'
-    ))
+    Array.from(div.querySelectorAll('.highlight-word, .phrasal-verb-inline, .vocabulary-inline'))
   );
 
-  // 2) Offsets de marks.json
   const markStartGlobal = parseInt(card.dataset.markStart, 10) || 0;
   let localIdx = 0;
   const sentenceMarks = sentencesWords.map(nodes => {
-    const slice = this.marks.slice(
-      markStartGlobal + localIdx,
-      markStartGlobal + localIdx + nodes.length
-    );
+    const slice = this.marks.slice(markStartGlobal + localIdx, markStartGlobal + localIdx + nodes.length);
     localIdx += nodes.length;
     return slice;
   });
 
-  // 3) Función recursiva
+  const rate = parseFloat(this.selectedSpeed) || 1;
+  this.audio.playbackRate = rate;
+
   const playSentence = (i) => {
+    // ← SI YA NO HAY MÁS FRASES
     if (i >= sentenceMarks.length) {
-      // fin de todo
+      // ← AÑADIDO: reset completa de pausa para que próximo Play reinicie la frase
+      this.pausedTime = 0;
+      this.resumeSentenceIndex = null;
       this.isPlaying = false;
-      const icon = document.getElementById('mainAudioButton').querySelector('i');
-      if (icon) icon.classList.replace('fa-pause','fa-play');
+      const iconEnd = document.getElementById('mainAudioButton').querySelector('i');
+      if (iconEnd) iconEnd.classList.replace('fa-pause','fa-play');
       return;
     }
-    const marksForSentence = sentenceMarks[i];
-    if (!marksForSentence.length) {
-      return playSentence(i+1);
-    }
 
-    // 4) Tiempos de audio
+    const marksForSentence = sentenceMarks[i];
+    if (!marksForSentence.length) return playSentence(i+1);
+
     const startTime = marksForSentence[0].start;
     const endTime   = marksForSentence[marksForSentence.length - 1].end;
 
-    // 5) Aplicar velocidad y arrancar
-    const rate = parseFloat(this.selectedSpeed) || 1;
-    this.audio.playbackRate = rate;
-    this.audio.currentTime = startTime;
+    const actualStart = (this.resumeSentenceIndex === i)
+      ? this.pausedTime
+      : startTime;
+
+    this.audio.currentTime = actualStart;
     this.audio.play();
     this.isPlaying = true;
     document.getElementById('mainAudioButton').querySelector('i')
       .classList.replace('fa-play','fa-pause');
 
-    // 6) Programar resaltes según rate
     marksForSentence.forEach((m, idx) => {
-      // delay real = (m.start – startTime) / rate
-      const highlightDelay = (m.start - startTime) / rate * 1000;
-      const unhighlightDelay = (m.end - startTime) / rate * 1000;
+      const highlightDelay = Math.max(0, (m.start - actualStart) / rate * 1000);
+      const unhighlightDelay = Math.max(0, (m.end   - actualStart) / rate * 1000);
 
-      const hTO = setTimeout(() => {
-        sentencesWords[i][idx].classList.add('active');
-      }, highlightDelay);
+      if (this.resumeSentenceIndex===i && m.end <= this.pausedTime) return;
 
-      const uTO = setTimeout(() => {
-        sentencesWords[i][idx].classList.remove('active');
-      }, unhighlightDelay);
-
+      const hTO = setTimeout(() => sentencesWords[i][idx].classList.add('active'), highlightDelay);
+      const uTO = setTimeout(() => sentencesWords[i][idx].classList.remove('active'), unhighlightDelay);
       this.wordTimeouts.push(hTO, uTO);
     });
 
-    // 7) Al terminar la oración
-    const sentenceDuration = (endTime - startTime) / rate * 1000;
+    const phraseEndDelay = (endTime - actualStart) / rate * 1000;
     const endTO = setTimeout(() => {
       this.audio.pause();
-      // limpiar timeouts de esta oración
       this.wordTimeouts.forEach(t => clearTimeout(t));
       this.wordTimeouts = [];
       sentencesWords[i].forEach(n => n.classList.remove('active'));
-      playSentence(i + 1);
-    }, sentenceDuration);
+      playSentence(i+1);
+    }, phraseEndDelay);
 
     this.wordTimeouts.push(endTO);
   };
 
-  playSentence(0);
+  if (this.pausedTime) {
+    const idx = sentenceMarks.findIndex(marks => {
+      if (!marks.length) return false;
+      const s = marks[0].start, e = marks[marks.length-1].end;
+      return this.pausedTime >= s && this.pausedTime <= e;
+    });
+    this.resumeSentenceIndex = idx >= 0 ? idx : 0;
+    playSentence(this.resumeSentenceIndex);
+  } else {
+    this.resumeSentenceIndex = null;
+    playSentence(0);
+  }
 }
-
-
-
 
 
 
@@ -2647,102 +2789,116 @@ calculateExactWordDurations(text, voiceURI, rate) {
       }
       
       stopSpeech() {
-  // 1) Pausar audio si está sonando
   if (this.audio && !this.audio.paused) {
-    this.audio.pause();
+    this.pausedTime = this.audio.currentTime;
   }
-  // 2) Limpiar todos los timeouts pendientes
+  // limpiamos audio
+  if (this.audio) this.audio.pause();
+
   this.wordTimeouts.forEach(to => clearTimeout(to));
   this.wordTimeouts = [];
-  // 3) Quitar cualquier resaltado activo
+
   const activeSel = this.cards[this.currentCardIndex]
-    .querySelectorAll(
-      '.highlight-word.active, .phrasal-verb-inline.active, .vocabulary-inline.active'
-    );
+    .querySelectorAll('.highlight-word.active, .phrasal-verb-inline.active, .vocabulary-inline.active');
   activeSel.forEach(n => n.classList.remove('active'));
-  // 4) Actualizar estado e icono
+
   this.isPlaying = false;
   const icon = document.getElementById('mainAudioButton').querySelector('i');
   if (icon) icon.classList.replace('fa-pause','fa-play');
 }
 
 
+resumeSpeech() {
+  if (!this.audio) return;
+  this.isPlaying = true;
+  const icon = document.getElementById('mainAudioButton').querySelector('i');
+  if (icon) icon.classList.replace('fa-play','fa-pause');
+  // No limpiar pausedTime ni resumeSentenceIndex
+  this.playCurrentCardAudio();
+}
 
+setupEventListeners() {
+  // Botón principal de play/pause/resume
+  const mainBtn = document.getElementById('mainAudioButton');
+  mainBtn.addEventListener('click', () => {
+    if (this.isPlaying) {
+      this.stopSpeech();
+    } else if (this.audio && this.audio.currentTime > 0 && this.audio.currentTime < this.audio.duration) {
+      this.resumeSpeech();
+    } else {
+      this.playCurrentCardAudio();
+    }
+  });
 
+  // Anterior: resetea estado de pausa y arranca desde el inicio de la tarjeta previa
+  document.getElementById('prevCardBtn').addEventListener('click', () => {
+    if (this.currentCardIndex > 0) {
+      // 1) Detenemos y limpiamos TODO
+      this.stopSpeech();
+      // 2) Ahora sí reseteamos la posición de pausa
+      this.pausedTime = 0;
+      this.resumeSentenceIndex = null;
+      // 3) Cambiamos de tarjeta y arrancamos desde el primer mark
+      this.showCard(this.currentCardIndex - 1);
+      this.playCurrentCardAudio();
+    }
+    setTimeout(() => this.setupVocabularyCarousel(), 200);
+  });
 
-      setupEventListeners() {
-        document.getElementById('mainAudioButton').addEventListener('click', () => {
-          if (this.isPlaying) { this.stopSpeech(); }
-          else { this.playCurrentCardAudio(); }
-        });
-        document.getElementById('prevCardBtn').addEventListener('click', () => {
-             if (this.currentCardIndex > 0) {
-     this.showCard(this.currentCardIndex - 1);
-     this.playCurrentCardAudio();
-   }
-          setTimeout(() => {
-            this.setupVocabularyCarousel();
-  }, 200); // 100 milisegundos de retraso
+  // Siguiente: resetea estado de pausa y arranca desde el inicio de la tarjeta siguiente
+  document.getElementById('nextCardBtn').addEventListener('click', () => {
+    if (this.currentCardIndex < this.cards.length - 1) {
+      this.stopSpeech();
+      this.pausedTime = 0;
+      this.resumeSentenceIndex = null;
+      this.showCard(this.currentCardIndex + 1);
+      this.playCurrentCardAudio();
+    }
+    setTimeout(() => this.setupVocabularyCarousel(), 200);
+  });
 
+  // Volver a la lista de historias
+  document.getElementById('backToStoriesButton').addEventListener('click', () => {
+    this.stopSpeech();
+    document.getElementById('storyView').style.display = 'none';
+    document.getElementById('storiesList').style.display = 'block';
+  });
 
+  // Ver lista guardada
+  document.getElementById('savedListBtn').addEventListener('click', () => {
+    this.showSavedListPopup();
+  });
 
-        });
-        document.getElementById('nextCardBtn').addEventListener('click', () => {
-          if (this.currentCardIndex < this.cards.length - 1) {
-    this.showCard(this.currentCardIndex + 1);
-     this.playCurrentCardAudio();
-   }
-          setTimeout(() => {
-            this.setupVocabularyCarousel();
-  }, 200); // 100 milisegundos de retraso
+  // Iniciar juego
+  document.getElementById('playBtn').addEventListener('click', () => {
+    this.showGameSelectionPopup();
+  });
 
+  // Salir de juego
+  document.getElementById('exitGameBtn').addEventListener('click', () => {
+    this.exitGame();
+  });
 
-        });
-        document.getElementById('backToStoriesButton').addEventListener('click', () => {
-          this.stopSpeech();
-          document.getElementById('storyView').style.display = 'none';
-          document.getElementById('storiesList').style.display = 'block';
-        });
-        document.getElementById('savedListBtn').addEventListener('click', () => {
-          this.showSavedListPopup();
-        });
-        document.getElementById('playBtn').addEventListener('click', () => {
-          this.showGameSelectionPopup();
-        });
-        document.getElementById('exitGameBtn').addEventListener('click', () => {
-          this.exitGame();
-        });
-
-
-        document.getElementById('globalVoiceSelect')
-  .addEventListener('change', async e => {
+  // Cambio de voz global
+  document.getElementById('globalVoiceSelect').addEventListener('change', async e => {
     this.selectedGender = e.target.value;
     localStorage.setItem('selectedGender', this.selectedGender);
-
-    // Si no hay historia cargada, no hacemos nada
     if (this.currentIndex == null) return;
-
-    // 1) Pausar audio y limpiar highlights/timeouts
     this.stopSpeech();
-
-    // 2) Recargar marks.json y audio con la nueva voz
     await this.loadStoryDetail(this.currentIndex);
-
-    // 3) (Opcional) Si cambian los textos o vocabulario, renderiza de nuevo
-    // await this.renderStoryCards();
-
-    // 4) Volver a reproducir la tarjeta actual, aplicando los marks correctamente
     this.playCurrentCardAudio();
   });
 
+  // Ajuste de tamaño de fuente al redimensionar ventana (para memory game)
+  window.addEventListener('resize', () => {
+    if (document.getElementById('game3Container')) {
+      this.resizeMemoryCardsGrid();
+    }
+  });
+}
 
 
-
-
-        window.addEventListener('resize', () => {
-          if (document.getElementById('game3Container')) this.resizeMemoryCardsGrid();
-        });
-      }
+      
       
       loadVocabularyImages() {
         document.querySelectorAll('.vocabulary-image img').forEach(el => {
