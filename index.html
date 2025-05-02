@@ -1017,7 +1017,7 @@
 /* Estilos para las imágenes */
 .story-image {
   /* Se adapta al tamaño del contenedor */
-  max-height: 300px;   /* valor para escritorio, se ajusta en móviles con media queries */
+  max-height: 250px;   /* valor para escritorio, se ajusta en móviles con media queries */
   width: auto;
   object-fit: cover;
   border-radius: var(--radius-md);
@@ -1027,7 +1027,7 @@
 /* Responsividad: en móviles, reduce la altura pero mantiene la fila horizontal */
 @media (max-width: 600px) {
   .story-image {
-    max-height: 300px;
+    max-height: 250px;
   }
 }
 
@@ -1036,7 +1036,7 @@
 /* En dispositivos móviles, se ajusta el tamaño de las imágenes sin romper la fila horizontal */
 @media (max-width: 600px) {
   .story-image {
-    max-height: 300px;    /* Menor altura para dispositivos pequeños */
+    max-height: 250px;    /* Menor altura para dispositivos pequeños */
     /* Puedes ajustar otros valores (p.ej. margenes o flex-basis) si lo crees necesario */
   }
 }
@@ -1185,7 +1185,7 @@
 .carousel-container .carousel-item {
   position: relative;
   overflow: hidden !important;
-  height: 275px; /* igual que tu max-height de .story-image */
+  height: 240px; /* igual que tu max-height de .story-image */
 }
 
 
