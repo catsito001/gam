@@ -2269,76 +2269,64 @@ setupVocabularyCarousel() {
         return [...new Set(detected)];
       }
       
+      
+
+
+
+
+
       addWordSpans(sentence, phrasalVerbs = {}, vocabObj = {}) {
+  // Mapa de traducciones de TODAS las palabras
+  const transMap = this.currentStory.translation || {};
+
   const words = sentence.split(/\s+/);
   let result = '';
 
   for (let i = 0; i < words.length; i++) {
     const raw = words[i];
-    // limpio comillas, paréntesis y puntuación final
     const clean = raw.replace(/[.,¿?!'"“”‘’()]/g, '').toLowerCase();
+    const translation = transMap[clean] || '';
 
-    // 1) Caso especial sufijo ’s o 's:
+    // Caso sufijo ’s o 's
     const apostropheMatch = raw.match(/^(.*?)([’']s)$/);
     if (apostropheMatch) {
       const [ , baseRaw, suffixRaw ] = apostropheMatch;
       const cleanBase = baseRaw.toLowerCase();
-      const cleanSuffix = suffixRaw.toLowerCase();
-
-      // Span para la parte base con posible tooltip
-      const baseTooltip = vocabObj[cleanBase] || '';
-      const baseClasses = 'highlight-word' + (baseTooltip ? ' vocabulary-inline' : '');
-      result += `<span class="${baseClasses}" data-word="${cleanBase}"` +
-                (baseTooltip ? ` data-translation="${baseTooltip}"` : '') +
-                `>${baseRaw}` +
-                (baseTooltip
-                  ? `<span class="translation-tooltip">${baseTooltip}</span>`
-                  : ''
-                ) +
-                `</span> `;
-
-      // Span para el sufijo
-      result += `<span class="highlight-word" data-word="${cleanSuffix}">${suffixRaw}</span> `;
+      const transBase = transMap[cleanBase] || vocabObj[cleanBase] || '';
+      result +=
+        `<span class="highlight-word vocabulary-inline" data-word="${cleanBase}"` +
+          (transBase ? ` data-translation="${transBase}"` : '') +
+        `>${baseRaw}` +
+        (transBase ? `<span class="translation-tooltip">${transBase}</span>` : '') +
+        `</span> ` +
+        `<span class="highlight-word" data-word="${suffixRaw.toLowerCase()}">${suffixRaw}</span> `;
       continue;
     }
 
+    // Caso sufijo ’t o 't
+    const apostropheTMatch = raw.match(/^(.*?)([’']t)$/);
+    if (apostropheTMatch) {
+      const [ , baseRawT, suffixRawT ] = apostropheTMatch;
+      const cleanBaseT = baseRawT.toLowerCase();
+      const transBaseT = transMap[cleanBaseT] || vocabObj[cleanBaseT] || '';
+      result +=
+        `<span class="highlight-word vocabulary-inline" data-word="${cleanBaseT}"` +
+          (transBaseT ? ` data-translation="${transBaseT}"` : '') +
+        `>${baseRawT}` +
+        (transBaseT ? `<span class="translation-tooltip">${transBaseT}</span>` : '') +
+        `</span> ` +
+        `<span class="highlight-word" data-word="${suffixRawT.toLowerCase()}">${suffixRawT}</span> `;
+      continue;
+    }
 
-    // 1a) Caso especial sufijo ’t o 't:
-const apostropheTMatch = raw.match(/^(.*?)([’']t)$/);
-if (apostropheTMatch) {
-  const [ , baseRawT, suffixRawT ] = apostropheTMatch;
-  const cleanBaseT  = baseRawT.toLowerCase();
-  const cleanSuffixT = suffixRawT.toLowerCase();
-
-  // Span para la parte base con posible tooltip
-  const baseTooltipT = vocabObj[cleanBaseT] || '';
-  const baseClassesT = 'highlight-word' + (baseTooltipT ? ' vocabulary-inline' : '');
-  result += `<span class="${baseClassesT}" data-word="${cleanBaseT}"` +
-            (baseTooltipT ? ` data-translation="${baseTooltipT}"` : '') +
-            `>${baseRawT}` +
-            (baseTooltipT
-              ? `<span class="translation-tooltip">${baseTooltipT}</span>`
-              : ''
-            ) +
-            `</span> `;
-
-  // Span para el sufijo ’t/'t
-  result += `<span class="highlight-word" data-word="${cleanSuffixT}">${suffixRawT}</span> `;
-  continue;
-}
-
-
-
-
-
-    // 2) Phrasal verbs de dos palabras
+    // Caso phrasal verbs de dos palabras
     if (phrasalVerbs && i < words.length - 1) {
       const nextRaw = words[i + 1];
       const cleanNext = nextRaw.replace(/[.,¿?!'"“”‘’()]/g, '').toLowerCase();
       const two = `${clean} ${cleanNext}`;
       if (phrasalVerbs[two]) {
         const tooltip = phrasalVerbs[two];
-        // Dos spans separados, cada uno resaltable
+        // Ambos spans con tooltip
         result +=
           `<span class="highlight-word vocabulary-inline" data-word="${clean}" data-translation="${tooltip}">` +
             `${raw}<span class="translation-tooltip">${tooltip}</span>` +
@@ -2351,26 +2339,22 @@ if (apostropheTMatch) {
       }
     }
 
-    // 3) Palabra normal o vocabulario
-    let tooltip = '';
-    let classes = 'highlight-word';
-    if (vocabObj[clean]) {
-      tooltip = vocabObj[clean];
-      classes += ' vocabulary-inline';
-    }
+    // Caso normal / vocabulario
+    const vocabTooltip = vocabObj[clean] || '';
+    const classes = 'highlight-word' + (vocabTooltip ? ' vocabulary-inline' : '');
+    const finalTooltip = translation || vocabTooltip;
 
-    result += `<span class="${classes}" data-word="${clean}"` +
-              (tooltip ? ` data-translation="${tooltip}"` : '') +
-              `>${raw}` +
-              (tooltip
-                ? `<span class="translation-tooltip">${tooltip}</span>`
-                : ''
-              ) +
-              `</span> `;
+    result +=
+      `<span class="${classes}" data-word="${clean}"` +
+        (finalTooltip ? ` data-translation="${finalTooltip}"` : '') +
+      `>${raw}` +
+      (finalTooltip ? `<span class="translation-tooltip">${finalTooltip}</span>` : '') +
+      `</span> `;
   }
 
   return result.trim();
 }
+
 
       
 showCard(index) {
