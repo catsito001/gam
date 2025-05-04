@@ -1458,6 +1458,9 @@
 
       <button id="prevCardBtn" class="control-btn"><i class="fas fa-chevron-left"></i></button>
       <button id="mainAudioButton" class="control-btn"><i class="fas fa-play"></i></button>
+      <button id="speechButton" class="control-btn"><i class="fas fa-microphone"></i></button>
+
+
       <button id="nextCardBtn" class="control-btn"><i class="fas fa-chevron-right"></i></button>
     </footer>
   </main>
@@ -1478,6 +1481,37 @@ const STORY_TRANSLATION_URL    = id => `${API_BASE}/stories/${id}/translation`
 
     const PEXELS_API_KEY = 'aV5EuNmfMhHpLQYMjCOQp6YWmU6RAF5M6at5jDTRpe0pLwxk1SZzPhSC';
     
+
+
+
+
+      // POLYFILL getUserMedia
+      if (!navigator.mediaDevices) {
+  navigator.mediaDevices = {};
+}
+if (!navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia = function(constraints) {
+    // chequea todos los posibles prefijos
+    const legacy = navigator.getUserMedia
+                || navigator.webkitGetUserMedia
+                || navigator.mozGetUserMedia
+                || navigator.msGetUserMedia;
+    if (!legacy) {
+      return Promise.reject(new Error('getUserMedia no está implementado'));
+    }
+    return new Promise((resolve, reject) => {
+      legacy.call(navigator, constraints, resolve, reject);
+    });
+  };
+}
+
+console.log('mediaDevices:', navigator.mediaDevices);
+console.log('getUserMedia:', navigator.mediaDevices.getUserMedia);
+console.log('legacy getUserMedia:', navigator.getUserMedia,
+            navigator.webkitGetUserMedia, navigator.mozGetUserMedia);
+
+
+
     class StoryManager {
       constructor() {
         this.stories = [];
@@ -1513,7 +1547,27 @@ this.audio = null;                   // HTMLAudioElement para el audio pregrabad
     this.wordTimeouts = [];   
     this.pausedTime = 0; 
 
+
+
+
+    this.mediaRecorder = null;
+this.audioStream   = null;
+this.isRecording   = false;
+
+
+
         this.isSpeakingNow = false;
+
+
+
+
+
+
+
+
+
+
+        
 
         this.init();
       }
@@ -1576,6 +1630,7 @@ this.audio = null;                   // HTMLAudioElement para el audio pregrabad
     this.hideLoading();
     this.showStoriesList();
     this.setupEventListeners();
+    this.setupSpeechButton();
     this.loadGlobalVoices();
 
 
@@ -1594,8 +1649,92 @@ this.audio = null;                   // HTMLAudioElement para el audio pregrabad
 
 
 
+
+
+
+
+
+
   }
       
+
+  setupSpeechButton() {
+  const btn = document.getElementById('speechButton');
+
+  // Al hacer clic, alterna start/stop
+  btn.addEventListener('click', () => {
+    if (!this.isRecording) {
+      // → INICIAR
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          this.audioStream = stream;
+          this.mediaRecorder = new MediaRecorder(stream);
+          const chunks = [];
+
+          this.mediaRecorder.ondataavailable = e => chunks.push(e.data);
+          this.mediaRecorder.onstop = () => {
+            // Aquí procesas `chunks` si quieres…
+            // por ejemplo, convertir a Blob y enviarlo
+          };
+
+          this.mediaRecorder.start();
+          this.isRecording = true;
+          btn.classList.add('recording');   // cambia color vía CSS
+
+          // Auto‑detener al detectar silencio
+          this._monitorSilence(stream, () => this._stopRecording(btn));
+        })
+        .catch(err => {
+          console.error('No se pudo acceder al micrófono:', err);
+          alert('Revisa permisos o usa HTTPS.');
+        });
+    } else {
+      // → DETENER
+      this._stopRecording(btn);
+    }
+  });
+}
+
+// Método auxiliar para detener
+_stopRecording(button) {
+  if (this.mediaRecorder && this.isRecording) {
+    this.mediaRecorder.stop();
+  }
+  if (this.audioStream) {
+    this.audioStream.getTracks().forEach(t => t.stop());
+  }
+  this.isRecording = false;
+  button.classList.remove('recording');
+}
+
+// Monitorea silencio y llama onSilence()
+_monitorSilence(stream, onSilence) {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const source   = audioCtx.createMediaStreamSource(stream);
+  const analyser = audioCtx.createAnalyser();
+  source.connect(analyser);
+  analyser.fftSize = 2048;
+  const data = new Uint8Array(analyser.fftSize);
+  let silentFrames = 0;
+
+  const check = () => {
+    analyser.getByteTimeDomainData(data);
+    let sum = 0;
+    for (let i = 0; i < data.length; i++) {
+      const v = (data[i] - 128) / 128;
+      sum += v * v;
+    }
+    const rms = Math.sqrt(sum / data.length);
+    if (rms < 0.01) {
+      silentFrames++;
+      if (silentFrames > 60) { onSilence(); return; }
+    } else {
+      silentFrames = 0;
+    }
+    if (this.isRecording) requestAnimationFrame(check);
+  };
+  requestAnimationFrame(check);
+}
  
 
   async loadStoriesList() {
@@ -2879,6 +3018,12 @@ setupEventListeners() {
       this.resizeMemoryCardsGrid();
     }
   });
+
+
+
+
+
+
 }
 
 
