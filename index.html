@@ -11,7 +11,12 @@
   
   <!-- Axios para cargar la data -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  
+  <script type="module">
+    import { Symbl } from 'https://cdn.skypack.dev/pin/@symblai/symbl-web-sdk@v1.0.14-33Vh3Xn5I7omXrUkwYxz/mode=imports/optimized/@symblai/symbl-web-sdk.js';
+    window.Symbl = Symbl;
+  </script>
+
+
   <style>
     /* Variables y estilos base - Modo Oscuro */
     :root {
@@ -1344,7 +1349,15 @@
 
 
 
-
+.btn-professional.recording {
+  background-color: #ef4444 !important;
+}
+.highlight-word { position: relative; }
+.confidence-badge {
+  position: absolute; top: -1.2em; right: -0.2em;
+  background: rgba(0,0,0,0.7); color: #fff;
+  font-size: 0.6em; padding: 0 0.15em; border-radius: 0.2em;
+}
 
 
 
@@ -1658,47 +1671,64 @@ this.isRecording   = false;
   }
       
 
-  setupSpeechButton() {
+  async setupSpeechButton() {
   const btn = document.getElementById('speechButton');
+  let connection = null;
 
-  // Al hacer clic, alterna start/stop
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', async () => {
     if (!this.isRecording) {
-      // → INICIAR
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-          this.audioStream = stream;
-          this.mediaRecorder = new MediaRecorder(stream);
-          const chunks = [];
+      // 1) Autenticamos el SDK con tu App ID y App Secret
+      const symbl = new Symbl({
+        appId: '6f58734551797275694c7454674a6944594a6235733049756f6b484b62505059',
+        appSecret: '364e76633167755163656d79454c5939776f794267394c3655744a44634e65456b457a574c54313174344c55544d367a4645347339754c76504c386842745637'
+      });
+      await symbl.init(); // :contentReference[oaicite:0]{index=0}
 
-          this.mediaRecorder.ondataavailable = e => chunks.push(e.data);
-          this.mediaRecorder.onstop = () => {
-            // Aquí procesas `chunks` si quieres…
-            // por ejemplo, convertir a Blob y enviarlo
-          };
+      // 2) Obtengo stream de micrófono
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.isRecording = true;
+      btn.classList.add('recording');
 
-          this.mediaRecorder.start();
-          this.isRecording = true;
-          btn.classList.add('recording');   // cambia color vía CSS
+      // 3) Abro conexión y empiezo a procesar audio
+      connection = await symbl.createAndStartNewConnection({
+        config: { encoding: 'OPUS' }
+      }, stream); // :contentReference[oaicite:1]{index=1}
 
-          // Auto‑detener al detectar silencio
-          this._monitorSilence(stream, () => this._stopRecording(btn));
-        })
-        .catch(err => {
-          console.error('No se pudo acceder al micrófono:', err);
-          alert('Revisa permisos o usa HTTPS.');
+      // 4) Al recibir reconocimiento, pinto confidences
+      connection.on('speech_recognition', ({ punctuated }) => {
+        // punctuated.words = [{word, confidence}, …]
+        punctuated.words.forEach(({ word, confidence }) => {
+          // ubico todos los spans de esa palabra
+          document.querySelectorAll(`.highlight-word[data-word="${word.toLowerCase()}"]`)
+            .forEach(span => {
+              let badge = span.querySelector('.confidence-badge');
+              if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'confidence-badge';
+                span.appendChild(badge);
+              }
+              badge.textContent = Math.round(confidence * 100) + '%';
+            });
         });
+      });
     } else {
-      // → DETENER
-      this._stopRecording(btn);
+      // Detener la conexión
+      if (connection) {
+        connection.stopProcessing(); // :contentReference[oaicite:2]{index=2}
+        connection.disconnect();
+      }
+      this.isRecording = false;
+      btn.classList.remove('recording');
     }
   });
 }
 
+
+
 // Método auxiliar para detener
 _stopRecording(button) {
   if (this.mediaRecorder && this.isRecording) {
-    this.mediaRecorder.stop();
+    this.mediaRecorder.stop();        // dispara onstop
   }
   if (this.audioStream) {
     this.audioStream.getTracks().forEach(t => t.stop());
