@@ -1458,6 +1458,11 @@
 
       <button id="prevCardBtn" class="control-btn"><i class="fas fa-chevron-left"></i></button>
       <button id="mainAudioButton" class="control-btn"><i class="fas fa-play"></i></button>
+
+      <button id="recordButton" class="control-btn">
+        <i class="fas fa-microphone"></i>
+      </button>
+
       <button id="nextCardBtn" class="control-btn"><i class="fas fa-chevron-right"></i></button>
     </footer>
   </main>
@@ -1469,6 +1474,47 @@
   </div>
   
   <script>
+
+
+
+
+
+
+
+
+
+
+// — Polyfill para navigator.mediaDevices.getUserMedia —
+// Secure contexts (HTTPS/localhost) son obligatorios :contentReference[oaicite:0]{index=0}
+if (navigator.mediaDevices === undefined) {
+  navigator.mediaDevices = {};
+}
+
+// Si no existe getUserMedia, lo creamos usando los prefijos más viejos :contentReference[oaicite:1]{index=1}
+if (navigator.mediaDevices.getUserMedia === undefined) {
+  navigator.mediaDevices.getUserMedia = function(constraints) {
+    const legacy = navigator.getUserMedia ||
+                   navigator.webkitGetUserMedia ||
+                   navigator.mozGetUserMedia ||
+                   navigator.msGetUserMedia;
+    if (!legacy) {
+      return Promise.reject(new Error('getUserMedia no implementado'));
+    }
+    return new Promise((resolve, reject) => {
+      legacy.call(navigator, constraints, resolve, reject);
+    });
+  };
+}
+
+
+
+
+
+
+
+
+
+
 
 const API_BASE                 = 'https://mi-worker.saturninocok.workers.dev'
 const STORIES_LIST_URL         = `${API_BASE}/stories`
@@ -3545,6 +3591,110 @@ window.speechSynthesis.onvoiceschanged = function() {
     document.addEventListener('DOMContentLoaded', () => {
       const manager = new StoryManager();
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+// —– NUEVO: grabación con silencio automático y envío a API —–
+
+const recordBtn = document.getElementById('recordButton');
+let mediaRecorder, audioChunks = [], silenceTimer;
+
+// parámetros de detección de silencio
+const SILENCE_DELAY = 2000;    // ms de silencio para auto‐stop
+const VOLUME_THRESHOLD = 0.01; // umbral de energía (0–1)
+
+recordBtn.addEventListener('click', startRecording);
+
+async function startRecording() {
+  const recordBtn = document.getElementById('recordButton');
+  let silenceTimer = null;
+  const SILENCE_DELAY    = 2000;  // ms silencio para auto‐stop
+  const VOLUME_THRESHOLD = 0.01;  // umbral RMS (0–1)
+
+  try {
+    // 1) pide micrófono (usa el polyfill si hace falta)
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    // 2) prepara análisis de audio para detectar silencio
+    const audioContext = new AudioContext();
+    const analyser     = audioContext.createAnalyser();
+    const source       = audioContext.createMediaStreamSource(stream);
+    source.connect(analyser);
+    const dataArray    = new Float32Array(analyser.fftSize);
+
+    // 3) configura MediaRecorder
+    const audioChunks = [];
+    const mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+
+    mediaRecorder.onstart = () => {
+      recordBtn.style.background = 'var(--accent)'; // color grabando
+      monitorSilence();
+    };
+
+    mediaRecorder.onstop = async () => {
+      recordBtn.style.background = '';              // restaura color
+      clearTimeout(silenceTimer);
+      stream.getTracks().forEach(t => t.stop());
+
+      const blob = new Blob(audioChunks, { type: 'audio/webm' });
+      const form = new FormData();
+      form.append('audio', blob, 'recording.webm');
+
+      console.log('📤 Enviando audio a la API…');
+      try {
+        const res  = await fetch('https://catsito.hf.space/run/predict', {
+          method: 'POST',
+          body: form
+        });
+        const json = await res.json();
+        console.log('📥 Respuesta API:', json);
+      } catch (err) {
+        console.error('❌ Error al enviar a la API:', err);
+      }
+    };
+
+    mediaRecorder.start();
+
+    // 4) función recursiva para vigilar silencio
+    function monitorSilence() {
+      analyser.getFloatTimeDomainData(dataArray);
+      const rms = Math.sqrt(dataArray.reduce((sum, v) => sum + v*v, 0) / dataArray.length);
+
+      if (rms < VOLUME_THRESHOLD) {
+        if (!silenceTimer) {
+          silenceTimer = setTimeout(() => {
+            if (mediaRecorder.state === 'recording') mediaRecorder.stop();
+          }, SILENCE_DELAY);
+        }
+      } else {
+        clearTimeout(silenceTimer);
+        silenceTimer = null;
+      }
+
+      if (mediaRecorder.state === 'recording') {
+        requestAnimationFrame(monitorSilence);
+      }
+    }
+
+  } catch (err) {
+    console.error('❌ No se pudo iniciar la grabación:', err);
+  }
+}
+
+
+
+
   </script>
 </body>
 </html>

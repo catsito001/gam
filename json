@@ -270,578 +270,393 @@
 }
 ||
 {
-"stories": [
-  {
-    "title": "Leo and Luna's Sunny Day <El Día Soleado de Leo y Luna>",
-    "titleImage": "https://example.com/kittens_playing_sunny.jpg",
-    "info": "tema: greetings",
-    "level": "fundamental",
-    "text": [
-      {
-        "english": "One sunny morning, a little kitten named Leo woke up. (Good morning, world!) he purred softly.",
-        "spanish": "Una mañana soleada, un gatito llamado Leo se despertó. (¡Buenos días, mundo!) ronroneó suavemente.",
-        "image": "kitten_waking_up",
-        "phrasal_verbs": {
-          "woke up": "se despertó"
+  "stories": [
+    {
+      "title": "Leo and Luna's Sunny Day <El Día Soleado de Leo y Luna>",
+      "titleImage": "https://example.com/kittens_playing_sunny.jpg",
+      "info": "tema: greetings",
+      "level": "fundamental",
+      "text": [
+        {
+          "english": "One sunny morning, a little kitten named Leo woke up. (Good morning, world!) he purred softly.",
+          "spanish": "Una mañana soleada, un gatito llamado Leo se despertó. (¡Buenos días, mundo!) ronroneó suavemente.",
+          "image": "kitten_waking_up",
+          "phrasal_verbs": {
+            "woke up": "se despertó"
+          },
+          "vocabulary": {
+            "sunny": "soleada",
+            "kitten": "gatito",
+            "named": "llamado/a",
+            "woke up": "se despertó",
+            "good morning": "buenos días",
+            "purred": "ronroneó"
+          }
         },
-        "vocabulary": {
-          "one": "una",
-          "sunny": "soleada",
-          "morning": "mañana",
-          "a": "un",
-          "little": "pequeño/a",
-          "kitten": "gatito",
-          "named": "llamado/a",
-          "he": "él",
-          "good morning": "buenos días",
-          "world": "mundo",
-          "purred": "ronroneó",
-          "softly": "suavemente"
-        }
-      },
-      {
-        "english": "Leo felt a bit lonely in the big garden. He wanted a friend to play with.",
-        "spanish": "Leo se sentía un poco solo en el gran jardín. Quería un amigo con quien jugar.",
-        "image": "lonely_kitten",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "felt": "sintió/se sentía",
-          "bit": "poco",
-          "lonely": "solo/a",
-          "in": "en",
-          "the": "el/la/los/las",
-          "big": "gran/grande",
-          "garden": "jardín",
-          "wanted": "quería",
-          "friend": "amigo/a",
-          "to play": "jugar",
-          "with": "con"
-        }
-      },
-      {
-        "english": "He decided to walk around the flowers. Maybe he could find someone.",
-        "spanish": "Decidió caminar entre las flores. Quizás podría encontrar a alguien.",
-        "image": "kitten_walking_flowers",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "decided": "decidió",
-          "to walk": "caminar",
-          "around": "alrededor de/entre",
-          "flowers": "flores",
-          "maybe": "quizás/tal vez",
-          "could": "podría",
-          "find": "encontrar",
-          "someone": "alguien"
-        }
-      },
-      {
-        "english": "Suddenly, he saw another fluffy kitten hiding behind a bush. (Hello!) said Leo bravely.",
-        "spanish": "De repente, vio a otro gatito esponjoso escondido detrás de un arbusto. ¡Hola! dijo Leo valientemente.",
-        "image": "kitten_hiding",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "suddenly": "de repente",
-          "saw": "vio",
-          "another": "otro/a",
-          "fluffy": "esponjoso/a",
-          "hiding": "escondido/a",
-          "behind": "detrás de",
-          "bush": "arbusto",
-          "hello": "hola",
-          "said": "dijo",
-          "bravely": "valientemente"
-        }
-      },
-      {
-        "english": "The other kitten peeked out. Hi! My name is Luna. What is your name? she asked kindly.",
-        "spanish": "La otra gatita se asomó. (¡Hola!) Mi nombre es Luna. ¿Cuál es tu nombre? preguntó amablemente.",
-        "image": "kitten_peeking",
-        "phrasal_verbs": {
-          "peeked out": "se asomó"
+        {
+          "english": "Leo felt a bit lonely in the big garden. He wanted a friend to play with.",
+          "spanish": "Leo se sentía un poco solo en el gran jardín. Quería un amigo con quien jugar.",
+          "image": "lonely_kitten",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "felt": "se sentía",
+            "lonely": "solo/a",
+            "garden": "jardín",
+            "wanted": "quería",
+            "friend": "amigo/a",
+            "to play": "jugar"
+          }
         },
-        "vocabulary": {
-          "other": "otro/a",
-          "hi": "hola (informal)",
-          "my": "mi",
-          "name": "nombre",
-          "is": "es/está",
-          "luna": "Luna",
-          "what": "qué/cuál",
-          "your": "tu/su (de usted)",
-          "she": "ella",
-          "asked": "preguntó",
-          "kindly": "amablemente"
+        {
+          "english": "He decided to walk around the flowers. Maybe he could find someone.",
+          "spanish": "Decidió caminar entre las flores. Quizás podría encontrar a alguien.",
+          "image": "kitten_walking_flowers",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "decided": "decidió",
+            "walk": "caminar",
+            "flowers": "flores",
+            "maybe": "quizás",
+            "find": "encontrar",
+            "someone": "alguien"
+          }
+        },
+        {
+          "english": "Suddenly, he saw another fluffy kitten hiding behind a bush. (Hello!) said Leo bravely.",
+          "spanish": "De repente, vio a otro gatito esponjoso escondido detrás de un arbusto. ¡Hola! dijo Leo valientemente.",
+          "image": "kitten_hiding",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "suddenly": "de repente",
+            "fluffy": "esponjoso/a",
+            "hiding": "escondido/a",
+            "behind": "detrás de",
+            "bush": "arbusto",
+            "bravely": "valientemente"
+          }
+        },
+        {
+          "english": "The other kitten peeked out. Hi! My name is Luna. What is your name? she asked kindly.",
+          "spanish": "La otra gatita se asomó. (¡Hola!) Mi nombre es Luna. ¿Cuál es tu nombre? preguntó amablemente.",
+          "image": "kitten_peeking",
+          "phrasal_verbs": {
+            "peeked out": "se asomó"
+          },
+          "vocabulary": {
+            "other": "otro/a",
+            "peeked out": "se asomó",
+            "name": "nombre",
+            "Luna": "Luna",
+            "asked": "preguntó",
+            "kindly": "amablemente"
+          }
+        },
+        {
+          "english": "My name is Leo. It's nice to meet you, Luna, he replied happily. They started to chase butterflies together.",
+          "spanish": "Mi nombre es Leo. Encantado de conocerte, Luna, respondió felizmente. Empezaron a perseguir mariposas juntos.",
+          "image": "kittens_meeting",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "nice": "agradable",
+            "meet": "conocer",
+            "replied": "respondió",
+            "happily": "felizmente",
+            "chase": "perseguir",
+            "butterflies": "mariposas"
+          }
+        },
+        {
+          "english": "They laughed and tumbled in the grass. Playing together was much more fun!",
+          "spanish": "Rieron y rodaron por la hierba. ¡Jugar juntos era mucho más divertido!",
+          "image": "kittens_playing",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "laughed": "rieron",
+            "tumbled": "rodaron",
+            "grass": "hierba",
+            "playing": "jugando",
+            "fun": "divertido"
+          }
+        },
+        {
+          "english": "Later, an old wise cat watched them from a fence. Good afternoon, little ones, the wise cat smiled.",
+          "spanish": "Más tarde, un viejo gato sabio los observaba desde una valla. -Buenas tardes, pequeños,- sonrió el gato sabio.",
+          "image": "wise_cat",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "later": "más tarde",
+            "wise": "sabio/a",
+            "watched": "observaba",
+            "fence": "valla",
+            "good afternoon": "buenas tardes",
+            "smiled": "sonrió"
+          }
+        },
+        {
+          "english": "Hello! they both chirped. After chatting for a while, it was time to go home. Goodbye, wise cat! said Luna and Leo.",
+          "spanish": "-¡Hola!- piaron ambos. Después de charlar un rato, era hora de ir a casa. -¡Adiós, gato sabio!- dijeron Luna y Leo.",
+          "image": "kittens_waving_goodbye",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "chirped": "piaron",
+            "chatting": "charlar",
+            "while": "rato",
+            "time": "hora",
+            "go home": "ir a casa",
+            "goodbye": "adiós"
+          }
+        },
+        {
+          "english": "Leo wasn't lonely anymore. He learned that sharing moments makes life beautiful. Friends bring sunshine to our days.",
+          "spanish": "Leo ya no estaba solo. Aprendió que compartir momentos hace la vida hermosa. Los amigos traen sol a nuestros días.",
+          "image": "happy_kittens_friends",
+          "phrasal_verbs": {},
+          "vocabulary": {
+            "anymore": "ya no",
+            "learned": "aprendió",
+            "sharing": "compartir",
+            "moments": "momentos",
+            "beautiful": "hermosa",
+            "friends": "amigos",
+            "sunshine": "sol"
+          }
         }
+      ],
+      "translation": {
+        "one": "uno/a",
+        "sunny": "soleada",
+        "morning": "mañana",
+        "a": "un/una",
+        "little": "pequeño/a",
+        "kitten": "gatito",
+        "named": "llamado/a",
+        "leo": "Leo",
+        "woke": "se despertó",
+        "up": "arriba",
+        "good": "buenos/bueno",
+        "world": "mundo",
+        "he": "él",
+        "purred": "ronroneó",
+        "softly": "suavemente",
+        "felt": "se sentía",
+        "bit": "poco",
+        "lonely": "solo/a",
+        "in": "en",
+        "the": "el/la",
+        "big": "gran/grande",
+        "garden": "jardín",
+        "wanted": "quería",
+        "friend": "amigo/a",
+        "to": "a/para",
+        "play": "jugar",
+        "with": "con",
+        "decided": "decidió",
+        "walk": "caminar",
+        "around": "alrededor de",
+        "flowers": "flores",
+        "maybe": "quizás",
+        "could": "podría",
+        "find": "encontrar",
+        "someone": "alguien",
+        "suddenly": "de repente",
+        "saw": "vio",
+        "another": "otro/a",
+        "fluffy": "esponjoso/a",
+        "hiding": "escondido/a",
+        "behind": "detrás de",
+        "bush": "arbusto",
+        "hello": "hola",
+        "said": "dijo",
+        "bravely": "valientemente",
+        "other": "otro/a",
+        "peeked": "se asomó",
+        "out": "fuera",
+        "hi": "hola",
+        "my": "mi",
+        "name": "nombre",
+        "is": "es/está",
+        "luna": "Luna",
+        "what": "qué",
+        "your": "tu",
+        "she": "ella",
+        "asked": "preguntó",
+        "kindly": "amablemente",
+        "it's": "es/está",
+        "nice": "agradable",
+        "meet": "conocer",
+        "you": "tú",
+        "replied": "respondió",
+        "happily": "felizmente",
+        "they": "ellos",
+        "started": "empezaron",
+        "chase": "perseguir",
+        "butterflies": "mariposas",
+        "together": "juntos",
+        "laughed": "rieron",
+        "tumbled": "rodaron",
+        "grass": "hierba",
+        "playing": "jugando",
+        "was": "era",
+        "much": "mucho",
+        "more": "más",
+        "fun": "divertido",
+        "later": "más tarde",
+        "an": "un/una",
+        "old": "viejo/a",
+        "wise": "sabio/a",
+        "cat": "gato/a",
+        "watched": "observaba",
+        "them": "los",
+        "from": "desde",
+        "fence": "valla",
+        "afternoon": "tarde",
+        "little": "pequeños",
+        "ones": "pequeños",
+        "smiled": "sonrió",
+        "both": "ambos",
+        "chirped": "piaron",
+        "after": "después de",
+        "chatting": "charlar",
+        "for": "por",
+        "while": "rato",
+        "time": "hora",
+        "go": "ir",
+        "home": "casa",
+        "goodbye": "adiós",
+        "wasn't": "no estaba",
+        "anymore": "ya no",
+        "learned": "aprendió",
+        "sharing": "compartir",
+        "moments": "momentos",
+        "makes": "hace",
+        "life": "vida",
+        "beautiful": "hermosa",
+        "friends": "amigos",
+        "bring": "traen",
+        "sunshine": "sol",
+        "our": "nuestros",
+        "days": "días"
       },
-      {
-        "english": "My name is Leo. It's nice to meet you, Luna, he replied happily. They started to chase butterflies together.",
-        "spanish": "Mi nombre es Leo. Encantado de conocerte, Luna,- respondió felizmente. Empezaron a perseguir mariposas juntos.",
-        "image": "kittens_meeting",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "leo": "Leo",
-          "it's": "es",
-          "nice": "agradable/encantado",
-          "to meet": "conocer",
-          "you": "tú/usted/ustedes",
-          "replied": "respondió",
-          "happily": "felizmente",
-          "they": "ellos/ellas",
-          "started": "empezaron",
-          "to chase": "perseguir",
-          "butterflies": "mariposas",
-          "together": "juntos/as"
+      "games": [
+        {
+          "game1": {
+            "title": "Order the 6 Sentences <Ordenar las 6 Oraciones>",
+            "sentences": [
+              "One sunny morning, a little kitten named Leo woke up.",
+              "Leo felt a bit lonely in the big garden.",
+              "Suddenly, he saw another fluffy kitten hiding behind a bush.",
+              "\"Hi! My name is Luna. What is your name?\" she asked kindly.",
+              "They started to chase butterflies together.",
+              "Leo learned that sharing moments makes life beautiful."
+            ]
+          }
+        },
+        {
+          "game2": {
+            "title": "Answer the Questions <Responde las preguntas>",
+            "questions": [
+              {
+                "question": "What is the first kitten's name?",
+                "options": [
+                  "a) Luna",
+                  "b) Leo",
+                  "c) Felix",
+                  "d) Tom"
+                ],
+                "correct_answer": "b) Leo"
+              },
+              {
+                "question": "How did Leo feel at the beginning?",
+                "options": [
+                  "a) Happy",
+                  "b) Sleepy",
+                  "c) Lonely",
+                  "d) Angry"
+                ],
+                "correct_answer": "c) Lonely"
+              },
+              {
+                "question": "What did Leo and Luna chase together?",
+                "options": [
+                  "a) Balls",
+                  "b) Mice",
+                  "c) Birds",
+                  "d) Butterflies"
+                ],
+                "correct_answer": "d) Butterflies"
+              },
+              {
+                "question": "Who said \"Good afternoon, little ones\"?",
+                "options": [
+                  "a) Leo",
+                  "b) Luna",
+                  "c) The wise cat",
+                  "d) A butterfly"
+                ],
+                "correct_answer": "c) The wise cat"
+              },
+              {
+                "question": "What makes life beautiful, according to the story?",
+                "options": [
+                  "a) Sleeping all day",
+                  "b) Eating fish",
+                  "c) Being alone",
+                  "d) Sharing moments"
+                ],
+                "correct_answer": "d) Sharing moments"
+              }
+            ]
+          }
+        },
+        {
+          "game3": {
+            "title": "Memory Cards: Vocabulary <Tarjetas de Memoria: Vocabulario>",
+            "vocabulary": [
+              "Kitten",
+              "Morning",
+              "Garden",
+              "Lonely",
+              "Friend",
+              "Butterflies",
+              "Together",
+              "Wise",
+              "Goodbye",
+              "Beautiful"
+            ]
+          }
+        },
+        {
+          "game4": {
+            "title": "Complete the Word <Completa la Palabra>",
+            "questions": [
+              {
+                "sentence": "One ______ morning, a little kitten named Leo woke up.",
+                "answer": "sunny"
+              },
+              {
+                "sentence": "Leo felt a bit ______ in the big garden.",
+                "answer": "lonely"
+              },
+              {
+                "sentence": "\"Hi! My name is ______. What is your name?\"",
+                "answer": "Luna"
+              },
+              {
+                "sentence": "They started to chase ______ together.",
+                "answer": "butterflies"
+              },
+              {
+                "sentence": "Friends bring ______ to our days.",
+                "answer": "sunshine"
+              }
+            ]
+          }
         }
-      },
-      {
-        "english": "They laughed and tumbled in the grass. Playing together was much more fun!",
-        "spanish": "Rieron y rodaron por la hierba. ¡Jugar juntos era mucho más divertido!",
-        "image": "kittens_playing",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "laughed": "rieron",
-          "and": "y",
-          "tumbled": "rodaron/dieron vueltas",
-          "grass": "hierba/césped",
-          "playing": "jugar/jugando",
-          "was": "era/fue/estaba",
-          "much": "mucho",
-          "more": "más",
-          "fun": "divertido"
-        }
-      },
-      {
-        "english": "Later, an old wise cat watched them from a fence. Good afternoon, little ones, the wise cat smiled.",
-        "spanish": "Más tarde, un viejo gato sabio los observaba desde una valla. -Buenas tardes, pequeños,- sonrió el gato sabio.",
-        "image": "wise_cat",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "later": "más tarde",
-          "an": "un/una",
-          "old": "viejo/a",
-          "wise": "sabio/a",
-          "cat": "gato/a",
-          "watched": "observaba/miraba",
-          "them": "los/las/les",
-          "from": "desde",
-          "fence": "valla/cerca",
-          "good afternoon": "buenas tardes",
-          "little ones": "pequeños",
-          "smiled": "sonrió"
-        }
-      },
-      {
-        "english": "Hello! they both chirped. After chatting for a while, it was time to go home. Goodbye, wise cat! said Luna and Leo.",
-        "spanish": "-¡Hola!- piaron ambos. Después de charlar un rato, era hora de ir a casa. -¡Adiós, gato sabio!- dijeron Luna y Leo.",
-        "image": "kittens_waving_goodbye",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "both": "ambos/as",
-          "chirped": "piaron/gorjearon (usado aquí para sonido agudo)",
-          "after": "después de",
-          "chatting": "charlar/conversar",
-          "for": "por/durante",
-          "while": "rato/tiempo",
-          "time": "hora/tiempo",
-          "to go": "ir",
-          "home": "casa/hogar",
-          "goodbye": "adiós"
-        }
-      },
-      {
-        "english": "Leo wasn't lonely anymore. He learned that sharing moments makes life beautiful. Friends bring sunshine to our days.",
-        "spanish": "Leo ya no estaba solo. Aprendió que compartir momentos hace la vida hermosa. Los amigos traen sol a nuestros días.",
-        "image": "happy_kittens_friends",
-        "phrasal_verbs": {},
-        "vocabulary": {
-          "wasn't": "no estaba/no era (contracción de was not)",
-          "anymore": "ya no",
-          "learned": "aprendió",
-          "that": "que",
-          "sharing": "compartir/compartiendo",
-          "moments": "momentos",
-          "makes": "hace",
-          "life": "vida",
-          "beautiful": "hermosa/bello",
-          "friends": "amigos",
-          "bring": "traen",
-          "sunshine": "luz del sol/alegría",
-          "to": "a",
-          "our": "nuestro/a/os/as",
-          "days": "días"
-        }
-      }
-    ],
-    "translation": {
-      "a": "un/una",
-      "after": "después de",
-      "afternoon": "tarde",
-      "all": "todos",
-      "alone": "solo/a",
-      "also": "también",
-      "always": "siempre",
-      "am": "soy/estoy",
-      "an": "un/una",
-      "and": "y",
-      "animal": "animal",
-      "animals": "animales",
-      "another": "otro/a",
-      "anymore": "ya no",
-      "are": "son/están/eres/somos/sois",
-      "around": "alrededor de/entre",
-      "asked": "preguntó",
-      "at": "en/a",
-      "away": "lejos",
-      "back": "atrás/de vuelta",
-      "be": "ser/estar",
-      "beautiful": "hermosa/bello",
-      "because": "porque",
-      "behind": "detrás de",
-      "big": "gran/grande",
-      "bit": "poco",
-      "both": "ambos/as",
-      "bravely": "valientemente",
-      "bring": "traen",
-      "bush": "arbusto",
-      "but": "pero",
-      "butterflies": "mariposas",
-      "by": "por/cerca de",
-      "called": "llamado/a",
-      "came": "vino",
-      "can": "poder",
-      "cat": "gato/a",
-      "chase": "perseguir",
-      "chatting": "charlar/conversar",
-      "chirped": "piaron/gorjearon",
-      "could": "podría",
-      "day": "día",
-      "days": "días",
-      "decided": "decidió",
-      "did": "(auxiliar pasado)",
-      "do": "hacer",
-      "down": "abajo",
-      "each": "cada",
-      "em": "los/las/les",
-      "even": "incluso",
-      "every": "cada/todo",
-      "felt": "sintió/se sentía",
-      "fence": "valla/cerca",
-      "find": "encontrar",
-      "flowers": "flores",
-      "fluffy": "esponjoso/a",
-      "for": "por/para/durante",
-      "found": "encontró",
-      "friend": "amigo/a",
-      "friends": "amigos",
-      "from": "desde/de",
-      "fun": "divertido",
-      "garden": "jardín",
-      "go": "ir",
-      "good afternoon": "buenas tardes",
-      "good morning": "buenos días",
-      "goodbye": "adiós",
-      "grass": "hierba/césped",
-      "had": "tenía/había",
-      "happily": "felizmente",
-      "happy": "feliz",
-      "has": "tiene/ha",
-      "have": "tener/haber",
-      "he": "él",
-      "hello": "hola",
-      "her": "su (de ella)/ella",
-      "here": "aquí",
-      "hi": "hola (informal)",
-      "hiding": "escondido/a",
-      "him": "él/le",
-      "his": "su (de él)",
-      "home": "casa/hogar",
-      "how": "cómo",
-      "i": "yo",
-      "if": "si (condicional)",
-      "in": "en/dentro de",
-      "is": "es/está",
-      "it": "eso/ello/(pronombre neutro)",
-      "it's": "es/está (contracción de it is)",
-      "its": "su (de ello)",
-      "just": "sólo/justo",
-      "kindly": "amablemente",
-      "kitten": "gatito",
-      "knew": "sabía/conoció",
-      "laughed": "rieron",
-      "learned": "aprendió",
-      "leo": "Leo",
-      "let": "dejar/permitir",
-      "life": "vida",
-      "like": "como/gustar",
-      "little": "pequeño/a",
-      "little ones": "pequeños",
-      "live": "vivir",
-      "lonely": "solo/a",
-      "look": "mirar",
-      "looked": "miró",
-      "lot": "mucho",
-      "luna": "Luna",
-      "made": "hizo",
-      "makes": "hace",
-      "man": "hombre",
-      "many": "muchos/as",
-      "maybe": "quizás/tal vez",
-      "me": "me/mí",
-      "meet": "conocer/encontrar",
-      "met": "conoció/encontró",
-      "moments": "momentos",
-      "more": "más",
-      "morning": "mañana",
-      "most": "la mayoría/el más",
-      "much": "mucho",
-      "my": "mi",
-      "name": "nombre",
-      "named": "llamado/a",
-      "near": "cerca",
-      "need": "necesitar",
-      "new": "nuevo/a",
-      "nice": "agradable/encantado/simpático",
-      "no": "no",
-      "not": "no",
-      "now": "ahora",
-      "of": "de",
-      "off": "apagado/fuera",
-      "old": "viejo/a",
-      "on": "en/sobre",
-      "once": "una vez",
-      "one": "uno/a",
-      "only": "sólo/único",
-      "or": "o",
-      "other": "otro/a",
-      "our": "nuestro/a/os/as",
-      "out": "fuera",
-      "over": "sobre/encima de/terminado",
-      "peeked out": "se asomó",
-      "people": "gente",
-      "place": "lugar",
-      "play": "jugar",
-      "playing": "jugando",
-      "purred": "ronroneó",
-      "put": "poner",
-      "replied": "respondió",
-      "right": "derecho/correcto/bien",
-      "run": "correr",
-      "said": "dijo",
-      "same": "mismo/a",
-      "saw": "vio",
-      "say": "decir",
-      "see": "ver",
-      "sh": "shh (silencio)",
-      "sharing": "compartir/compartiendo",
-      "she": "ella",
-      "smiled": "sonrió",
-      "so": "así que/tan",
-      "softly": "suavemente",
-      "some": "algunos/as/algo de",
-      "someone": "alguien",
-      "something": "algo",
-      "sometimes": "a veces",
-      "soon": "pronto",
-      "sound": "sonido",
-      "started": "empezaron",
-      "still": "todavía",
-      "stop": "parar/detenerse",
-      "story": "historia",
-      "suddenly": "de repente",
-      "sun": "sol",
-      "sunny": "soleada",
-      "sunshine": "luz del sol/alegría",
-      "sure": "seguro/a",
-      "take": "tomar/llevar",
-      "talk": "hablar",
-      "tell": "decir/contar",
-      "than": "que (comparativo)",
-      "that": "que/eso/esa/aquel/aquella",
-      "the": "el/la/los/las",
-      "their": "su (de ellos/as)",
-      "them": "los/las/les",
-      "then": "entonces/luego",
-      "there": "allí/ahí",
-      "these": "estos/as",
-      "they": "ellos/ellas",
-      "thing": "cosa",
-      "think": "pensar",
-      "this": "este/esta/esto",
-      "those": "esos/as/aquellos/as",
-      "thought": "pensó/pensamiento",
-      "through": "a través de",
-      "time": "tiempo/hora/vez",
-      "to": "a/para",
-      "together": "juntos/as",
-      "told": "dijo/contó",
-      "too": "también/demasiado",
-      "took": "tomó/llevó",
-      "tree": "árbol",
-      "tumbled": "rodaron/dieron vueltas",
-      "turn": "girar/turno",
-      "two": "dos",
-      "under": "debajo de",
-      "up": "arriba",
-      "us": "nosotros/nos",
-      "use": "usar/uso",
-      "very": "muy",
-      "walk": "caminar",
-      "want": "querer",
-      "wanted": "quería",
-      "was": "era/fue/estaba",
-      "wasn't": "no era/no estaba",
-      "watched": "observaba/miraba",
-      "water": "agua",
-      "way": "camino/manera",
-      "we": "nosotros/as",
-      "well": "bien",
-      "went": "fue/fui/fuiste/fuimos/fueron",
-      "were": "eran/fueron/estaban/éramos/erais/estabais",
-      "what": "qué/cuál",
-      "when": "cuándo",
-      "where": "dónde",
-      "which": "cuál/que",
-      "while": "mientras/rato",
-      "who": "quién",
-      "why": "por qué",
-      "will": "(auxiliar futuro)",
-      "wise": "sabio/a",
-      "with": "con",
-      "woke up": "se despertó",
-      "woman": "mujer",
-      "wood": "madera",
-      "word": "palabra",
-      "work": "trabajar/trabajo",
-      "world": "mundo",
-      "would": "(auxiliar condicional)",
-      "write": "escribir",
-      "year": "año",
-      "yes": "sí",
-      "yet": "aún/todavía",
-      "you": "tú/usted/ustedes",
-      "your": "tu/su (de usted/ustedes)"
-    },
-    "games": [
-      {
-        "game1": {
-          "title": "Order the 6 Sentences <Ordenar las 6 Oraciones>",
-          "sentences": [
-            "One sunny morning, a little kitten named Leo woke up.",
-            "Leo felt a bit lonely in the big garden.",
-            "Suddenly, he saw another fluffy kitten hiding behind a bush.",
-            "\"Hi! My name is Luna. What is your name?\" she asked kindly.",
-            "They started to chase butterflies together.",
-            "Leo learned that sharing moments makes life beautiful."
-          ]
-        }
-      },
-      {
-        "game2": {
-          "title": "Answer the Questions <Responde las preguntas>",
-          "questions": [
-            {
-              "question": "What is the first kitten's name?",
-              "options": [
-                "a) Luna",
-                "b) Leo",
-                "c) Felix",
-                "d) Tom"
-              ],
-              "correct_answer": "b) Leo"
-            },
-            {
-              "question": "How did Leo feel at the beginning?",
-              "options": [
-                "a) Happy",
-                "b) Sleepy",
-                "c) Lonely",
-                "d) Angry"
-              ],
-              "correct_answer": "c) Lonely"
-            },
-            {
-              "question": "What did Leo and Luna chase together?",
-              "options": [
-                "a) Balls",
-                "b) Mice",
-                "c) Birds",
-                "d) Butterflies"
-              ],
-              "correct_answer": "d) Butterflies"
-            },
-            {
-              "question": "Who said \"Good afternoon, little ones\"?",
-              "options": [
-                "a) Leo",
-                "b) Luna",
-                "c) The wise cat",
-                "d) A butterfly"
-              ],
-              "correct_answer": "c) The wise cat"
-            },
-            {
-              "question": "What makes life beautiful, according to the story?",
-              "options": [
-                "a) Sleeping all day",
-                "b) Eating fish",
-                "c) Being alone",
-                "d) Sharing moments"
-              ],
-              "correct_answer": "d) Sharing moments"
-            }
-          ]
-        }
-      },
-      {
-        "game3": {
-          "title": "Memory Cards: Vocabulary <Tarjetas de Memoria: Vocabulario>",
-          "vocabulary": [
-            "Kitten",
-            "Morning",
-            "Garden",
-            "Lonely",
-            "Friend",
-            "Hello",
-            "Name",
-            "Butterflies",
-            "Together",
-            "Wise",
-            "Goodbye",
-            "Beautiful"
-          ]
-        }
-      },
-      {
-        "game4": {
-          "title": "Complete the Word <Completa la Palabra>",
-          "questions": [
-            {
-              "sentence": "One ______ morning, a little kitten named Leo woke up.",
-              "answer": "sunny"
-            },
-            {
-              "sentence": "Leo felt a bit ______ in the big garden.",
-              "answer": "lonely"
-            },
-            {
-              "sentence": "\"Hi! My name is ______. What is your name?\"",
-              "answer": "Luna"
-            },
-            {
-              "sentence": "They started to chase ______ together.",
-              "answer": "butterflies"
-            },
-            {
-              "sentence": "Friends bring ______ to our days.",
-              "answer": "sunshine"
-            }
-          ]
-        }
-      }
-    ]
-  }
-]
+      ]
+    }
+  ]
 }
+
 
 
 

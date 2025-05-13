@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evaluador de Pronunciación Mejorado</title>
+  <style>
+    body { font-family: sans-serif; max-width:700px; margin:2rem auto; }
+    .control { margin:1rem 0; }
+    input { width:60%; padding:.5rem; }
+    button { padding:.5rem 1rem; margin-left:.5rem; }
+    #status { margin:1rem 0; font-style:italic; }
+    .result { margin:.5rem 0; padding:.5rem; border-radius:.3rem; }
+    .good   { background:#d4edda; }
+    .medium { background:#fff3cd; }
+    .bad    { background:#f8d7da; }
+    .summary { margin:1rem 0; padding:.75rem; border-radius:.3rem; background:#cce5ff; font-weight:bold; }
+  </style>
+  <script src="mespeak/mespeak.full.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.8/dist/vosk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/meyda/dist/web/meyda.min.js"></script>
+</head>
+<body>
+  <h2>Evaluador de Pronunciación (Inglés) – Versión Mejorada</h2>
+
+  <div class="control">
+    <input id="phrase" type="text" value="hello world test">
+    <button id="prepare" disabled>Preparar Referencia</button>
+  </div>
+  <div class="control">
+    <button id="record" disabled>Grabar</button>
+    <button id="stop" disabled>Detener</button>
+  </div>
+  <div id="status">Inicializando…</div>
+  <div id="results"></div>
+
+<script>
+const SAMPLE_RATE = 16000;
+const PHON_WEIGHT = 0.7;
+const CONF_WEIGHT = 0.3;
+const TIME_PER_WORD = 800; // ms por palabra
+
+let model;
+let referenceMFCCSeqs = [];
+let audioCtx, mediaStream, sourceNode, processorNode;
+let audioChunks = [], recordStart = 0, minRecordTime = 0;
+let countdownInterval;
+
+const statusEl  = document.getElementById('status');
+const resultsEl = document.getElementById('results');
+const setStatus = t => statusEl.textContent = t;
+
+// ---- Utilidades ----
+function toFloat32(int16) {
+  const f32 = new Float32Array(int16.length);
+  for (let i = 0; i < int16.length; i++) f32[i] = int16[i] / 32767;
+  return f32;
+}
+
+// Secuencia de MFCCs
+ function extractMFCCSequence(pcm) {
+  const frameSize = 512;
+  const frames = [];
+  const buffer = pcm instanceof Float32Array ? pcm : Float32Array.from(pcm);
+  for (let i = 0; i + frameSize <= buffer.length; i += frameSize) {
+    const mfcc = Meyda.extract('mfcc', buffer.subarray(i, i + frameSize), {
+      bufferSize: frameSize,
+      sampleRate: SAMPLE_RATE,
+      numberOfMFCCCoefficients: 13
+    });
+    if (mfcc) frames.push(mfcc);
+  }
+  return frames;
+}
+
+// DTW multivariante
+function dtwMultivariate(seqA, seqB) {
+  const n = seqA.length, m = seqB.length;
+  const INF = 1e9;
+  const D = Array(n+1).fill().map(() => Array(m+1).fill(INF));
+  D[0][0] = 0;
+  function euclid(a, b) {
+    let sum = 0;
+    for (let i = 0; i < a.length; i++) sum += (a[i]-b[i])**2;
+    return Math.sqrt(sum);
+  }
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      const cost = euclid(seqA[i-1], seqB[j-1]);
+      D[i][j] = cost + Math.min(D[i-1][j], D[i][j-1], D[i-1][j-1]);
+    }
+  }
+  return D[n][m] / (n + m);
+}
+
+// Levenshtein simple
+function levenshtein(a, b) {
+  const dp = Array(b.length+1).fill().map((_,i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = i;
+    for (let j = 1; j <= b.length; j++) {
+      const cur = dp[j];
+      if (a[i-1] === b[j-1]) dp[j] = prev;
+      else dp[j] = 1 + Math.min(prev, dp[j-1], dp[j]);
+      prev = cur;
+    }
+  }
+  return dp[b.length];
+}
+
+// Auxiliar para renderizar cada resultado
+function renderResult(label, score) {
+  const div = document.createElement('div');
+  div.className = score > 80 ? 'result good'
+                 : score > 50 ? 'result medium'
+                 : 'result bad';
+  div.textContent = `${label} → ${score}%`;
+  resultsEl.appendChild(div);
+}
+
+// ---- Carga TTS + Vosk ----
+(async ()=>{
+  setStatus('Cargando TTS…');
+  meSpeak.loadConfig('mespeak/mespeak_config.json');
+  await new Promise(r=>meSpeak.loadVoice('mespeak/voices/en/en.json',r));
+  setStatus('Cargando modelo Vosk…');
+  model = await Vosk.createModel('model/downloaded.tar.gz');
+  setStatus('Listo: ingresa frase y pulsa Preparar');
+  document.getElementById('prepare').disabled = false;
+})();
+
+// ---- Preparar Referencia ----
+document.getElementById('prepare').onclick = ()=>{
+  const words = document.getElementById('phrase').value.trim().toLowerCase().split(/\s+/);
+  referenceMFCCSeqs = words.map(w=>{
+    const raw = meSpeak.speak(w,{rawdata:'array'});
+    return extractMFCCSequence(toFloat32(raw));
+  });
+  minRecordTime = words.length * TIME_PER_WORD;
+  setStatus(`Referencias listas. Mínimo de grabación: ${minRecordTime} ms.`);
+  document.getElementById('record').disabled = false;
+  resultsEl.innerHTML = '';
+};
+
+// ---- Grabar ----
+document.getElementById('record').onclick = async ()=>{
+  setStatus('Grabando…');
+  audioChunks = [];
+  recordStart = Date.now();
+  audioCtx = new (window.AudioContext||window.webkitAudioContext)({sampleRate:SAMPLE_RATE});
+  mediaStream = await navigator.mediaDevices.getUserMedia({audio:true});
+  sourceNode = audioCtx.createMediaStreamSource(mediaStream);
+  processorNode = audioCtx.createScriptProcessor(4096,1,1);
+  processorNode.onaudioprocess = e=> audioChunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+  sourceNode.connect(processorNode);
+  processorNode.connect(audioCtx.destination);
+  document.getElementById('record').disabled = true;
+  document.getElementById('stop').disabled   = false;
+};
+
+// ---- Detener y gestionar espera ----
+document.getElementById('stop').onclick = ()=>{
+  const elapsed = Date.now() - recordStart;
+  processorNode.disconnect(); sourceNode.disconnect(); mediaStream.getTracks().forEach(t=>t.stop());
+  document.getElementById('stop').disabled = true;
+  if (elapsed < minRecordTime) {
+    const startWait = Date.now();
+    setStatus(`Esperando... ${minRecordTime - elapsed} ms restantes`);
+    countdownInterval = setInterval(()=>{
+      const rem = Math.max(0, minRecordTime - elapsed - (Date.now()-startWait));
+      setStatus(`Esperando... ${rem} ms restantes`);
+      if (rem<=0){ clearInterval(countdownInterval); doProcess(); }
+    },100);
+  } else doProcess();
+};
+
+// ---- Procesar Audio ----
+function doProcess(){
+  if (countdownInterval) clearInterval(countdownInterval);
+  setStatus('Procesando…');
+  const total = audioChunks.reduce((s,c)=>s+c.length,0);
+  const buf   = new Float32Array(total);
+  let off=0; audioChunks.forEach(c=>{ buf.set(c,off); off+=c.length; });
+  const audioBuf = audioCtx.createBuffer(1,buf.length,SAMPLE_RATE);
+  audioBuf.copyToChannel(buf,0);
+  const rec = new model.KaldiRecognizer(SAMPLE_RATE);
+  rec.setWords(true);
+  rec.on('result', evt=>{
+    resultsEl.innerHTML = '';
+    const wordsInfo = Array.isArray(evt.result) ? evt.result : evt.result.result;
+    const targets = document.getElementById('phrase').value.trim().toLowerCase().split(/\s+/);
+    let i = 0, j = 0;
+    const scores = [];
+    while (i < wordsInfo.length && j < targets.length) {
+      if (wordsInfo.length > targets.length && i + 1 < wordsInfo.length) {
+        const w1 = wordsInfo[i].word;
+        const w2 = wordsInfo[i+1].word;
+        const label = `${w1}-${w2}`;
+        const finalS = 5;
+        scores.push(finalS);
+        renderResult(label, finalS);
+        i += 2;
+        j += 1;
+      } else {
+        const {start, end, conf, word} = wordsInfo[i];
+        const target = targets[j] || '';
+        let finalS;
+        if (levenshtein(word, target) > 1) {
+          finalS = Math.floor(Math.random() * 10);
+        } else {
+          const seg = buf.subarray(
+            Math.floor(start * SAMPLE_RATE),
+            Math.floor(end   * SAMPLE_RATE)
+          );
+          const mfccSeq = extractMFCCSequence(seg);
+          const dist = dtwMultivariate(referenceMFCCSeqs[j] || [], mfccSeq);
+          const norm = Math.max(0, 1 - (dist / 50));
+          const phon = norm * 100;
+          finalS = Math.round(PHON_WEIGHT * phon + CONF_WEIGHT * (conf * 100));
+        }
+        scores.push(finalS);
+        renderResult(word, finalS);
+        i += 1;
+        j += 1;
+      }
+    }
+    if (scores.length) {
+      const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+      const summary = document.createElement('div');
+      summary.className = 'summary';
+      summary.textContent = `Promedio frase: ${avg}%`;
+      resultsEl.appendChild(summary);
+    }
+    setStatus('Evaluación completada.');
+  });
+  rec.acceptWaveform(audioBuf);
+}
+</script>
+</body>
+</html>
