@@ -1,0 +1,1 @@
+Couldn't find the requested file /dist/vosk.esm.js in vosk-browser.
