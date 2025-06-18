@@ -1464,36 +1464,6 @@
     padding: 14px;
   }
 }
-
-
-
-/* Estilos para vídeos en el carrusel: adaptar al mismo tamaño que las imágenes, pero sin animaciones */
-.story-video {
-  max-height: 250px;   /* igual que .story-image para escritorio */
-  width: auto;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-  /* No incluir animation: kenBurns ... */
-}
-
-/* Responsividad igual que .story-image */
-@media (max-width: 600px) {
-  .story-video {
-    max-height: 250px;
-  }
-}
-@media screen and (min-width: 768px) {
-  .carousel-container,
-  .carousel-container .carousel-item {
-    height: 400px !important; /* tu altura del carrusel */
-  }
-  .story-video {
-    /* opcional: ajustar altura si difiere */
-    max-height: 400px;
-  }
-}
-
-
   </style>
   
   
@@ -1830,7 +1800,6 @@ let processorNode;
         this.currentCardIndex = 0;
         this.cards = [];
         this.speech = null;
-      
         this.isPlaying = false;
         this.currentHighlightTimeout = null;
         this.selectedLanguage = 'en-GB';
@@ -1936,6 +1905,17 @@ this.closeResult.addEventListener(
       }
 
 
+async exists200(url) {
+  try {
+    const resp = await axios.get(url, {
+      validateStatus: status => status === 200
+    });
+    return true;
+  } catch (e) {
+    console.warn(`❌ [MISSING] ${url}`, e);
+    return false;
+  }
+}
 
 
 
@@ -2523,24 +2503,6 @@ async loadStoryDetail(id) {
     this.audio.playbackRate = parseFloat(this.selectedSpeed);
 
   
-    // ——— NUEVO: busca y reproduce música de fondo si existe ——————————
-const musicFolder = `data/${folder}/mus`;
-const musicUrl    = `${musicFolder}/0.mp3`; // o el nombre fijo que uses
-if (await exists200(musicUrl)) {
-  this.bgMusic = new Audio(musicUrl);
-  this.bgMusic.loop   = true;
-  this.bgMusic.volume = 0.2;  // volumen bajo
-  this.bgMusic.play();
-}
-
-
-
-setTimeout(() => {
-  const btn = document.getElementById('mainAudioButton');
-  if (btn) btn.click();
-}, 3000);
-
-
   } catch (err) {
     console.error('🔥 Error en loadStoryDetail:', err);
   }
@@ -2853,48 +2815,21 @@ async renderStoryCards() {
       spaHTML += `<div>${obj.spanish}</div>`;
 
       // imagen local numerada
-     paragraphIndex++;
-const videoPath = `data/${folder}/vd/${paragraphIndex}.mp4`;
-const imgPath   = `data/${folder}/img/${paragraphIndex}.jpg`;
-const isURL     = /^https?:\/\//i.test(obj.image);
-
-// Construimos un bloque <div class="carousel-item"> que contiene primero el <video> y después el <img>
-// - El <video> lleva autoplay, loop, muted, playsinline para reproducir automáticamente en bucle.
-// - En el onerror del <video>, ocultamos el propio video y mostramos la <img> de fallback.
-// - La <img> queda inicialmente oculta (style="display:none;") y se mostrará solo si falla el vídeo.
-// - En caso de que el objeto `obj.image` sea una URL, la usamos como src de imagen de fallback en onerror de la <img>.
-imgsHTML += `
-  <div class="carousel-item ${imgCount === 0 ? 'active' : ''}">
-    <video
-      src="${videoPath}"
-      class="story-video"
-      autoplay
-      loop
-      muted
-      playsinline
-      onerror="
-        // Si el vídeo no carga, ocultarlo y mostrar la imagen
-        this.style.display='none';
-        const imgEl = this.parentNode.querySelector('img');
-        if (imgEl) imgEl.style.display = 'block';
-      "
-      style="display: block;"
-    ></video>
-    <img
-      src="${imgPath}"
-      class="story-image"
-      loading="lazy"
-      style="display: none;"
-      onerror="
-        // Si la imagen local falla y obj.image es URL, cargarla; si no, usar data-image-query
-        this.onerror=null;
-        ${isURL
-          ? `this.src='${obj.image}'; this.style.display='block';`
-          : `this.removeAttribute('src'); this.setAttribute('data-image-query','${obj.image}'); this.style.display='block';`}
-      "
-    >
-  </div>`;
-imgCount++;
+      paragraphIndex++;
+      const localPath = `data/${folder}/img/${paragraphIndex}.jpg`;
+      const isURL = /^https?:\/\//i.test(obj.image);
+      imgsHTML += `
+        <div class="carousel-item ${imgCount === 0 ? 'active' : ''}">
+          <img
+            src="${localPath}"
+            class="story-image"
+            loading="lazy"
+            onerror="this.onerror=null;${isURL
+              ? `this.src='${obj.image}';`
+              : `this.removeAttribute('src');this.setAttribute('data-image-query','${obj.image}');`}"
+          >
+        </div>`;
+      imgCount++;
 
       // vocabulario & phrasal verbs
       if (obj.vocabulary) {
@@ -3826,7 +3761,6 @@ document.getElementById('backToStoriesButton').addEventListener('click', () => {
 
   // 3) Detener audio principal y limpiar marcas
   this.stopSpeech();
-   if (this.bgMusic) this.bgMusic.pause();
 
   // 4) Asegurarse de detener también cualquier audio corto de palabra
   if (this._wordTimeout) {
