@@ -43,35 +43,63 @@
     /* ============================ */
     /* Botones Interactivos         */
     /* ============================ */
-    .btn-professional {
-      background: var(--gradient-purple);
-      color: white;
-      border: none;
-      border-radius: var(--radius-md);
-      padding: 6px 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      position: relative;
-      overflow: hidden;
-      transition: var(--transition);
-      box-shadow: 0 4px 15px rgba(99,102,241,0.3);
-      cursor: pointer;
-    }
-    .btn-professional::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 200%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
-    }
-    .btn-professional:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 6px 20px rgba(99,102,241,0.4);
-    }
-    .btn-professional:hover::after { left: 100%; }
+/* 1) Nuevas variables para controlar el active */
+.btn-professional {
+  --btn-bg: var(--gradient-purple);
+  --btn-bg-active-start: #4f46e5;
+  --btn-bg-active-end:   #4338ca;
+  --btn-border-active:   #e0e7ff;
+  --btn-text-active:     #f3f4f6;
+
+   --btn-active-start:  #2b2436;  /* ámbar */
+  --btn-active-end:    #0c0d16;  /* naranja vivo */
+  --btn-active-text:   #ffffff;
+}
+
+/* 2) Estado normal */
+.btn-professional {
+  background: var(--btn-bg);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition), background 0.2s;
+  box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+  cursor: pointer;
+}
+
+/* 3) Efecto de brillo en hover */
+/* Variables de color (añádelas junto al resto de --btn-*) */
+
+
+/* 4) Estado active más destacado */
+.btn-professional.active {
+  /* usa el naranja-ámbar en lugar de morado */
+  background: linear-gradient(135deg,
+    var(--btn-active-start),
+    var(--btn-active-end)
+  );
+  color: var(--btn-active-text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transform: translateY(0) scale(1.04);
+  border: 2px solid var(--btn-active-text);
+}
+
+/* línea inferior blanca para marcar mejor */
+.btn-professional.active::before {
+  
+  position: absolute;
+  bottom: -1px;
+  left: 10%;
+  width: 80%;
+  height: 4px;
+  background: var(--btn-active-text);
+  border-radius: 2px;
+}
     
     /* ============================ */
     /* Loading Screen               */
@@ -107,10 +135,10 @@
     }
     .stories-header { 
       text-align: center; 
-      padding: 1rem 0; 
+      padding: 0.5rem 0; 
     }
     .stories-header h1 { 
-      font-size: 2.5rem; 
+      font-size: 1.5rem; 
       font-weight: 700; 
     }
     .stories-header p { 
@@ -153,14 +181,14 @@
     .story-card:hover::before { opacity: 0.15; }
     .story-card h3 { 
       color: #fff; 
-      font-size: 1.4rem; 
+      font-size: 1.0rem; 
       margin-bottom: 0.5rem; 
       position: relative; 
       z-index: 1; 
     }
     .story-card p { 
       color: #a1a1aa; 
-      font-size: 0.95rem; 
+      font-size: 0.85rem; 
       position: relative; 
       z-index: 1; 
     }
@@ -1132,15 +1160,16 @@
 
 /* Flecha personalizada a la derecha */
 .select-wrapper::after {
-  content: "\f078"; /* Unicode de FontAwesome para flecha hacia abajo */
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: white;
+    content: "\f107";                     /* Unicode de fa-angle-down */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.7em;                     /* Ajusta al tamaño que te guste */
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: white;
 }
 
     
@@ -1228,21 +1257,6 @@
   to   { transform: translate(-50%, -50%) scale(1.1); }
 }
 
-
-
-
-
-/* — Animaciones más rápidas y con más “punch” — */
-.kb-zoom {
-  animation: kenBurnsZoom 8s ease-in-out infinite alternate !important;
-}
-/* — Clases que aplican cada animación — */
-.kb-pan-left {
-  animation: kenBurnsPanLeft 8s ease-in-out infinite alternate !important;
-}
-.kb-pan-right {
-  animation: kenBurnsPanRight 8s ease-in-out infinite alternate !important;
-}
 @keyframes kenBurnsZoom {
   from { transform: translate(-50%, -50%) scale(1); }
   to   { transform: translate(-50%, -50%) scale(1.2); }
@@ -1261,25 +1275,6 @@
     /* ============================ */
     /* Fin de la integración CSS    */
     /* ============================ */
-
-
-
-
-
-
-    .controls-footer {
-  position: fixed;             /* Fija la posición en pantalla */
-  bottom: 0;                   /* Lo ubica en la parte inferior */
-  left: 0;
-  width: 100%;                 /* Que ocupe todo el ancho */
-  z-index: 9999;               /* Lo asegura encima de todo */
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  padding: 0.3rem;
-  border-top: 1px solid #3d3d3d;
-  background-color: #121212;   /* Fondo para evitar transparencia */
-}
 
 .hand-hint {
   position: absolute;      /* lo hace “flotar” por encima de los hermanos */
@@ -1321,32 +1316,14 @@
 
 
 
+
+
 .stories-filter-tabs {
-  margin-top: 12px;
+  margin-top: 0.5rem;
   display: flex;
-  gap: 8px;
-  display: flex;        /* activa flex layout */
-  flex-wrap: wrap;      /* permite que los ítems pasen a la siguiente fila */
-  gap: 0.5rem 1rem;      /* espacio entre botones (fila y columna) */
-  justify-content: center; /* opcional: centra los botones */
-}
-
-.stories-filter-tabs button {
-  background: transparent;
-  border: none;
-  font-size: 0.8rem;       /* letras pequeñas */
-  color: #6b7280;           /* gris medio */
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 4px;
- 
-  border: 2px solid #fff !important;
-  color: #fff !important;
-}
-
-.stories-filter-tabs button.active {
-  background-color: #134ead;  /* azul intenso */
-  color: white;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
 }
 
 .no-topics {
@@ -1396,19 +1373,6 @@
   margin-top: 0.5rem;
 }
 
-/* Botón profesional genérico */
-.btn-professional {
-  padding: 0.5rem 1rem;       /* 8px 16px */
-  border-radius: 0.5rem;      /* 8px */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  background: var(--btn-bg, #4a90e2);
-  color: var(--btn-text, #ffffff);
-  border: none;
-  cursor: pointer;
-}
-.btn-professional:hover {
-  opacity: 0.9;
-}
 
 
 
@@ -1494,6 +1458,95 @@
 }
 
 
+
+.story-card.locked {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+.story-card .lock-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+
+
+
+
+
+/* Contenedor responsive */
+#storiesFooter {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.4rem;
+  background: #1f1f1f;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Botones flexibles y recortables */
+#storiesFooter .btn-professional {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  text-decoration: none;
+  font-size: 0.75rem;
+  color: var(--btn-active-text);
+  background: linear-gradient(135deg, var(--btn-active-start), var(--btn-active-end));
+border: 2px solid var(--btn-active-text);  /* clave para flexionar y recortar texto */
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  justify-content: center;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+    
+}
+
+/* Icono fijo, no se encoge */
+#storiesFooter .btn-professional i {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Texto con recorte si hace falta */
+#storiesFooter .btn-professional small {
+  font-size: 0.65rem;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ajustes extra en móviles muy estrechos */
+@media (max-width: 360px) {
+  #storiesFooter {
+    padding: 0.3rem;
+    gap: 0.25rem;
+  }
+  #storiesFooter .btn-professional {
+    padding: 0.3rem 0.4rem;
+    font-size: 0.7rem;
+  }
+  #storiesFooter .btn-professional i {
+    font-size: 1rem;
+  }
+}
+
+
   </style>
   
   
@@ -1512,12 +1565,12 @@
       <p>Select a story to begin</p>
 
       <div class="stories-filter-tabs">
-        <button data-level="" class="active">Todos</button>
-        <button data-level="fundamental">Fundamental</button>
-        <button data-level="basico">Básico</button>
-        <button data-level="intermedio">Intermedio</button>
-        <button data-level="avanzado">Avanzado</button>
-        <button data-level="otros">Otros</button>
+        <button data-level="" class="btn-professional active">Todos</button>
+        <button data-level="fundamental" class="btn-professional">Fundamental</button>
+        <button data-level="basico" class="btn-professional">Básico</button>
+        <button data-level="intermedio" class="btn-professional">Intermedio</button>
+        <button data-level="avanzado" class="btn-professional">Avanzado</button>
+        <button data-level="otros" class="btn-professional">Otros</button>
       </div>
       <div id="noTopicsMessage" class="no-topics" style="display: none;">
         Aún no se agregaron temas
@@ -1526,6 +1579,31 @@
 
     </div>
     <div class="stories-grid" id="storiesContainer"></div>
+
+
+
+    <!-- Footer fijo sólo en la lista de historias -->
+<footer id="storiesFooter" class="controls-footer">
+  <a href="https://chat.whatsapp.com/tu-comunidad" class="btn-professional">
+    <i class="fab fa-whatsapp fa-lg"></i>
+    <small>Comunidad</small>
+  </a>
+  
+  <button onclick="compartirEnFacebook()" class="btn-professional">
+    <i class="fab fa-facebook-f fa-lg"></i>
+    <small>Compartir</small>
+  </button>
+
+  
+  <a href="#donar" class="btn-professional">
+    <i class="fas fa-hand-holding-heart fa-lg"></i>
+    <small>Donar</small>
+  </a>
+</footer>
+
+
+
+
   </section>
   
   <!-- Story View -->
@@ -1573,17 +1651,6 @@
                 <option value="1.2">Rápido</option>
               </select>
             </div>
-             <!-- Nuevo dropdown para elegir cantidad de sentences (size) -->
-  <!-- <div class="select-wrapper">
-    <i class="fas fa-text-height speed-icon"></i>
-    <select id="sizeSelect" class="custom-select">
-      <option value="1" selected>Tamaño 1</option>
-      <option value="2">Tamaño 2</option>
-      <option value="3">Tamaño 3</option>
-    </select>
-  </div> -->
-            
-
           <button id="playBtn" class="play-btn">
             <i class="fas fa-gamepad"></i> Play
           </button>
@@ -1646,8 +1713,6 @@
 
 
 
-
-
       <button id="nextCardBtn" class="control-btn"><i class="fas fa-chevron-right"></i></button>
 </div>
   </main>
@@ -1658,16 +1723,20 @@
     <div id="gameContent"></div>
   </div>
   
+
+
   <script>
 
 
 
-
-
-
-
-
-
+function compartirEnFacebook() {
+  const url = encodeURIComponent(window.location.href);
+  window.open(
+    `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    '_blank',
+    'width=600,height=400'
+  );
+}
 
 // — Polyfill para navigator.mediaDevices.getUserMedia —
 // Secure contexts (HTTPS/localhost) son obligatorios :contentReference[oaicite:0]{index=0}
@@ -1690,14 +1759,6 @@ if (navigator.mediaDevices.getUserMedia === undefined) {
     });
   };
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -1851,13 +1912,8 @@ let processorNode;
         this.memoryTotalPairs = 0;
         this.selectedGender = 'm';
 
-
-
-
         this.audio = null;                   // HTMLAudioElement para el audio pregrabado
 
-
-this.audio = null;                   // HTMLAudioElement para el audio pregrabado
     this.marks = [];                     // Array con los marks de tiempo
     this.wordTimeouts = [];   
     this.pausedTime = 0; 
@@ -2433,6 +2489,11 @@ showResultPopup({ score, details }) {
     // Asignamos siempre el array, sin condicionar a data.success
     this.stories = data.stories || [];
 
+    this.stories.push(
+  { title: 'Encrypted Passions',                level: 'Basic', info: 'LOCKED - SOON', locked: true },
+  { title: 'Hearts Under Surveillance',          level: 'intermediate', info: 'LOCKED - SOON', locked: true },
+  { title: 'Whispers of the Shattered Moon',     level: 'Advanced', info: 'LOCKED - SOON', locked: true }
+);
 
   } catch (err) {
     console.error('❌ [loadStoriesList] error:', err);
@@ -2583,29 +2644,42 @@ setTimeout(() => {
         || 'https://via.placeholder.com/100?text=No+Image';
 
       // Creamos el elemento tarjeta
-      const card = document.createElement('div');
-      card.className = 'story-card';
-      card.innerHTML = `
-        <div class="story-card-inner">
-          <div class="story-card-image">
-            <img
-              src="${localCover}"
-              onerror="this.onerror=null;this.src='${fallback}';"
-              alt="${eng}"
-            >
-          </div>
-          <div class="story-card-text">
-            <h3>${eng}</h3>
-            ${spa ? `<p class="story-title-translation">${spa}</p>` : ''}
-            <span class="level-label">${story.level}</span>
-            <p class="story-info">${story.info}</p>
-          </div>
-        </div>
-      `;
-      // Al hacer click, abrimos la historia correspondiente
-      card.addEventListener('click', () => this.showStory(index));
-      container.appendChild(card);
-    });
+    const card = document.createElement('div');
+  // Si está bloqueada, añadimos la clase 'locked'
+  card.className = 'story-card' + (story.locked ? ' locked' : '');
+
+  card.innerHTML = `
+    <div class="story-card-inner">
+      <div class="story-card-image">
+        <img
+          src="data/${encodeURIComponent(story.title.split('<')[0].trim())}/img/0.jpg"
+          onerror="this.onerror=null;this.src='${story.titleImage || 'https://via.placeholder.com/100?text=No+Image'}';"
+          alt="${story.title}"
+        >
+      </div>
+      <div class="story-card-text">
+        <h3>${story.title.split('<')[0].trim()}</h3>
+        ${story.title.includes('<') 
+           ? `<p class="story-title-translation">${story.title.split('<')[1].replace('>','').trim()}</p>`
+           : ''
+        }
+        <span class="level-label">${story.level}</span>
+        <p class="story-info">${story.info}</p>
+      </div>
+      ${ story.locked 
+         ? `<div class="lock-overlay">Locked – Soon</div>` 
+         : ''
+      }
+    </div>
+  `;
+
+  // Solo habilitamos clic en no-bloqueadas
+  if (!story.locked) {
+    card.addEventListener('click', () => this.showStory(index));
+  }
+
+  container.appendChild(card);
+});
   }
 
   // 5) Asegurarnos de que la sección de lista esté visible
@@ -2809,14 +2883,16 @@ loadStoryImages() {
   });
 }
 
-// Método que renderiza las tarjetas de la historia.
+/* ------------------------------------------------------------------
+   Método completo renderStoryCards() con asignación dinámica de imágenes
+------------------------------------------------------------------*/
 async renderStoryCards() {
   const container = document.getElementById('textCardsContainer');
   container.innerHTML = '';
   this.cards = [];
   this.currentCardIndex = 0;
 
-  // 1) Preparo las marcas para cada textObj
+  // 1) Preparo marcas para cada textObj
   const marksCopy = [...this.marks];
   this.currentStory.text.forEach(textObj => {
     const cleanWords = textObj.english
@@ -2838,6 +2914,9 @@ async renderStoryCards() {
   let paragraphIndex = 0;
   const folder = this.currentFolder;
 
+  // Construyo mapa dinámico de imágenes nro → archivo
+  const imgMap = await this.buildImgMap(folder);
+
   // 3) Construyo cada tarjeta
   for (const group of grouped) {
     let engHTML = '';
@@ -2847,56 +2926,54 @@ async renderStoryCards() {
     const vocabMap = {};
     const vocabSet = new Set();
 
-    // 3.1) Cobro texto, imágenes y vocabulario
+    // 3.1) Texto, imágenes y vocabulario
     group.forEach(obj => {
       engHTML += `<div>${this.addWordSpans(obj.english, obj.phrasal_verbs, obj.vocabulary)}</div>`;
       spaHTML += `<div>${obj.spanish}</div>`;
 
-      // imagen local numerada
-     paragraphIndex++;
-const videoPath = `data/${folder}/vd/${paragraphIndex}.mp4`;
-const imgPath   = `data/${folder}/img/${paragraphIndex}.jpg`;
-const isURL     = /^https?:\/\//i.test(obj.image);
+      paragraphIndex++;
 
-// Construimos un bloque <div class="carousel-item"> que contiene primero el <video> y después el <img>
-// - El <video> lleva autoplay, loop, muted, playsinline para reproducir automáticamente en bucle.
-// - En el onerror del <video>, ocultamos el propio video y mostramos la <img> de fallback.
-// - La <img> queda inicialmente oculta (style="display:none;") y se mostrará solo si falla el vídeo.
-// - En caso de que el objeto `obj.image` sea una URL, la usamos como src de imagen de fallback en onerror de la <img>.
-imgsHTML += `
-  <div class="carousel-item ${imgCount === 0 ? 'active' : ''}">
-    <video
-      src="${videoPath}"
-      class="story-video"
-      autoplay
-      loop
-      muted
-      playsinline
-      onerror="
-        // Si el vídeo no carga, ocultarlo y mostrar la imagen
-        this.style.display='none';
-        const imgEl = this.parentNode.querySelector('img');
-        if (imgEl) imgEl.style.display = 'block';
-      "
-      style="display: block;"
-    ></video>
-    <img
-      src="${imgPath}"
-      class="story-image"
-      loading="lazy"
-      style="display: none;"
-      onerror="
-        // Si la imagen local falla y obj.image es URL, cargarla; si no, usar data-image-query
-        this.onerror=null;
-        ${isURL
-          ? `this.src='${obj.image}'; this.style.display='block';`
-          : `this.removeAttribute('src'); this.setAttribute('data-image-query','${obj.image}'); this.style.display='block';`}
-      "
-    >
-  </div>`;
-imgCount++;
+      // Imagen o vídeo fallback + dinámico según imgMap
+      const videoPath = `data/${folder}/vd/${paragraphIndex}.mp4`;
+      const fileName = imgMap[String(paragraphIndex)];
+      const imgLocal = fileName
+        ? `data/${folder}/img/${fileName}`
+        : `data/${folder}/img/${paragraphIndex}.jpg`;
+      const isURL = /^https?:\/\//i.test(obj.image);
 
-      // vocabulario & phrasal verbs
+      imgsHTML += `
+        <div class="carousel-item ${imgCount === 0 ? 'active' : ''}">
+          <video
+            src="${videoPath}"
+            class="story-video"
+            autoplay
+            loop
+            muted
+            playsinline
+            onerror="
+              this.style.display='none';
+              const imgEl = this.parentNode.querySelector('img');
+              if (imgEl) imgEl.style.display = 'block';
+            "
+            style="display: block;"
+          ></video>
+          <img
+            src="${imgLocal}"
+            class="story-image"
+            loading="lazy"
+            style="display: none;"
+            onerror="
+              this.onerror = null;
+              if ('${fileName}' === '') {
+                this.src = '${obj.image}';
+              }
+              this.style.display = 'block';
+            "
+          >
+        </div>`;
+      imgCount++;
+
+      // Vocabulario y phrasal verbs
       if (obj.vocabulary) {
         Object.entries(obj.vocabulary).forEach(([w, t]) => {
           vocabMap[w.toLowerCase()] = t;
@@ -2913,10 +2990,7 @@ imgCount++;
 
     // 3.2) HTML del carrusel
     const carouselHTML = imgCount > 0
-      ? `<div class="carousel-container">
-           <div class="carousel-inner">${imgsHTML}</div>
-          
-         </div>`
+      ? `<div class="carousel-container"><div class="carousel-inner">${imgsHTML}</div></div>`
       : '';
 
     // 3.3) HTML de vocabulario
@@ -2929,14 +3003,13 @@ imgCount++;
                <div class="vocabulary-word" data-word="${w}" data-translation="${vocabMap[w]}">
                  <div class="vocabulary-image"><img src="" alt="${w}" loading="lazy"></div>
                  <div class="vocabulary-text"><strong>${w}</strong><span class="vocabulary-translation">${vocabMap[w]}</span></div>
-               </div>
-             `).join('')}
+               </div>`).join('')}
            </div>
            <button class="vocab-carousel-control right"><i class="fas fa-chevron-right"></i></button>
          </div>`
       : '';
 
-    // 3.4) Creo el elemento card
+    // 3.4) Creo y configuro la tarjeta
     const card = document.createElement('div');
     card.className = 'text-card';
     card.innerHTML = `
@@ -2951,59 +3024,38 @@ imgCount++;
         ${vocabHTML}
       </div>`;
 
-// 3.5) Marcas de tiempo
-card.dataset.markStart = globalIdx;
+    card.dataset.markStart = globalIdx;
+    const wordsCount = Array.from(card.querySelectorAll(
+      '.english-text .highlight-word, .english-text .phrasal-verb-inline, .english-text .vocabulary-inline'
+    )).length;
+    globalIdx += wordsCount;
 
-// Cuenta cuántos spans de palabras hay en esta tarjeta
-const sentenceDivs = Array.from(card.querySelectorAll('.english-text > div'));
-const wordsCount = sentenceDivs
-  .map(div =>
-    Array.from(div.querySelectorAll(
-      '.highlight-word, .phrasal-verb-inline, .vocabulary-inline'
-    )).length
-  )
-  .reduce((a, b) => a + b, 0);
-
-globalIdx += wordsCount;
-
-    // 4) Inserto en DOM y guardo referencia
     container.appendChild(card);
     this.cards.push(card);
 
-    // 5) Eventos de toggles
-  const btnTranslate = card.querySelector('.toggle-word-translation');
-btnTranslate.addEventListener('click', () => {
-  // 1) Alternamos la clase y guardamos el estado
-  const showing = card.classList.toggle('show-translations');
-
-  if (showing) {
-    // 2) Inyectamos tooltips en TODOS los highlight-word
-    const spans = card.querySelectorAll('.english-text .highlight-word');
-    spans.forEach(span => {
-      const key = span.getAttribute('data-word')?.toLowerCase();
-      const tr  = this.currentStory.translation[key];
-      if (tr && !span.querySelector('.translation-tooltip')) {
-        const tip = document.createElement('span');
-        tip.className   = 'translation-tooltip';
-        tip.textContent = tr;
-        span.appendChild(tip);
+    // Eventos y carousel init
+    const btnTranslate = card.querySelector('.toggle-word-translation');
+    btnTranslate.addEventListener('click', () => {
+      const showing = card.classList.toggle('show-translations');
+      if (showing) {
+        card.querySelectorAll('.english-text .highlight-word').forEach(span => {
+          const key = span.dataset.word.toLowerCase();
+          const tr = this.currentStory.translation[key];
+          if (tr && !span.querySelector('.translation-tooltip')) {
+            const tip = document.createElement('span');
+            tip.className = 'translation-tooltip';
+            tip.textContent = tr;
+            span.appendChild(tip);
+          }
+        });
+      } else {
+        card.querySelectorAll('.translation-tooltip').forEach(tip => tip.remove());
       }
+      btnTranslate.innerHTML = showing
+        ? '<i class="fas fa-language"></i> Ocultar Traducciones'
+        : '<i class="fas fa-language"></i> Traducir Palabras';
     });
-  } else {
-    // 3) Al ocultar, borramos todos los tooltips existentes
-    card.querySelectorAll('.translation-tooltip')
-        .forEach(tip => tip.remove());
-  }
-
-  // 4) Actualizamos el texto del botón
-  btnTranslate.innerHTML = showing
-    ? '<i class="fas fa-language"></i> Ocultar Traducciones'
-    : '<i class="fas fa-language"></i> Traducir Palabras';
-});
-
-
-    const btnAdd = card.querySelector('.toggle-sentence-add');
-    btnAdd.addEventListener('click', () => {
+    card.querySelector('.toggle-sentence-add').addEventListener('click', () => {
       const sent = card.querySelector('.english-text').innerText.trim();
       const trans = card.querySelector('.full-translation').innerText.trim();
       if (!this.savedSentences.some(x => x.sentence === sent)) {
@@ -3013,20 +3065,38 @@ btnTranslate.addEventListener('click', () => {
       alert('Oración agregada a la lista.');
     });
 
-    // 6) Inicializo carrusel si existe
-    if (carouselHTML) {
-      const carousel = card.querySelector('.carousel-container');
-      this.initializeCarousel(carousel);
-    }
+    if (carouselHTML) this.initializeCarousel(card.querySelector('.carousel-container'));
   }
 
-  // 7) Arranco la vista
+  // 4) Finalizo vista
   this.showCard(0);
   this.setupWordInteractions();
   this.loadVocabularyImages();
   this.loadStoryImages();
   this.updateEnglishTextFontSize();
   this.setupVocabularyCarousel();
+}
+
+/* ------------------------------------------------------------------
+   Helper: buildImgMap(folder)
+   Lee el directorio data/<folder>/img/ y mapea números a archivos
+------------------------------------------------------------------*/
+async buildImgMap(folder) {
+  const res = await fetch(`data/${folder}/img/`);
+  const html = await res.text();
+  const regex = /href="([^"\?]+\.(?:jpe?g))"/gi;
+  const map = {};
+  let m;
+  while ((m = regex.exec(html)) !== null) {
+    const fileName = m[1];
+    fileName
+      .replace(/\.(?:jpe?g)$/i, '')
+      .split(',')
+      .map(n => n.trim())
+      .filter(n => n)
+      .forEach(n => { if (!map[n]) map[n] = fileName; });
+  }
+  return map;
 }
 
 

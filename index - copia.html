@@ -37,64 +37,111 @@
       font-family: 'Inter', sans-serif; 
       background-color: #121212; 
       color: var(--text-primary); 
-      margin-top: -15px;
+      margin-top: -15px;  
     }
     
     /* ============================ */
     /* Botones Interactivos         */
     /* ============================ */
-    .btn-professional {
-      background: var(--gradient-purple);
-      color: white;
-      border: none;
-      border-radius: var(--radius-md);
-      padding: 6px 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      position: relative;
-      overflow: hidden;
-      transition: var(--transition);
-      box-shadow: 0 4px 15px rgba(99,102,241,0.3);
-      cursor: pointer;
-    }
-    .btn-professional::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 200%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
-    }
-    .btn-professional:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 6px 20px rgba(99,102,241,0.4);
-    }
-    .btn-professional:hover::after { left: 100%; }
+/* 1) Nuevas variables para controlar el active */
+.btn-professional {
+  --btn-bg: var(--gradient-purple);
+  --btn-bg-active-start: #4f46e5;
+  --btn-bg-active-end:   #4338ca;
+  --btn-border-active:   #e0e7ff;
+  --btn-text-active:     #f3f4f6;
+
+   --btn-active-start:  #2b2436;  /* ámbar */
+  --btn-active-end:    #0c0d16;  /* naranja vivo */
+  --btn-active-text:   #ffffff;
+}
+
+/* 2) Estado normal */
+.btn-professional {
+  background: var(--btn-bg);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition), background 0.2s;
+  box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+  cursor: pointer;
+}
+
+/* 3) Efecto de brillo en hover */
+/* Variables de color (añádelas junto al resto de --btn-*) */
+
+
+/* 4) Estado active más destacado */
+.btn-professional.active {
+  /* usa el naranja-ámbar en lugar de morado */
+  background: linear-gradient(135deg,
+    var(--btn-active-start),
+    var(--btn-active-end)
+  );
+  color: var(--btn-active-text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transform: translateY(0) scale(1.04);
+  border: 2px solid var(--btn-active-text);
+}
+
+/* línea inferior blanca para marcar mejor */
+.btn-professional.active::before {
+  
+  position: absolute;
+  bottom: -1px;
+  left: 10%;
+  width: 80%;
+  height: 4px;
+  background: var(--btn-active-text);
+  border-radius: 2px;
+}
     
     /* ============================ */
     /* Loading Screen               */
     /* ============================ */
-    .loading-screen {
+.loading-screen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background: var(--surface-100);
-  display: grid; /* Centrado con grid */
-  place-items: center;
+  display: flex;               /* <<< FLEX en columna */
+  flex-direction: column;
+  justify-content: center;     /* centra verticalmente */
+  align-items: center;         /* centra horizontalmente */
+  gap: 0.25rem;                /* solo 4px de separación */
+  padding: 1rem;               /* opcional, para que no quede pegado al borde */
   z-index: 9999;
 }
     .spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid #e2e8f0;
-      border-top-color: var(--primary-500);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+       width: 48px;
+  height: 48px;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
     }
+
+
+    /* Texto bajo el spinner */
+.loading-info {
+  margin-top: 0;
+  text-align: center;
+}
+.loading-info small {
+   font-size: 0.75rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+
+
     @keyframes spin { to { transform: rotate(360deg); } }
     
     /* ============================ */
@@ -107,10 +154,17 @@
     }
     .stories-header { 
       text-align: center; 
-      padding: 1rem 0; 
+       position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* asegúrate de que esté por encima del resto */
+  background: #1f1f1f; /* o el color/degradado que uses */
+  padding: 0.5rem 0rem; /* ajusta según tu diseño */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     .stories-header h1 { 
-      font-size: 2.5rem; 
+      font-size: 1.5rem; 
       font-weight: 700; 
     }
     .stories-header p { 
@@ -121,6 +175,7 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 0.5rem;
       padding: 1px 0;
+      margin-top: 141px;
     }
     /* Tarjeta de historia */
     .story-card {
@@ -153,14 +208,14 @@
     .story-card:hover::before { opacity: 0.15; }
     .story-card h3 { 
       color: #fff; 
-      font-size: 1.4rem; 
+      font-size: 1.0rem; 
       margin-bottom: 0.5rem; 
       position: relative; 
       z-index: 1; 
     }
     .story-card p { 
       color: #a1a1aa; 
-      font-size: 0.95rem; 
+      font-size: 0.85rem; 
       position: relative; 
       z-index: 1; 
     }
@@ -264,7 +319,8 @@
       border: 1px solid #3d3d3d;
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-md);
-      margin-bottom: 0.1rem;
+      margin: 0.1rem 0.1rem 1.5rem;
+
     }
     .text-card.active { display: block; }
     .sentence-container { margin-bottom: 0.1rem; }
@@ -364,26 +420,69 @@
       background: var(--primary-600);
     }
     
+
+
+    .word-popup .popup-image {
+  /* conserva el margin‑top/bottom que quieras */
+  margin: 10px auto;   /* 5px arriba/abajo, auto izquierda/derecha = centrar */
+}
+
+
     /* Popup para selección de juego */
-    .game-popup {
-      width: 90%;
-      max-width: 400px;
-    }
-    .game-popup ul { list-style: none; padding: 0; margin: 0; }
-    .game-popup li {
-      margin: 10px 0;
-      padding: 10px;
-      background: #1f1f1f;
-      border: 1px solid #3d3d3d;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .game-popup li:hover { background: #3d3d3d; }
-    .game-popup button {
-      margin-top: 1rem;
-    }
+  .game-popup ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.game-popup li {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  margin: 8px 0;
+      background: linear-gradient(135deg, #5456d3, #3c3aca);
+        /* fondo claro */
+  border: 1px solid #ddd;      /* borde suave */
+  border-radius: 8px;          /* esquinas redondeadas */
+  color: #ffffff;                 /* texto oscuro */
+font-family: 'Orbitron', sans-serif;  font-size: 1rem;
+font-weight: 600;
+  text-align: center;          /* centra el texto */
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.game-popup li:hover {
+  background: #052864;         /* ligero azul al pasar */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.game-popup li:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Si usas un icono dentro, ajústalo así: */
+.game-popup li .icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.game-popup li:hover .icon {
+  opacity: 1;
+}
     
+
+
+
+
+
     /* ============================ */
     /* Game View                    */
     /* ============================ */
@@ -477,14 +576,14 @@
     }
     .ordering-answer-panel {
       min-height: 50px;
-      padding: 100px 5px;
+      padding: 5px 5px;
       margin-bottom: 15px;
       text-align: center;
       font-family: 'Orbitron', sans-serif;
       font-size: 1.2rem;
       word-wrap: break-word;
     }
-    .answer-word { font-size: 2.5rem; font-weight: bold; }
+    .answer-word { font-size: 2rem; font-weight: bold; }
     .answer-translation {
       font-size: 0.9rem;
       color: #ccc;
@@ -529,7 +628,7 @@
       align-items: center;
       border-bottom: 1px solid #444;
       padding-bottom: 10px;
-      margin-bottom: 20px;
+      
     }
     .trivia-game-title {
       font-size: 1rem;
@@ -543,7 +642,7 @@
       flex-direction: column;
       align-items: center;
       gap: 20px;
-      margin-bottom: 40px;
+      margin-top: 20px;
     }
     #game2Container .trivia-options .word-btn {
       background: var(--gradient-purple);
@@ -574,7 +673,7 @@
     .question {
       font-size: 1.5rem;
       font-family: 'Orbitron', sans-serif;
-      margin: 50px;
+      margin: 10px;
 
     }
     @keyframes correctAnimation {
@@ -601,7 +700,7 @@
     /* Juego 3: Memory Cards */
     #game3Container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       grid-auto-rows: 1fr;
       gap: 10px;
       justify-items: stretch;
@@ -609,7 +708,7 @@
       height: 90%;
     }
     @media (max-width: 600px) {
-      #game3Container { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+      #game3Container { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); }
     }
     .memory-card {
       width: 100%;
@@ -646,7 +745,7 @@
     .card-face { display: none; text-transform: uppercase; }
     .card-face .card-image {
       width: 100%;
-      height: 60%;
+      height: 75%;
       object-fit: cover;
     }
   .card-face .card-text {
@@ -803,7 +902,6 @@
     /* Estilos de Vocabulario       */
     /* ============================ */
     .vocabulary-container { margin-top: 0.5rem; }
-    .vocabulary-title { font-size: 0.9rem; margin-bottom: 0.3rem; color: #a1a1aa; }
     .vocabulary-words { 
       display: flex; 
       flex-wrap: nowrap; 
@@ -849,8 +947,8 @@
 
 /* Título del vocabulario */
 .vocabulary-title {
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
+  font-size: 0.7rem;
+  margin-bottom: 0.2rem;
   color: #a1a1aa;
 }
 
@@ -1132,15 +1230,16 @@
 
 /* Flecha personalizada a la derecha */
 .select-wrapper::after {
-  content: "\f078"; /* Unicode de FontAwesome para flecha hacia abajo */
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: white;
+    content: "\f107";                     /* Unicode de fa-angle-down */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.7em;                     /* Ajusta al tamaño que te guste */
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: white;
 }
 
     
@@ -1228,21 +1327,6 @@
   to   { transform: translate(-50%, -50%) scale(1.1); }
 }
 
-
-
-
-
-/* — Animaciones más rápidas y con más “punch” — */
-.kb-zoom {
-  animation: kenBurnsZoom 8s ease-in-out infinite alternate !important;
-}
-/* — Clases que aplican cada animación — */
-.kb-pan-left {
-  animation: kenBurnsPanLeft 8s ease-in-out infinite alternate !important;
-}
-.kb-pan-right {
-  animation: kenBurnsPanRight 8s ease-in-out infinite alternate !important;
-}
 @keyframes kenBurnsZoom {
   from { transform: translate(-50%, -50%) scale(1); }
   to   { transform: translate(-50%, -50%) scale(1.2); }
@@ -1261,25 +1345,6 @@
     /* ============================ */
     /* Fin de la integración CSS    */
     /* ============================ */
-
-
-
-
-
-
-    .controls-footer {
-  position: fixed;             /* Fija la posición en pantalla */
-  bottom: 0;                   /* Lo ubica en la parte inferior */
-  left: 0;
-  width: 100%;                 /* Que ocupe todo el ancho */
-  z-index: 9999;               /* Lo asegura encima de todo */
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  padding: 0.3rem;
-  border-top: 1px solid #3d3d3d;
-  background-color: #121212;   /* Fondo para evitar transparencia */
-}
 
 .hand-hint {
   position: absolute;      /* lo hace “flotar” por encima de los hermanos */
@@ -1321,32 +1386,14 @@
 
 
 
+
+
 .stories-filter-tabs {
-  margin-top: 12px;
+  margin-top: 0.5rem;
   display: flex;
-  gap: 8px;
-  display: flex;        /* activa flex layout */
-  flex-wrap: wrap;      /* permite que los ítems pasen a la siguiente fila */
-  gap: 0.5rem 1rem;      /* espacio entre botones (fila y columna) */
-  justify-content: center; /* opcional: centra los botones */
-}
-
-.stories-filter-tabs button {
-  background: transparent;
-  border: none;
-  font-size: 0.8rem;       /* letras pequeñas */
-  color: #6b7280;           /* gris medio */
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 4px;
- 
-  border: 2px solid #fff !important;
-  color: #fff !important;
-}
-
-.stories-filter-tabs button.active {
-  background-color: #134ead;  /* azul intenso */
-  color: white;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: center;
 }
 
 .no-topics {
@@ -1396,19 +1443,6 @@
   margin-top: 0.5rem;
 }
 
-/* Botón profesional genérico */
-.btn-professional {
-  padding: 0.5rem 1rem;       /* 8px 16px */
-  border-radius: 0.5rem;      /* 8px */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  background: var(--btn-bg, #4a90e2);
-  color: var(--btn-text, #ffffff);
-  border: none;
-  cursor: pointer;
-}
-.btn-professional:hover {
-  opacity: 0.9;
-}
 
 
 
@@ -1464,6 +1498,205 @@
     padding: 14px;
   }
 }
+
+
+
+/* Estilos para vídeos en el carrusel: adaptar al mismo tamaño que las imágenes, pero sin animaciones */
+.story-video {
+  max-height: 250px;   /* igual que .story-image para escritorio */
+  width: auto;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  /* No incluir animation: kenBurns ... */
+}
+
+/* Responsividad igual que .story-image */
+@media (max-width: 600px) {
+  .story-video {
+    max-height: 250px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .carousel-container,
+  .carousel-container .carousel-item {
+    height: 400px !important; /* tu altura del carrusel */
+  }
+  .story-video {
+    /* opcional: ajustar altura si difiere */
+    max-height: 400px;
+  }
+}
+
+
+
+.story-card.locked {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+.story-card .lock-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+
+
+
+
+
+/* Contenedor responsive */
+/* Contenedor responsive */
+#storiesFooter {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0.4rem;
+  background: #1f1f1f;
+  /* Antes: flex-wrap: wrap; */
+  flex-wrap: nowrap;         /* <-- forzamos una sola fila */
+  gap: 0.5rem;
+  overflow-x: auto;          /* permitir scroll horizontal si fuera necesario */
+}
+
+/* Botones flexibles y recortables */
+#storiesFooter .btn-professional {
+  flex: 1 1 0;               /* todos ocupan el mismo espacio y pueden encoger */
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.2rem;
+  text-decoration: none;
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, var(--btn-active-start), var(--btn-active-end));
+  border: 2px solid var(--btn-active-text);
+  color: var(--btn-active-text);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  justify-content: center;
+}
+
+/* Icono fijo, no se encoge */
+#storiesFooter .btn-professional i {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Texto con recorte si hace falta */
+#storiesFooter .btn-professional small {
+  font-size: 0.65rem;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ajustes extra en móviles muy estrechos */
+@media (max-width: 360px) {
+  #storiesFooter {
+    padding: 0.3rem;
+    gap: 0.25rem;
+  }
+  #storiesFooter .btn-professional {
+    padding: 0.3rem 0.2rem;
+    font-size: 0.7rem;
+  }
+  #storiesFooter .btn-professional i {
+    font-size: 1rem;
+  }
+}
+
+
+
+
+
+.memorytitle {
+  margin: 0;                     /* quita márgenes por defecto */
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px solid #444;
+  display: flex;
+  justify-content: center;       /* o space-between si vas a poner algo a los lados */
+  align-items: center;
+  font-size: 1.8rem;             /* ajusta según tu gusto */
+  font-family: 'Orbitron', sans-serif;  /* si quieres mantener la misma tipografía */
+  color: #fff;                   /* o el color que uses en tus headers */
+}
+
+
+
+
+/* === En pantallas de escritorio, centramos el footer al ancho del contenedor === */
+@media screen and (min-width: 600px) {
+  #storiesFooter {
+    /* Que no exceda los 1400px de tu .stories-view */
+    max-width: 1000px;
+    /* Ancho al 100% del contenedor padre limitado por max-width */
+    width: 100%;
+    /* Con fixed, para centrarlo desplazamos su punto de referencia */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/* — Spinner mientras carga la imagen en el popup — */
+.popup-image {
+  position: relative;
+  width: 150px;     /* ajústalo al tamaño deseado */
+  height: 150px;    /* ajústalo al tamaño deseado */
+  background: #000; /* fondo oscuro mientras carga */
+  overflow: hidden;
+}
+
+.popup-image .spinner-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.7);
+  z-index: 2;
+}
+
+.popup-image .spinner-overlay::after {
+  content: "";
+  width: 30px;
+  height: 30px;
+  border: 4px solid #fff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.popup-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;  /* oculto hasta que cargue */
+}
   </style>
   
   
@@ -1473,6 +1706,9 @@
   <!-- Loading Screen -->
   <div class="loading-screen">
     <div class="spinner"></div>
+       <div class="loading-info">
+     <small id="loadingText">Cargando… 0%</small>
+  </div>
   </div>
   
   <!-- Stories List -->
@@ -1482,12 +1718,12 @@
       <p>Select a story to begin</p>
 
       <div class="stories-filter-tabs">
-        <button data-level="" class="active">Todos</button>
-        <button data-level="fundamental">Fundamental</button>
-        <button data-level="basico">Básico</button>
-        <button data-level="intermedio">Intermedio</button>
-        <button data-level="avanzado">Avanzado</button>
-        <button data-level="otros">Otros</button>
+        <button data-level="" class="btn-professional active">Todos</button>
+        <button data-level="fundamental" class="btn-professional">Fundamental</button>
+        <button data-level="basico" class="btn-professional">Básico</button>
+        <button data-level="intermedio" class="btn-professional">Intermedio</button>
+        <button data-level="avanzado" class="btn-professional">Avanzado</button>
+        <button data-level="otros" class="btn-professional">Otros</button>
       </div>
       <div id="noTopicsMessage" class="no-topics" style="display: none;">
         Aún no se agregaron temas
@@ -1496,6 +1732,45 @@
 
     </div>
     <div class="stories-grid" id="storiesContainer"></div>
+
+
+
+    <!-- Footer fijo sólo en la lista de historias -->
+<footer id="storiesFooter" class="controls-footer">
+  <a href="https://chat.whatsapp.com/FjsQxrL3qnu32P8mdZHY0C" class="btn-professional">
+    <i class="fab fa-whatsapp fa-lg"></i>
+    <small>Comunidad</small>
+  </a>
+  
+  <button onclick="compartirEnFacebook()" class="btn-professional">
+    <i class="fab fa-facebook-f fa-lg"></i>
+    <small>Compartir</small>
+  </button>
+
+  <a href="https://www.youtube.com/tu-canal" class="btn-professional">
+  <i class="fab fa-youtube fa-lg"></i>
+  <small>Tutorial</small>
+</a>
+
+ <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" class="inline-donate-form">
+  <!-- Comando alojado -->
+  <input type="hidden" name="cmd" value="_s-xclick" />
+  <!-- Tu hosted_button_id -->
+  <input type="hidden" name="hosted_button_id" value="NXEPDCBPD64S2" />
+  <!-- Moneda -->
+  <input type="hidden" name="currency_code" value="USD" />
+
+  <!-- Aquí tu botón personalizado -->
+  <button type="submit" class="btn-professional">
+    <i class="fas fa-hand-holding-heart fa-lg"></i>
+    <small>Donar</small>
+  </button>
+</form>
+</footer>
+
+
+
+
   </section>
   
   <!-- Story View -->
@@ -1543,17 +1818,6 @@
                 <option value="1.2">Rápido</option>
               </select>
             </div>
-             <!-- Nuevo dropdown para elegir cantidad de sentences (size) -->
-  <!-- <div class="select-wrapper">
-    <i class="fas fa-text-height speed-icon"></i>
-    <select id="sizeSelect" class="custom-select">
-      <option value="1" selected>Tamaño 1</option>
-      <option value="2">Tamaño 2</option>
-      <option value="3">Tamaño 3</option>
-    </select>
-  </div> -->
-            
-
           <button id="playBtn" class="play-btn">
             <i class="fas fa-gamepad"></i> Play
           </button>
@@ -1616,8 +1880,6 @@
 
 
 
-
-
       <button id="nextCardBtn" class="control-btn"><i class="fas fa-chevron-right"></i></button>
 </div>
   </main>
@@ -1628,16 +1890,20 @@
     <div id="gameContent"></div>
   </div>
   
+
+
   <script>
 
 
 
-
-
-
-
-
-
+function compartirEnFacebook() {
+  const url = encodeURIComponent(window.location.href);
+  window.open(
+    `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    '_blank',
+    'width=600,height=400'
+  );
+}
 
 // — Polyfill para navigator.mediaDevices.getUserMedia —
 // Secure contexts (HTTPS/localhost) son obligatorios :contentReference[oaicite:0]{index=0}
@@ -1660,14 +1926,6 @@ if (navigator.mediaDevices.getUserMedia === undefined) {
     });
   };
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -1800,6 +2058,7 @@ let processorNode;
         this.currentCardIndex = 0;
         this.cards = [];
         this.speech = null;
+      
         this.isPlaying = false;
         this.currentHighlightTimeout = null;
         this.selectedLanguage = 'en-GB';
@@ -1820,13 +2079,8 @@ let processorNode;
         this.memoryTotalPairs = 0;
         this.selectedGender = 'm';
 
-
-
-
         this.audio = null;                   // HTMLAudioElement para el audio pregrabado
 
-
-this.audio = null;                   // HTMLAudioElement para el audio pregrabado
     this.marks = [];                     // Array con los marks de tiempo
     this.wordTimeouts = [];   
     this.pausedTime = 0; 
@@ -1850,37 +2104,7 @@ this.cancelBtn.addEventListener(
 
 this.recordButton.disabled = false;  // siempre activo para elegir fragmento
 
-  // Listeners
-this.recordButton.addEventListener('click', () => {
-  if (isProcessing) {
-    // estamos en procesamiento, ignorar clicks
-    return;
-  }
 
-  // 1) Si aún no elegiste fragmento, muestra popup de selección
-  if (!selectedFragment && !isRecording) {
-    this.showFragmentPopup();           // genera los botones con getFragments()
-    setStatus('Selecciona un fragmento antes de grabar');
-    return;
-  }
-
-  // 2) Si hay fragmento y NO estás grabando, arranca grabación
-  if (selectedFragment && !isRecording) {
-    this.startRecording();
-    return;
-  }
-
-  // 3) Si ya estás grabando, para y procesa
-  if (isRecording) {
-    this.stopRecordingAndProcess();
-    return;
-  }
-
-  // 4) Si ya tienes resultados finales pero no grabas, permite verlos
-  if (hasResults) {
-    this.showResultPopup(lastResult);
-  }
-});
       // referencias DOM extra
 this.resultPopup   = document.getElementById('resultPopup');
 this.resultContent = document.getElementById('resultContent');
@@ -1905,17 +2129,6 @@ this.closeResult.addEventListener(
       }
 
 
-async exists200(url) {
-  try {
-    const resp = await axios.get(url, {
-      validateStatus: status => status === 200
-    });
-    return true;
-  } catch (e) {
-    console.warn(`❌ [MISSING] ${url}`, e);
-    return false;
-  }
-}
 
 
 
@@ -1940,6 +2153,15 @@ async exists200(url) {
 
       async init() {  
     // Cargar velocidad previa
+
+
+     // ——— Mostrar spinner en el arranque y reiniciar porcentaje ———
+   showSpinner();
+   const totalInitSteps = 1;       // solo 1 paso: cargar lista de historias
+  let   initStep       = 0;
+  this.updateLoading(initStep, totalInitSteps);
+
+
     const storedSpeed = localStorage.getItem('selectedSpeed');
    
     
@@ -1974,6 +2196,7 @@ async exists200(url) {
   
     // ---- AQUÍ CAMBIO ----
     await this.loadStoriesList();     // reemplaza loadStories()
+    this.updateLoading(++initStep, totalInitSteps);
     this.hideLoading();
     this.showStoriesList();
     this.setupEventListeners();
@@ -2405,27 +2628,70 @@ showResultPopup({ score, details }) {
 
 
 
-  async loadStoriesList() {
-     
-
+async loadStoriesList() {
   try {
+    // ——— 1) Obtener datos y preparar array de historias ———
     const { data } = await axios.get(STORIES_LIST_URL);
-    // Asignamos siempre el array, sin condicionar a data.success
     this.stories = data.stories || [];
+    // Agregamos los tres capítulos bloqueados
+    this.stories.push(
+      { title: 'Encrypted Passions',            level: 'Basic',        info: 'LOCKED - SOON', locked: true },
+      { title: 'Hearts Under Surveillance',      level: 'Intermediate', info: 'LOCKED - SOON', locked: true },
+      { title: 'Whispers of the Shattered Moon', level: 'Advanced',     info: 'LOCKED - SOON', locked: true }
+    );
 
+    // ——— 2) Mostrar spinner y resetear porcentaje ———
+    showSpinner();
+    const container = document.getElementById('storiesContainer');
+    container.innerHTML = '';
+    const total   = this.stories.length;
+    let   loaded  = 0;
+    this.updateLoading(loaded, total);
 
-  } catch (err) {
+    // ——— 3) Renderizar cada historia y actualizar porcentaje ———
+    for (const s of this.stories) {
+      // === TU LÓGICA ACTUAL DE CREAR Y AÑADIR LA TARJETA ===
+      // Ejemplo genérico (ajústalo si tu markup es distinto):
+      const card = document.createElement('div');
+      card.className = 'story-card';
+      card.innerHTML = `
+        <h3>${s.title}</h3>
+        <p>${s.level} — ${s.info}</p>
+      `;
+      container.appendChild(card);
+      // ================================================
+
+      // Actualiza el texto bajo el spinner
+      this.updateLoading(++loaded, total);
+
+      // Pequeña pausa para forzar repintado y que veas el % cambiar
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    // (El ocultado del spinner ya lo hace init() tras llamar a loadStoriesList)
+  }
+  catch (err) {
     console.error('❌ [loadStoriesList] error:', err);
+    // Aun así, oculta el spinner para no dejar la pantalla bloqueada
+    hideLoading();
   }
 }
 
 async loadStoryDetail(id) {
   try {
+    // 0) preparar contadores y mostrar spinner
+    const totalSteps = 3;
+    let   step       = 0;
+    showSpinner();
+    this.updateLoading(step, totalSteps);
+
     // ——— Paso 1: carga historia + traducción —————————————————————
     const [detailResp, transResp] = await Promise.all([
       axios.get(STORY_DATA_URL(id)),
       axios.get(STORY_TRANSLATION_URL(id))
     ]);
+    this.updateLoading(++step, totalSteps);
+
     this.currentStory = {
       ...detailResp.data.story,
       translation: transResp.data.translation
@@ -2502,14 +2768,43 @@ async loadStoryDetail(id) {
     this.audio.preload      = 'auto';
     this.audio.playbackRate = parseFloat(this.selectedSpeed);
 
+    this.updateLoading(++step, totalSteps);
+
   
+    // ——— NUEVO: busca y reproduce música de fondo si existe ——————————
+const musicFolder = `data/${folder}/mus`;
+const musicUrl    = `${musicFolder}/0.mp3`; // o el nombre fijo que uses
+if (await exists200(musicUrl)) {
+  this.bgMusic = new Audio(musicUrl);
+  this.bgMusic.loop   = true;
+  this.bgMusic.volume = 0.2;  // volumen bajo
+  this.bgMusic.play();
+}
+ this.updateLoading(++step, totalSteps);
+
+
+setTimeout(() => {
+  const btn = document.getElementById('mainAudioButton');
+  if (btn) btn.click();
+}, 3000);
+
+
   } catch (err) {
     console.error('🔥 Error en loadStoryDetail:', err);
   }
 }
 
 
-
+  /**
+   * Actualiza el texto de carga con el porcentaje.
+   * @param {number} loadedSteps – pasos completados
+   * @param {number} totalSteps  – pasos totales
+   */
+  updateLoading(loadedSteps, totalSteps) {
+    const pct = Math.floor((loadedSteps / totalSteps) * 100);
+    const el  = document.getElementById('loadingText');
+    if (el) el.textContent = `Cargando… ${pct}%`;
+  }
       
       hideLoading() { document.querySelector('.loading-screen').style.display = 'none'; }
       
@@ -2545,29 +2840,42 @@ async loadStoryDetail(id) {
         || 'https://via.placeholder.com/100?text=No+Image';
 
       // Creamos el elemento tarjeta
-      const card = document.createElement('div');
-      card.className = 'story-card';
-      card.innerHTML = `
-        <div class="story-card-inner">
-          <div class="story-card-image">
-            <img
-              src="${localCover}"
-              onerror="this.onerror=null;this.src='${fallback}';"
-              alt="${eng}"
-            >
-          </div>
-          <div class="story-card-text">
-            <h3>${eng}</h3>
-            ${spa ? `<p class="story-title-translation">${spa}</p>` : ''}
-            <span class="level-label">${story.level}</span>
-            <p class="story-info">${story.info}</p>
-          </div>
-        </div>
-      `;
-      // Al hacer click, abrimos la historia correspondiente
-      card.addEventListener('click', () => this.showStory(index));
-      container.appendChild(card);
-    });
+    const card = document.createElement('div');
+  // Si está bloqueada, añadimos la clase 'locked'
+  card.className = 'story-card' + (story.locked ? ' locked' : '');
+
+  card.innerHTML = `
+    <div class="story-card-inner">
+      <div class="story-card-image">
+        <img
+          src="data/${encodeURIComponent(story.title.split('<')[0].trim())}/img/0.jpg"
+          onerror="this.onerror=null;this.src='${story.titleImage || 'https://via.placeholder.com/100?text=No+Image'}';"
+          alt="${story.title}"
+        >
+      </div>
+      <div class="story-card-text">
+        <h3>${story.title.split('<')[0].trim()}</h3>
+        ${story.title.includes('<') 
+           ? `<p class="story-title-translation">${story.title.split('<')[1].replace('>','').trim()}</p>`
+           : ''
+        }
+        <span class="level-label">${story.level}</span>
+        <p class="story-info">${story.info}</p>
+      </div>
+      ${ story.locked 
+         ? `<div class="lock-overlay">Locked – Soon</div>` 
+         : ''
+      }
+    </div>
+  `;
+
+  // Solo habilitamos clic en no-bloqueadas
+  if (!story.locked) {
+    card.addEventListener('click', () => this.showStory(index));
+  }
+
+  container.appendChild(card);
+});
   }
 
   // 5) Asegurarnos de que la sección de lista esté visible
@@ -2579,7 +2887,7 @@ async loadStoryDetail(id) {
 
       
 async showStory(storyIndex) {
-  showSpinner();  
+ 
   this.currentIndex = storyIndex; 
 
   // ↓↓ AÑADE ESTO para limpiar cualquier estado de pausa/resume
@@ -2771,14 +3079,16 @@ loadStoryImages() {
   });
 }
 
-// Método que renderiza las tarjetas de la historia.
+/* ------------------------------------------------------------------
+   Método completo renderStoryCards() con asignación dinámica de imágenes
+------------------------------------------------------------------*/
 async renderStoryCards() {
   const container = document.getElementById('textCardsContainer');
   container.innerHTML = '';
   this.cards = [];
   this.currentCardIndex = 0;
 
-  // 1) Preparo las marcas para cada textObj
+  // 1) Preparo marcas para cada textObj
   const marksCopy = [...this.marks];
   this.currentStory.text.forEach(textObj => {
     const cleanWords = textObj.english
@@ -2800,6 +3110,9 @@ async renderStoryCards() {
   let paragraphIndex = 0;
   const folder = this.currentFolder;
 
+  // Construyo mapa dinámico de imágenes nro → archivo
+  const imgMap = await this.buildImgMap(folder);
+
   // 3) Construyo cada tarjeta
   for (const group of grouped) {
     let engHTML = '';
@@ -2809,29 +3122,54 @@ async renderStoryCards() {
     const vocabMap = {};
     const vocabSet = new Set();
 
-    // 3.1) Cobro texto, imágenes y vocabulario
+    // 3.1) Texto, imágenes y vocabulario
     group.forEach(obj => {
       engHTML += `<div>${this.addWordSpans(obj.english, obj.phrasal_verbs, obj.vocabulary)}</div>`;
       spaHTML += `<div>${obj.spanish}</div>`;
 
-      // imagen local numerada
       paragraphIndex++;
-      const localPath = `data/${folder}/img/${paragraphIndex}.jpg`;
+
+      // Imagen o vídeo fallback + dinámico según imgMap
+      const videoPath = `data/${folder}/vd/${paragraphIndex}.mp4`;
+      const fileName = imgMap[String(paragraphIndex)];
+      const imgLocal = fileName
+        ? `data/${folder}/img/${fileName}`
+        : `data/${folder}/img/${paragraphIndex}.jpg`;
       const isURL = /^https?:\/\//i.test(obj.image);
+
       imgsHTML += `
         <div class="carousel-item ${imgCount === 0 ? 'active' : ''}">
+          <video
+            src="${videoPath}"
+            class="story-video"
+            autoplay
+            loop
+            muted
+            playsinline
+            onerror="
+              this.style.display='none';
+              const imgEl = this.parentNode.querySelector('img');
+              if (imgEl) imgEl.style.display = 'block';
+            "
+            style="display: block;"
+          ></video>
           <img
-            src="${localPath}"
+            src="${imgLocal}"
             class="story-image"
             loading="lazy"
-            onerror="this.onerror=null;${isURL
-              ? `this.src='${obj.image}';`
-              : `this.removeAttribute('src');this.setAttribute('data-image-query','${obj.image}');`}"
+            style="display: none;"
+            onerror="
+              this.onerror = null;
+              if ('${fileName}' === '') {
+                this.src = '${obj.image}';
+              }
+              this.style.display = 'block';
+            "
           >
         </div>`;
       imgCount++;
 
-      // vocabulario & phrasal verbs
+      // Vocabulario y phrasal verbs
       if (obj.vocabulary) {
         Object.entries(obj.vocabulary).forEach(([w, t]) => {
           vocabMap[w.toLowerCase()] = t;
@@ -2848,10 +3186,7 @@ async renderStoryCards() {
 
     // 3.2) HTML del carrusel
     const carouselHTML = imgCount > 0
-      ? `<div class="carousel-container">
-           <div class="carousel-inner">${imgsHTML}</div>
-          
-         </div>`
+      ? `<div class="carousel-container"><div class="carousel-inner">${imgsHTML}</div></div>`
       : '';
 
     // 3.3) HTML de vocabulario
@@ -2864,14 +3199,13 @@ async renderStoryCards() {
                <div class="vocabulary-word" data-word="${w}" data-translation="${vocabMap[w]}">
                  <div class="vocabulary-image"><img src="" alt="${w}" loading="lazy"></div>
                  <div class="vocabulary-text"><strong>${w}</strong><span class="vocabulary-translation">${vocabMap[w]}</span></div>
-               </div>
-             `).join('')}
+               </div>`).join('')}
            </div>
            <button class="vocab-carousel-control right"><i class="fas fa-chevron-right"></i></button>
          </div>`
       : '';
 
-    // 3.4) Creo el elemento card
+    // 3.4) Creo y configuro la tarjeta
     const card = document.createElement('div');
     card.className = 'text-card';
     card.innerHTML = `
@@ -2886,59 +3220,38 @@ async renderStoryCards() {
         ${vocabHTML}
       </div>`;
 
-// 3.5) Marcas de tiempo
-card.dataset.markStart = globalIdx;
+    card.dataset.markStart = globalIdx;
+    const wordsCount = Array.from(card.querySelectorAll(
+      '.english-text .highlight-word, .english-text .phrasal-verb-inline, .english-text .vocabulary-inline'
+    )).length;
+    globalIdx += wordsCount;
 
-// Cuenta cuántos spans de palabras hay en esta tarjeta
-const sentenceDivs = Array.from(card.querySelectorAll('.english-text > div'));
-const wordsCount = sentenceDivs
-  .map(div =>
-    Array.from(div.querySelectorAll(
-      '.highlight-word, .phrasal-verb-inline, .vocabulary-inline'
-    )).length
-  )
-  .reduce((a, b) => a + b, 0);
-
-globalIdx += wordsCount;
-
-    // 4) Inserto en DOM y guardo referencia
     container.appendChild(card);
     this.cards.push(card);
 
-    // 5) Eventos de toggles
-  const btnTranslate = card.querySelector('.toggle-word-translation');
-btnTranslate.addEventListener('click', () => {
-  // 1) Alternamos la clase y guardamos el estado
-  const showing = card.classList.toggle('show-translations');
-
-  if (showing) {
-    // 2) Inyectamos tooltips en TODOS los highlight-word
-    const spans = card.querySelectorAll('.english-text .highlight-word');
-    spans.forEach(span => {
-      const key = span.getAttribute('data-word')?.toLowerCase();
-      const tr  = this.currentStory.translation[key];
-      if (tr && !span.querySelector('.translation-tooltip')) {
-        const tip = document.createElement('span');
-        tip.className   = 'translation-tooltip';
-        tip.textContent = tr;
-        span.appendChild(tip);
+    // Eventos y carousel init
+    const btnTranslate = card.querySelector('.toggle-word-translation');
+    btnTranslate.addEventListener('click', () => {
+      const showing = card.classList.toggle('show-translations');
+      if (showing) {
+        card.querySelectorAll('.english-text .highlight-word').forEach(span => {
+          const key = span.dataset.word.toLowerCase();
+          const tr = this.currentStory.translation[key];
+          if (tr && !span.querySelector('.translation-tooltip')) {
+            const tip = document.createElement('span');
+            tip.className = 'translation-tooltip';
+            tip.textContent = tr;
+            span.appendChild(tip);
+          }
+        });
+      } else {
+        card.querySelectorAll('.translation-tooltip').forEach(tip => tip.remove());
       }
+      btnTranslate.innerHTML = showing
+        ? '<i class="fas fa-language"></i> Ocultar Traducciones'
+        : '<i class="fas fa-language"></i> Traducir Palabras';
     });
-  } else {
-    // 3) Al ocultar, borramos todos los tooltips existentes
-    card.querySelectorAll('.translation-tooltip')
-        .forEach(tip => tip.remove());
-  }
-
-  // 4) Actualizamos el texto del botón
-  btnTranslate.innerHTML = showing
-    ? '<i class="fas fa-language"></i> Ocultar Traducciones'
-    : '<i class="fas fa-language"></i> Traducir Palabras';
-});
-
-
-    const btnAdd = card.querySelector('.toggle-sentence-add');
-    btnAdd.addEventListener('click', () => {
+    card.querySelector('.toggle-sentence-add').addEventListener('click', () => {
       const sent = card.querySelector('.english-text').innerText.trim();
       const trans = card.querySelector('.full-translation').innerText.trim();
       if (!this.savedSentences.some(x => x.sentence === sent)) {
@@ -2948,20 +3261,38 @@ btnTranslate.addEventListener('click', () => {
       alert('Oración agregada a la lista.');
     });
 
-    // 6) Inicializo carrusel si existe
-    if (carouselHTML) {
-      const carousel = card.querySelector('.carousel-container');
-      this.initializeCarousel(carousel);
-    }
+    if (carouselHTML) this.initializeCarousel(card.querySelector('.carousel-container'));
   }
 
-  // 7) Arranco la vista
+  // 4) Finalizo vista
   this.showCard(0);
   this.setupWordInteractions();
   this.loadVocabularyImages();
   this.loadStoryImages();
   this.updateEnglishTextFontSize();
   this.setupVocabularyCarousel();
+}
+
+/* ------------------------------------------------------------------
+   Helper: buildImgMap(folder)
+   Lee el directorio data/<folder>/img/ y mapea números a archivos
+------------------------------------------------------------------*/
+async buildImgMap(folder) {
+  const res = await fetch(`data/${folder}/img/`);
+  const html = await res.text();
+  const regex = /href="([^"\?]+\.(?:jpe?g))"/gi;
+  const map = {};
+  let m;
+  while ((m = regex.exec(html)) !== null) {
+    const fileName = m[1];
+    fileName
+      .replace(/\.(?:jpe?g)$/i, '')
+      .split(',')
+      .map(n => n.trim())
+      .filter(n => n)
+      .forEach(n => { if (!map[n]) map[n] = fileName; });
+  }
+  return map;
 }
 
 
@@ -3372,22 +3703,38 @@ showWordPopup(wordElement) {
     }
   }
 
-  // 7) Cargar la imagen de Pexels
-  axios.get(`${PEXELS_BASE}/search?query=${encodeURIComponent(word)}&per_page=1`)
-    .then(response => {
-      const imgDiv = popup.querySelector('.popup-image');
-      if (response.data.photos && response.data.photos.length > 0) {
-        const photo = response.data.photos[0];
-        imgDiv.innerHTML = `<img src="${photo.src.small}" alt="${word}">`;
-      } else {
-        imgDiv.innerHTML = `<img src="https://via.placeholder.com/150?text=${encodeURIComponent(word)}" alt="${word}">`;
-      }
-    })
+// 7) Cargar la imagen de Pexels con spinner
+(() => {
+  const imgDiv = popup.querySelector('.popup-image');
+
+  // 7.1) Inserta spinner + elemento <img> oculto
+  imgDiv.innerHTML = `
+    <div class="spinner-overlay"></div>
+    <img alt="${word}">
+  `;
+  const imgEl = imgDiv.querySelector('img');
+
+  // 7.2) Cuando la <img> termine de cargar, quita el spinner y muestra la imagen
+  imgEl.addEventListener('load', () => {
+    const spinner = imgDiv.querySelector('.spinner-overlay');
+    if (spinner) spinner.remove();
+    imgEl.style.display = 'block';
+  });
+
+  // 7.3) Dispara la petición y asigna la URL al <img>
+ axios.get(`${PEXELS_BASE}/search?query=${encodeURIComponent(word)}&per_page=1`)
+  .then(response => {
+    const photo = response.data.photos[0];
+    // Asigna la versión "large" como predeterminada
+    imgEl.src = photo.src.large;
+    // Y la "large2x" para pantallas de alta densidad (Retina)
+    imgEl.srcset = `${photo.src.large2x} 2x`;
+  })
     .catch(error => {
       console.error("Error fetching image for word:", error);
-      const imgDiv = popup.querySelector('.popup-image');
-      imgDiv.innerHTML = `<img src="https://via.placeholder.com/150?text=${encodeURIComponent(word)}" alt="${word}">`;
+      imgEl.src = `https://via.placeholder.com/150?text=${encodeURIComponent(word)}`;
     });
+})();
 
   // 8) Listener único para “OK” (Cerrar): reanudar audio principal y marcas SOLO si quedó interrumpido
   popup.querySelector('.popup-close').addEventListener('click', e => {
@@ -3761,6 +4108,7 @@ document.getElementById('backToStoriesButton').addEventListener('click', () => {
 
   // 3) Detener audio principal y limpiar marcas
   this.stopSpeech();
+   if (this.bgMusic) this.bgMusic.pause();
 
   // 4) Asegurarse de detener también cualquier audio corto de palabra
   if (this._wordTimeout) {
@@ -3862,7 +4210,15 @@ document.getElementById('playBtn').addEventListener('click', () => {
   this.currentStory.games.forEach((gameObj) => {
     const gameKey = Object.keys(gameObj)[0];
     const gameData = gameObj[gameKey];
-    gameListHTML += `<li data-game="${gameKey}">${gameData.title}</li>`;
+
+  gameListHTML += `
+    <li data-game="${gameKey}">
+      <span class="game-icon">
+        <!-- Cambia "fa-gamepad" por el icono Font‑Awesome que prefieras -->
+        <i class="fas fa-gamepad"></i>
+     </span>
+     ${gameData.title}
+   </li>`;
   });
   gameListHTML += `</ul><button class="popup-close btn-professional">Cerrar</button>`;
 
@@ -4198,7 +4554,7 @@ renderOrderingAnswer() {
   // Mostramos en consola la data de las tarjetas
   
   const container = document.getElementById('gameContent');
-  container.innerHTML = `<h2>${gameData.title}</h2>
+  container.innerHTML = `<h2 class="memorytitle">${gameData.title}</h2>
     <div id="game3Container">
       ${cards.map((card, i) => {
         return `<div class="memory-card" data-pair="${card.pairId}" data-index="${i}">
@@ -4461,12 +4817,12 @@ axios.get(
 
 
     function showSpinner() {
-  const spinner = document.querySelector('.loading-screen');
-  // Mover el spinner al final del body si no está allí
-  if (spinner.parentElement !== document.body) {
-    document.body.appendChild(spinner);
-  }
-  spinner.style.display = 'grid';
+   const spinner = document.querySelector('.loading-screen');
+ // si ya está en el DOM, no hacemos appendChild; solo lo mostramos
+spinner.style.display = 'flex';  // coincide con el CSS
+ // y reiniciamos el porcentaje a 0%
+ const txt = document.getElementById('loadingText');
+ if (txt) txt.textContent = 'Cargando… 0%';
 }
 
 function hideSpinner() {
