@@ -587,7 +587,7 @@ font-weight: 600;
       background-color: #222;
       border: 1px solid #444;
       border-radius: var(--radius-md);
-      padding: 5px;
+      padding: 15px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.5);
       color: #fff;
       min-height: 450px;
@@ -608,7 +608,7 @@ font-weight: 600;
       font-family: 'Orbitron', sans-serif;
     }
     .ordering-progress { font-size: 1rem; color: #bbb; }
-    .ordering-game-card .card-body { padding: 5px; }
+    .ordering-game-card .card-body { padding: 15px; }
     .ordering-instruction { text-align: center; margin-bottom: 10px; font-size: 1.1rem; }
     .ordering-word-pool {
       display: flex;
@@ -646,7 +646,7 @@ font-weight: 600;
       font-size: 1.2rem;
       word-wrap: break-word;
     }
-    .answer-word { font-size: 1.5rem; font-weight: bold; }
+    .answer-word { font-size: 2rem; font-weight: bold; }
     .answer-translation {
       font-size: 0.9rem;
       color: #ccc;
@@ -1880,64 +1880,6 @@ font-weight: 600;
   animation: intense-glow 1s ease-in-out both;
   z-index: 100;       /* Que siempre quede sobre las demás cartas */
 }
-
-
-
-
-
-
-
-
-
-
-  /* CONTENEDOR permite overflow para las estrellas */
-  .memory-cards-container {
-    overflow: visible;
-  }
-
-  /* Overlay de estrellitas */
-  .stars-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 200;
-    overflow: visible;
-  }
-  .stars-overlay span {
-    position: absolute;
-    width: 8px; height: 8px;
-    background: radial-gradient(circle, white 0%, gold 80%);
-    border-radius: 50%;
-    opacity: 0;
-    animation: star-burst 1s ease-out forwards;
-  }
-  @keyframes star-burst {
-    0%   { transform: translate(0,0) scale(0.5); opacity: 1; }
-    80%  { opacity: 1; }
-    100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
-  }
-
-  /* MODAL de victoria */
-  .victory-modal {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.5);
-    background: rgba(0,0,0,0.85);
-    color: #fff;
-    padding: 2rem 3rem;
-    border-radius: 1rem;
-    text-align: center;
-    font-size: 2rem;
-    font-family: 'Arial Black', sans-serif;
-    z-index: 300;
-    opacity: 0;
-    animation: modal-pop 0.6s forwards ease-out;
-  }
-  @keyframes modal-pop {
-    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  }
-
   </style>
   
   
@@ -2141,37 +2083,9 @@ font-weight: 600;
 
 
 const congratsSound = new Audio('sounds/congrat.flac');
-const victorySound = new Audio('sounds/congrat2.wav');
 
 const doneSound = new Audio('sounds/done.mp3');
 doneSound.preload = 'auto';
-
-
-/**
- * Crea una ráfaga de estrellitas animadas sobre un container.
- * @param {HTMLElement} container - El elemento donde se superpondrán las estrellas.
- * @param {number} count - Número de estrellas a disparar.
- */
-// 2) Función helper para las estrellitas
-function burstStars(container, count = 20) {
-  const overlay = document.createElement('div');
-  overlay.className = 'stars-overlay';
-  container.appendChild(overlay);
-
-  for (let i = 0; i < count; i++) {
-    const star = document.createElement('span');
-    star.style.left = '50%';
-    star.style.top  = '50%';
-    const dx = (Math.random() - 0.5) * 200 + 'px';
-    const dy = (Math.random() - 0.5) * 200 + 'px';
-    star.style.setProperty('--dx', dx);
-    star.style.setProperty('--dy', dy);
-    overlay.appendChild(star);
-  }
-  setTimeout(() => {
-    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-  }, 1000);
-}
 
 
 
@@ -4578,9 +4492,6 @@ document.getElementById('backToStoriesButton').addEventListener('click', () => {
   // 6) Iniciar juego
 document.getElementById('playBtn').addEventListener('click', () => {
 
-   doneSound.currentTime = 0;
-  doneSound.play();
-
     // 1) Detener cualquier narración en curso
   if (typeof this.stopSpeech === 'function') {
     this.stopSpeech();
@@ -4600,8 +4511,6 @@ document.getElementById('playBtn').addEventListener('click', () => {
 
   // 7) Salir de juego
   document.getElementById('exitGameBtn').addEventListener('click', () => {
-      doneSound.currentTime = 0;
-  doneSound.play();
     this.exitGame();
   });
 
@@ -4695,10 +4604,6 @@ document.getElementById('playBtn').addEventListener('click', () => {
   popup.querySelectorAll('li').forEach(li => {
     li.style.cursor = 'pointer';
     li.addEventListener('click', () => {
-
-          doneSound.currentTime = 0;
-    doneSound.play();
-
       const selectedGame = li.getAttribute('data-game');
       popup.remove();
       this.startGame(selectedGame);
@@ -4808,9 +4713,6 @@ async exitGame() {
   // Evento para "Reintentar": reinicia la respuesta y la pool
   const retryButton = document.querySelector('.retry-btn');
   retryButton.addEventListener('click', () => {
-     doneSound.currentTime = 0;
-  doneSound.play();
-  
     this.orderingAnswer = [];
     this.availablePoolWords = this.shuffleArray([...this.correctWords]);
    
@@ -4833,17 +4735,6 @@ renderPool() {
   // Asignar evento a cada botón: al hacer click, se remueve la palabra de la pool y se agrega a la respuesta.
   poolContainer.querySelectorAll('.word-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-     
-
-       const word = btn.textContent.trim();
-    const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = 'en-US';             // <-- fuerza inglés americano
-    // (opcional) puedes elegir una voz concreta en inglés:
-    // const voices = speechSynthesis.getVoices();
-    // utterance.voice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google US English'));
-    speechSynthesis.speak(utterance);
-
-
       const idx = parseInt(btn.getAttribute('data-index'));
       const selectedWord = this.availablePoolWords.splice(idx, 1)[0];
       this.orderingAnswer.push({ word: selectedWord });
@@ -4902,20 +4793,12 @@ renderOrderingAnswer() {
     if (item.type === "phrasal") {
       answerHTML += `<span data-index="${item.indices[0]}" data-count="2" style="margin: 0 5px; cursor: pointer; display: inline-block; text-align: center;">
             <div class="answer-word">${item.word}</div>
-            <div class="answer-translation">${
-  item.translation && item.translation.trim() !== "" 
-    ? item.translation 
-    : "-"
-}</div>
+            <div class="answer-translation">${item.translation}</div>
         </span>`;
     } else {
       answerHTML += `<span data-index="${item.index}" data-count="1" style="margin: 0 5px; cursor: pointer; display: inline-block; text-align: center;">
             <div class="answer-word">${item.word}</div>
-           <div class="answer-translation">${
-  item.translation && item.translation.trim() !== "" 
-    ? item.translation 
-    : "-"
-}</div>
+            <div class="answer-translation">${item.translation}</div>
         </span>`;
     }
   });
@@ -5047,7 +4930,7 @@ renderOrderingAnswer() {
   
   const container = document.getElementById('gameContent');
   container.innerHTML = `<h2 class="memorytitle">${gameData.title}</h2>
-    <div id="game3Container" class="memory-cards-container" style="position: relative;">
+    <div id="game3Container">
       ${cards.map((card, i) => {
         return `<div class="memory-card" data-pair="${card.pairId}" data-index="${i}">
                   <div class="card-back">?</div>
@@ -5062,8 +4945,6 @@ renderOrderingAnswer() {
   
   // Se asignan los eventos para cada tarjeta
   this.cards = Array.from(document.querySelectorAll('.memory-card'));
-  this.memoryTotalPairs = this.cards.length / 2;  // ← Número de pares a encontrar :contentReference[oaicite:0]{index=0}
-
   this.cards.forEach(cardEl => {
     cardEl.addEventListener('click', () => {
       const word = cardEl.querySelector('.card-text').textContent;
@@ -5111,27 +4992,9 @@ renderOrderingAnswer() {
   this.memoryFirstCard = null;
 
   // 5) Si ya no quedan pares, mostramos “¡Ganaste!”
-if (this.memoryMatches === this.memoryTotalPairs) {
-  // 1) Sonido de victoria
-  victorySound.currentTime = 0;
-  victorySound.play();
-
-  // 2) Explosión de estrellitas
-  const board = document.querySelector('#game3Container');
-  burstStars(board, 30);
-
-  // 3) Crear y mostrar el modal de felicitaciones
-  const modal = document.createElement('div');
-  modal.className = 'victory-modal';
-  modal.textContent = '🎉 ¡Felicidades! Todos los pares encontrados 🎉';
-  board.appendChild(modal);
-  
-setTimeout(() => {
-  modal.remove(); // elimina el nodo del DOM
-}, 4000);
-
-}
-
+  if (this.memoryMatches === this.memoryTotalPairs) {
+    document.getElementById('memoryResult').textContent = '¡Ganaste!';
+  }
 }
           
           else {

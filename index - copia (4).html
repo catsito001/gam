@@ -359,7 +359,7 @@
   z-index: 9999;               /* Lo asegura encima de todo */
   display: flex;
   justify-content: center;
-  gap: 0.7rem;
+  gap: 1rem;
   padding: 0.3rem;
   border-top: 1px solid #3d3d3d;
   background-color: #121212;   /* Fondo para evitar transparencia */
@@ -587,7 +587,7 @@ font-weight: 600;
       background-color: #222;
       border: 1px solid #444;
       border-radius: var(--radius-md);
-      padding: 5px;
+      padding: 15px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.5);
       color: #fff;
       min-height: 450px;
@@ -608,7 +608,7 @@ font-weight: 600;
       font-family: 'Orbitron', sans-serif;
     }
     .ordering-progress { font-size: 1rem; color: #bbb; }
-    .ordering-game-card .card-body { padding: 5px; }
+    .ordering-game-card .card-body { padding: 15px; }
     .ordering-instruction { text-align: center; margin-bottom: 10px; font-size: 1.1rem; }
     .ordering-word-pool {
       display: flex;
@@ -646,7 +646,7 @@ font-weight: 600;
       font-size: 1.2rem;
       word-wrap: break-word;
     }
-    .answer-word { font-size: 1.5rem; font-weight: bold; }
+    .answer-word { font-size: 2rem; font-weight: bold; }
     .answer-translation {
       font-size: 0.9rem;
       color: #ccc;
@@ -916,7 +916,7 @@ font-weight: 600;
     .highlight-word, .phrasal-verb-inline, .vocabulary-inline {
       position: relative;
       cursor: pointer;
-      padding: 2px 3px;
+      padding: 2px 4px;
       border-radius: 4px;
       transition: background-color 0.2s;
     }
@@ -941,8 +941,8 @@ font-weight: 600;
       bottom: 65%;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, #0d0f55 0%, #1c559b 100%);
-      color: #eee7e7;
+      background: #3d69a1;
+      color: #fff;
       padding: 2px 4px;
       border-radius: 4px;
       font-size: 0.8rem;
@@ -1799,144 +1799,6 @@ font-weight: 600;
 
 
 
-/* ── ANIMACIÓN “HINT” PARA mainAudioButton ───────────────── */
-.hint-shine {
-  animation: shineAnim 2s ease-in-out infinite alternate;
-  position: relative;
-}
-.hint-shine::after {
-  content: "\f063";              /* código Font‑Awesome fa-arrow-down */
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  position: absolute;
-  top: 110%;                     /* justo debajo del botón */
-  left: 50%;
-  transform: translateX(-50%);
-  animation: bounce 1s ease-in-out infinite;
-  font-size: 1.2rem;
-  color: #fff;
-}
-@keyframes bounce {
-  0%,100% { transform: translate(-50%, 0); }
-  50%     { transform: translate(-50%, 10px); }
-}
-
-
-
-
-
-
-/* 1) Animación de cambio de gradiente */
-@keyframes pulseColors {
-  0% {
-    background: linear-gradient(135deg, #ff005e, #ff7eb3);
-  }
-  25% {
-    background: linear-gradient(135deg, #ff7eb3, #7afcff);
-  }
-  50% {
-    background: linear-gradient(135deg, #7afcff, #00ff94);
-  }
-  75% {
-    background: linear-gradient(135deg, #00ff94, #ffea00);
-  }
-  100% {
-    background: linear-gradient(135deg, #ffea00, #ff005e);
-  }
-}
-
-/* 2) Clase que combina brillo y cambio de colores */
-.hint-color {
-  animation:
-    shineAnim 1.5s ease-in-out infinite alternate,
-    pulseColors 4s ease-in-out infinite;
-  /* Asegúrate de que tu botón use gradiente por defecto para que el cambio sea fluido */
-  background: linear-gradient(135deg, #ff005e, #ff7eb3);
-  color: #fff;
-}
-
-
-
-
-.memory-card {
-  position: relative; /* Para que el glow se posicione respecto a cada carta */
-  z-index: 1;         /* Base de las cartas */
-}
-
-@keyframes intense-glow {
-  0%, 100% {
-    box-shadow:
-      0 0 8px 4px rgba(255, 215, 0, 0.8),
-      0 0 20px 10px rgba(255, 215, 0, 0.6);
-  }
-  50% {
-    box-shadow:
-      0 0 20px 10px rgba(255, 255, 255, 1),
-      0 0 40px 20px rgba(255, 215, 0, 0.8);
-  }
-}
-
-.memory-card.matched-glow {
-  animation: intense-glow 1s ease-in-out both;
-  z-index: 100;       /* Que siempre quede sobre las demás cartas */
-}
-
-
-
-
-
-
-
-
-
-
-  /* CONTENEDOR permite overflow para las estrellas */
-  .memory-cards-container {
-    overflow: visible;
-  }
-
-  /* Overlay de estrellitas */
-  .stars-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 200;
-    overflow: visible;
-  }
-  .stars-overlay span {
-    position: absolute;
-    width: 8px; height: 8px;
-    background: radial-gradient(circle, white 0%, gold 80%);
-    border-radius: 50%;
-    opacity: 0;
-    animation: star-burst 1s ease-out forwards;
-  }
-  @keyframes star-burst {
-    0%   { transform: translate(0,0) scale(0.5); opacity: 1; }
-    80%  { opacity: 1; }
-    100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
-  }
-
-  /* MODAL de victoria */
-  .victory-modal {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.5);
-    background: rgba(0,0,0,0.85);
-    color: #fff;
-    padding: 2rem 3rem;
-    border-radius: 1rem;
-    text-align: center;
-    font-size: 2rem;
-    font-family: 'Arial Black', sans-serif;
-    z-index: 300;
-    opacity: 0;
-    animation: modal-pop 0.6s forwards ease-out;
-  }
-  @keyframes modal-pop {
-    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  }
 
   </style>
   
@@ -2080,10 +1942,6 @@ font-weight: 600;
       <button id="prevCardBtn" class="control-btn"><i class="fas fa-chevron-left"></i></button>
       <button id="mainAudioButton" class="control-btn"><i class="fas fa-play"></i></button>
 
-      <button id="stopAudioButton" class="control-btn">
-    <i class="fas fa-stop"></i>
-  </button>
-
       <button id="recordButton" class="control-btn">
         <i class="fas fa-microphone"></i>
       </button>
@@ -2138,40 +1996,6 @@ font-weight: 600;
 
 
   <script>
-
-
-const congratsSound = new Audio('sounds/congrat.flac');
-const victorySound = new Audio('sounds/congrat2.wav');
-
-const doneSound = new Audio('sounds/done.mp3');
-doneSound.preload = 'auto';
-
-
-/**
- * Crea una ráfaga de estrellitas animadas sobre un container.
- * @param {HTMLElement} container - El elemento donde se superpondrán las estrellas.
- * @param {number} count - Número de estrellas a disparar.
- */
-// 2) Función helper para las estrellitas
-function burstStars(container, count = 20) {
-  const overlay = document.createElement('div');
-  overlay.className = 'stars-overlay';
-  container.appendChild(overlay);
-
-  for (let i = 0; i < count; i++) {
-    const star = document.createElement('span');
-    star.style.left = '50%';
-    star.style.top  = '50%';
-    const dx = (Math.random() - 0.5) * 200 + 'px';
-    const dy = (Math.random() - 0.5) * 200 + 'px';
-    star.style.setProperty('--dx', dx);
-    star.style.setProperty('--dy', dy);
-    overlay.appendChild(star);
-  }
-  setTimeout(() => {
-    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-  }, 1000);
-}
 
 
 
@@ -2638,33 +2462,6 @@ showSentenceFragmentPopup() {
           this.savedSentences.length + this.savedWords.length;
       }
       this.popup.style.display = 'none';
-
-      
-      // Crear toast
-      const toast = document.createElement('div');
-      toast.className   = 'toast';                    // usa tus estilos .toast
-      toast.textContent = 'Fragmento guardado';
-
-      // Insertarlo junto al header
-      const container = document.querySelector('.header-content');
-      container.appendChild(toast);
-
-      // Efecto brillo en el botón de lista guardados
-      const savedBtn = document.getElementById('savedListBtn');
-
-      doneSound.currentTime = 0;
-doneSound.play();
-
-
-      savedBtn.classList.add('shine');
-
-      // Limpiar tras 2 s
-      setTimeout(() => {
-        toast.remove();
-        savedBtn.classList.remove('shine');
-      }, 2000);
-
-
     });
     this.optionsContainer.appendChild(btn);
   });
@@ -3133,6 +2930,10 @@ if (await exists200(musicUrl)) {
  this.updateLoading(++step, totalSteps);
 
 
+setTimeout(() => {
+  const btn = document.getElementById('mainAudioButton');
+  if (btn) btn.click();
+}, 3000);
 
 
   } catch (err) {
@@ -3217,13 +3018,7 @@ if (await exists200(musicUrl)) {
 
   // Solo habilitamos clic en no-bloqueadas
   if (!story.locked) {
-    card.addEventListener('click', () => {
-    // ▶️ sonido al escoger historia en la lista
-    doneSound.currentTime = 0;
-    doneSound.play();
-    // ▶️ abrir la historia
-    this.showStory(index);
-  });
+    card.addEventListener('click', () => this.showStory(index));
   }
 
   container.appendChild(card);
@@ -3264,24 +3059,6 @@ async showStory(storyIndex) {
 
   hideSpinner();
   this.showHint();  
-
-
-  // ── AÑADIMOS aquí la animación hint para el botón Play ──
-const mainBtn = document.getElementById('mainAudioButton');
-mainBtn.classList.add('hint-shine', 'hint-color')
-mainBtn.addEventListener('click', function _removeHint() {
- mainBtn.classList.remove('hint-shine', 'hint-color');
-  
-  mainBtn.removeEventListener('click', _removeHint);
-});
-
-
-
-// —————— REEMPLAZA SI EXISTE antes tu listener de Stop ——————
-
-
-
-
 }
       
       normalizeTranslationKeys() {
@@ -3584,7 +3361,7 @@ async renderStoryCards() {
         <div class="english-text">${engHTML}</div>
         <div class="full-translation">${spaHTML}</div>
         <div class="toggle-container">
-          <button class="toggle-sentence-add btn-professional"><i class="fas fa-plus"></i>Fragmento a lista</button>
+          <button class="toggle-sentence-add btn-professional"><i class="fas fa-plus"></i> Agreagar a lista</button>
           <button class="toggle-word-translation btn-professional"><i class="fas fa-language"></i> Traducir Palabras</button>
         </div>
         ${vocabHTML}
@@ -4159,11 +3936,6 @@ showWordPopup(wordElement) {
 
     // efecto brillo en el botón
     const savedBtn = document.getElementById('savedListBtn');
-
-    doneSound.currentTime = 0;
-doneSound.play();
-
-
     savedBtn.classList.add('shine');
 
     // limpiar tras 2 s
@@ -4204,7 +3976,7 @@ popup.querySelector('.popup-listen').addEventListener('click', e => {
           sentencesHTML = '<h3>Oraciones Guardadas</h3><ul>';
           this.savedSentences.forEach((item, index) => {
             sentencesHTML += `<li>
-                                <span>${item.sentence}</span>
+                                <span>${item.sentence} - ${item.translation}</span>
                                 <button data-index="${index}" class="delete-sentence-btn btn-professional">Eliminar</button>
                               </li>`;
           });
@@ -4258,19 +4030,7 @@ popup.querySelector('.popup-listen').addEventListener('click', e => {
         }, { once: true });
         popup.querySelector('.popup-play-btn').addEventListener('click', (e) => {
           e.stopPropagation();
-          
- popup.remove();
-            if (typeof this.stopSpeech === 'function') {
-      this.stopSpeech();
-    } else {
-      window.speechSynthesis.cancel();
-    }
-
-
-
-    this.showGameSelectionPopup();
-
-
+          alert("Modo Practicar y Jugar activado");
         });
         popup.addEventListener('click', (e) => e.stopPropagation());
       }
@@ -4473,76 +4233,43 @@ setupEventListeners() {
   });
 
   // 1) Botón principal de play/pause/resume para audio de la historia
-const mainBtn = document.getElementById('mainAudioButton');
-mainBtn.addEventListener('click', () => {
-  // 0) Quitar SIEMPRE el brillo, así se limpia tanto al iniciar
-  //    como si vienes tras un Stop
-  mainBtn.classList.remove('hint-shine', 'hint-color');
-
-  // 1) Control de reproducción
-  if (this.isPlaying) {
-    this.stopSpeech();
-  } else if (this.audio && this.audio.currentTime > 0 && this.audio.currentTime < this.audio.duration) {
-    this.resumeSpeech();
-  } else {
-    this.playCurrentCardAudio();
-  }
-});
-
-
-    // NUEVO: listener para Stop
-  const stopBtn = document.getElementById('stopAudioButton');
-  stopBtn.addEventListener('click', () => {
-    this.stopSpeech();
-    this.pausedTime = 0;
-    this.resumeSentenceIndex = null;
-    const mainBtn = document.getElementById('mainAudioButton');
-    mainBtn.classList.add('hint-shine', 'hint-color');
+  const mainBtn = document.getElementById('mainAudioButton');
+  mainBtn.addEventListener('click', () => {
+    if (this.isPlaying) {
+      this.stopSpeech();
+    } else if (this.audio && this.audio.currentTime > 0 && this.audio.currentTime < this.audio.duration) {
+      this.resumeSpeech();
+    } else {
+      this.playCurrentCardAudio();
+    }
   });
 
-  
+  // 2) Prev card: parar audio y mostrar anterior
+  document.getElementById('prevCardBtn').addEventListener('click', () => {
+    if (this.currentCardIndex > 0) {
+      this.stopSpeech();
+      this.pausedTime = 0;
+      this.resumeSentenceIndex = null;
+      this.showCard(this.currentCardIndex - 1);
+      this.playCurrentCardAudio();
+    }
+    setTimeout(() => this.setupVocabularyCarousel(), 200);
+  });
 
-// 2) Prev card
-document.getElementById('prevCardBtn').addEventListener('click', () => {
-  if (this.currentCardIndex > 0) {
-    // 0) Quitamos el brillo, igual que si hubieras pulsado Play
-    mainBtn.classList.remove('hint-shine', 'hint-color');
-
-    this.stopSpeech();
-    this.pausedTime = 0;
-    this.resumeSentenceIndex = null;
-    this.showCard(this.currentCardIndex - 1);
-
-    // 1) Reproducir la nueva carta
-    this.playCurrentCardAudio();
-  }
-  setTimeout(() => this.setupVocabularyCarousel(), 200);
-});
-
-// 3) Next card
-document.getElementById('nextCardBtn').addEventListener('click', () => {
-  if (this.currentCardIndex < this.cards.length - 1) {
-    // 0) Quitamos el brillo
-    mainBtn.classList.remove('hint-shine', 'hint-color');
-
-    this.stopSpeech();
-    this.pausedTime = 0;
-    this.resumeSentenceIndex = null;
-    this.showCard(this.currentCardIndex + 1);
-
-    // 1) Reproducir la nueva carta
-    this.playCurrentCardAudio();
-  }
-  setTimeout(() => this.setupVocabularyCarousel(), 200);
-});
-
+  // 3) Next card: parar audio y mostrar siguiente
+  document.getElementById('nextCardBtn').addEventListener('click', () => {
+    if (this.currentCardIndex < this.cards.length - 1) {
+      this.stopSpeech();
+      this.pausedTime = 0;
+      this.resumeSentenceIndex = null;
+      this.showCard(this.currentCardIndex + 1);
+      this.playCurrentCardAudio();
+    }
+    setTimeout(() => this.setupVocabularyCarousel(), 200);
+  });
 
   // 4) Back to stories
 document.getElementById('backToStoriesButton').addEventListener('click', () => {
-
-   doneSound.currentTime = 0;
-  doneSound.play();
-  
   // 1) Si hay algún fragmentPopup abierto, cancelarlo (oculta y limpia estado)
   this.cancelFragmentPopup();
 
@@ -4577,19 +4304,6 @@ document.getElementById('backToStoriesButton').addEventListener('click', () => {
 
   // 6) Iniciar juego
 document.getElementById('playBtn').addEventListener('click', () => {
-
-   doneSound.currentTime = 0;
-  doneSound.play();
-
-    // 1) Detener cualquier narración en curso
-  if (typeof this.stopSpeech === 'function') {
-    this.stopSpeech();
-  } else {
-    // Fallback si no tuvieras stopSpeech()
-    window.speechSynthesis.cancel();
-  }
-
-
   if (!this.currentStory || !Array.isArray(this.currentStory.games)) {
     // Si no hay historia cargada o no hay juegos definidos, no hacemos nada
     console.warn("No hay ninguna historia activa o no se cargaron los juegos.");
@@ -4600,8 +4314,6 @@ document.getElementById('playBtn').addEventListener('click', () => {
 
   // 7) Salir de juego
   document.getElementById('exitGameBtn').addEventListener('click', () => {
-      doneSound.currentTime = 0;
-  doneSound.play();
     this.exitGame();
   });
 
@@ -4695,10 +4407,6 @@ document.getElementById('playBtn').addEventListener('click', () => {
   popup.querySelectorAll('li').forEach(li => {
     li.style.cursor = 'pointer';
     li.addEventListener('click', () => {
-
-          doneSound.currentTime = 0;
-    doneSound.play();
-
       const selectedGame = li.getAttribute('data-game');
       popup.remove();
       this.startGame(selectedGame);
@@ -4721,15 +4429,10 @@ document.getElementById('playBtn').addEventListener('click', () => {
       }
       
       // Sale del juego y vuelve a la vista de la historia
-async exitGame() {
-  // 1) Ocultar el juego y mostrar la vista de historias
-  document.getElementById('gameView').style.display  = 'none';
-  document.getElementById('storyView').style.display = 'block';
-
-  // 2) Llamar a showStory para recargar la historia en this.currentStory,
-  //    renderizar las tarjetas y dejar todo en su estado inicial
-  await this.showStory(this.currentIndex);
-}
+      exitGame() {
+        document.getElementById('gameView').style.display = 'none';
+        document.getElementById('storyView').style.display = 'block';
+      }
       
       /* Juego 1: Ordenar Palabras */
       launchOrderingSentencesGame() {
@@ -4808,9 +4511,6 @@ async exitGame() {
   // Evento para "Reintentar": reinicia la respuesta y la pool
   const retryButton = document.querySelector('.retry-btn');
   retryButton.addEventListener('click', () => {
-     doneSound.currentTime = 0;
-  doneSound.play();
-  
     this.orderingAnswer = [];
     this.availablePoolWords = this.shuffleArray([...this.correctWords]);
    
@@ -4833,17 +4533,6 @@ renderPool() {
   // Asignar evento a cada botón: al hacer click, se remueve la palabra de la pool y se agrega a la respuesta.
   poolContainer.querySelectorAll('.word-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-     
-
-       const word = btn.textContent.trim();
-    const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = 'en-US';             // <-- fuerza inglés americano
-    // (opcional) puedes elegir una voz concreta en inglés:
-    // const voices = speechSynthesis.getVoices();
-    // utterance.voice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google US English'));
-    speechSynthesis.speak(utterance);
-
-
       const idx = parseInt(btn.getAttribute('data-index'));
       const selectedWord = this.availablePoolWords.splice(idx, 1)[0];
       this.orderingAnswer.push({ word: selectedWord });
@@ -4902,20 +4591,12 @@ renderOrderingAnswer() {
     if (item.type === "phrasal") {
       answerHTML += `<span data-index="${item.indices[0]}" data-count="2" style="margin: 0 5px; cursor: pointer; display: inline-block; text-align: center;">
             <div class="answer-word">${item.word}</div>
-            <div class="answer-translation">${
-  item.translation && item.translation.trim() !== "" 
-    ? item.translation 
-    : "-"
-}</div>
+            <div class="answer-translation">${item.translation}</div>
         </span>`;
     } else {
       answerHTML += `<span data-index="${item.index}" data-count="1" style="margin: 0 5px; cursor: pointer; display: inline-block; text-align: center;">
             <div class="answer-word">${item.word}</div>
-           <div class="answer-translation">${
-  item.translation && item.translation.trim() !== "" 
-    ? item.translation 
-    : "-"
-}</div>
+            <div class="answer-translation">${item.translation}</div>
         </span>`;
     }
   });
@@ -5047,7 +4728,7 @@ renderOrderingAnswer() {
   
   const container = document.getElementById('gameContent');
   container.innerHTML = `<h2 class="memorytitle">${gameData.title}</h2>
-    <div id="game3Container" class="memory-cards-container" style="position: relative;">
+    <div id="game3Container">
       ${cards.map((card, i) => {
         return `<div class="memory-card" data-pair="${card.pairId}" data-index="${i}">
                   <div class="card-back">?</div>
@@ -5062,8 +4743,6 @@ renderOrderingAnswer() {
   
   // Se asignan los eventos para cada tarjeta
   this.cards = Array.from(document.querySelectorAll('.memory-card'));
-  this.memoryTotalPairs = this.cards.length / 2;  // ← Número de pares a encontrar :contentReference[oaicite:0]{index=0}
-
   this.cards.forEach(cardEl => {
     cardEl.addEventListener('click', () => {
       const word = cardEl.querySelector('.card-text').textContent;
@@ -5084,57 +4763,15 @@ renderOrderingAnswer() {
         if (!this.memoryFirstCard) {
           this.memoryFirstCard = cardEl;
         } else {
-   if (cardEl.getAttribute('data-pair') === this.memoryFirstCard.getAttribute('data-pair')) {
-  // Guardamos la referencia a la “primera” carta
-  const firstCard = this.memoryFirstCard;
-
-  // 1) Marcamos ambas como matched
-  cardEl.classList.add('matched');
-  firstCard.classList.add('matched');
-
-  // 2) SONIDO de felicitación
-  congratsSound.currentTime = 0;
-  congratsSound.play();
-
-  // 3) ANIMACIÓN de brillo en ambas
-  cardEl.classList.add('matched-glow');
-  firstCard.classList.add('matched-glow');
-
-  // Quitar el glow tras la animación, usando la referencia capturada
-  setTimeout(() => {
-    cardEl.classList.remove('matched-glow');
-    firstCard.classList.remove('matched-glow');
-  }, 800);
-
-  // 4) Actualizamos contador y reseteamos this.memoryFirstCard
-  this.memoryMatches++;
-  this.memoryFirstCard = null;
-
-  // 5) Si ya no quedan pares, mostramos “¡Ganaste!”
-if (this.memoryMatches === this.memoryTotalPairs) {
-  // 1) Sonido de victoria
-  victorySound.currentTime = 0;
-  victorySound.play();
-
-  // 2) Explosión de estrellitas
-  const board = document.querySelector('#game3Container');
-  burstStars(board, 30);
-
-  // 3) Crear y mostrar el modal de felicitaciones
-  const modal = document.createElement('div');
-  modal.className = 'victory-modal';
-  modal.textContent = '🎉 ¡Felicidades! Todos los pares encontrados 🎉';
-  board.appendChild(modal);
-  
-setTimeout(() => {
-  modal.remove(); // elimina el nodo del DOM
-}, 4000);
-
-}
-
-}
-          
-          else {
+          if (cardEl.getAttribute('data-pair') === this.memoryFirstCard.getAttribute('data-pair')) {
+            cardEl.classList.add('matched');
+            this.memoryFirstCard.classList.add('matched');
+            this.memoryMatches++;
+            this.memoryFirstCard = null;
+            if (this.memoryMatches === this.memoryTotalPairs) {
+              document.getElementById('memoryResult').textContent = '¡Ganaste!';
+            }
+          } else {
             this.memoryLock = true;
             setTimeout(() => {
               cardEl.querySelector('.card-back').style.display = 'flex';
@@ -5327,6 +4964,19 @@ axios.get(
           }, 1500);
         }
       }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
