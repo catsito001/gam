@@ -1946,68 +1946,6 @@ font-weight: 600;
   cursor: url('/cursor/cursor4.png'), pointer !important;
 }
 
-
-
-
-
-/* Estilos para el modal */
-.modal {
-  display: none;              /* oculto por defecto */
-  position: fixed;
-  z-index: 10000;             /* por encima de todo */
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-  justify-content: center;    /* centra horizontalmente */
-  align-items: center;        /* centra verticalmente */
-}
-.modal-content {
-  width: 80vw;
-  height: 80vh;
-  max-width: 1000px;
-  max-height: 700px;
-}
-
-
-/* Ajustes solo en móvil (hasta 600px de ancho) */
-@media (max-width: 600px) {
-    .modal-content {
-    width: 95vw;       /* casi todo el ancho */
-    height: 60vh;      /* 60% de la altura de la pantalla: más alto */
-    max-height: none;  /* quita la limitación previa */
-    padding: 0;        /* elimina el padding-top si lo tenías */
-  }
-  .modal-content iframe {
-    width: 100%;       /* sigue llenando el ancho */
-    height: 100%;      /* ahora sí llena todo el alto del modal */
-  }
-
-  
-/* Haz que el iframe siempre llene todo el contenedor */
-.modal-content iframe {
-  display: block;
-  width: 100%;   /* ocupa todo el ancho del .modal-content */
-  height: 100%;  /* ocupa toda la altura del .modal-content */
-}
-.close {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #fff;
-  cursor: pointer;
-  z-index: 10001;
-}
-.close:hover {
-  color: #ccc;
-}
-
-
-
-
   </style>
   
   
@@ -2058,9 +1996,7 @@ font-weight: 600;
     <small>Compartir</small>
   </button>
 
-<a href="https://youtu.be/ujZtS_EEVgA"
-   id="openYoutube"
-   class="btn-professional">
+  <a href="https://youtu.be/ujZtS_EEVgA" class="btn-professional">
   <i class="fab fa-youtube fa-lg"></i>
   <small>Tutorial</small>
 </a>
@@ -2081,25 +2017,6 @@ font-weight: 600;
 </form>
 </footer>
 
-
-
-
-
-<!-- Modal de vídeo YouTube -->
-<div id="youtubeModal" class="modal">
-  <div class="modal-content">
-    <span id="closeModal" class="close">&times;</span>
-    <iframe
-      id="youtubeEmbed"
-      width="560"
-      height="315"
-      src="https://youtu.be/ujZtS_EEVgA"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
-  </div>
-</div>
 
 
 
@@ -2229,41 +2146,6 @@ font-weight: 600;
 
 
   <script>
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-  const openBtn    = document.getElementById('openYoutube');
-  const modal      = document.getElementById('youtubeModal');
-  const closeBtn   = document.getElementById('closeModal');
-  const embedFrame = document.getElementById('youtubeEmbed');
-
-  function toEmbedURL(url) {
-    const m = url.match(/(?:youtu\.be\/|v=)([A-Za-z0-9_-]{11})/);
-    return m
-      ? 'https://www.youtube.com/embed/' + m[1] + '?autoplay=1'
-      : '';
-  }
-
-  openBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    embedFrame.src = toEmbedURL(this.href);
-    modal.style.display = 'flex';
-  });
-
-  closeBtn.addEventListener('click', function() {
-    modal.style.display = 'none';
-    embedFrame.src = '';
-  });
-
-  window.addEventListener('click', function(e) {
-    if (e.target === modal) {
-      modal.style.display = 'none';
-      embedFrame.src = '';
-    }
-  });
-});
-
 
 
 const congratsSound = new Audio('sounds/congrat.flac');
