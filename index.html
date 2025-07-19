@@ -3,6 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+   <meta property="og:title"   content="Título de la página o post" />
+  <meta property="og:description"
+        content="Aprende y practica ingles leyendo historias seleccionadas." />
+  <meta property="og:image"
+        content="https:www.gawipy.site/portada/portada.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url"     content="https://www.gawipy.site" />
+  <meta property="og:type"    content="website" />
+
+
   <title>Interactive English Stories</title>
   
   <!-- Fuentes e Íconos -->
@@ -1973,18 +1986,15 @@ font-weight: 600;
 
 /* Ajustes solo en móvil (hasta 600px de ancho) */
 @media (max-width: 600px) {
-    .modal-content {
-    width: 95vw;       /* casi todo el ancho */
-    height: 60vh;      /* 60% de la altura de la pantalla: más alto */
-    max-height: none;  /* quita la limitación previa */
-    padding: 0;        /* elimina el padding-top si lo tenías */
+  .modal-content {
+    width: 95vw;                      /* casi todo el ancho */
+    height: auto;                     /* que se ajuste según contenido */
   }
   .modal-content iframe {
-    width: 100%;       /* sigue llenando el ancho */
-    height: 100%;      /* ahora sí llena todo el alto del modal */
-  }
-
-  
+    width: 100%;                      /* llena el ancho */
+    aspect-ratio: 16 / 9;             /* CSS moderno, mantiene 16:9 */
+    height: auto;                     /* deja que aspect-ratio calcule */
+  }}
 /* Haz que el iframe siempre llene todo el contenedor */
 .modal-content iframe {
   display: block;
@@ -2302,11 +2312,16 @@ function burstStars(container, count = 20) {
 
 
 function compartirEnFacebook() {
-  const url = encodeURIComponent(window.location.href);
+  // URL de la página que quieres compartir
+  const pageUrl = encodeURIComponent(window.location.href);
+  // Abre la ventana de diálogo de Facebook
+  const fbShareUrl = 
+    'https://www.facebook.com/sharer/sharer.php?u=' + pageUrl;
+  
   window.open(
-    `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-    '_blank',
-    'width=600,height=400'
+    fbShareUrl,
+    'CompartirEnFacebook',
+    'width=600,height=400,menubar=no,toolbar=no,resizable=yes'
   );
 }
 
