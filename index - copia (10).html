@@ -1946,6 +1946,22 @@ font-weight: 600;
   cursor: url('/cursor/cursor4.png'), pointer !important;
 }
 
+
+
+
+@media (max-width: 600px) {
+  /* Que .english-text no crezca más de ~3 líneas */
+  .english-text {
+    line-height: 2.5rem;            /* ajusta si tu font-size es distinto */
+    max-height: calc(4.2rem * 3);   /* 3 líneas */
+    overflow-y: auto;               /* scroll interno si sobrepasa */
+    scroll-behavior: smooth;        /* scroll animado */
+  }
+}
+
+
+
+
   </style>
   
   
@@ -4315,6 +4331,13 @@ popup.querySelector('.popup-listen').addEventListener('click', e => {
   this.audio.playbackRate = rate;
 
   const playSentence = (i) => {
+
+     // ── AUTO‑SCROLL: que la frase actual suba/baje dentro del div
+    sentenceDivs[i].scrollIntoView({
+      behavior: 'smooth',
+      block:    'nearest'
+    });
+
     if (i >= sentenceMarks.length) {
       this.pausedTime = 0;
       this.resumeSentenceIndex = null;

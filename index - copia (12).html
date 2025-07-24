@@ -1946,6 +1946,55 @@ font-weight: 600;
   cursor: url('/cursor/cursor4.png'), pointer !important;
 }
 
+
+
+
+@media (max-width: 600px) {
+  /* Que .english-text no crezca más de ~3 líneas */
+  .english-text {
+    line-height: 2.5rem;            /* ajusta si tu font-size es distinto */
+    max-height: calc(4.2rem * 3);   /* 3 líneas */
+    overflow-y: auto;               /* scroll interno si sobrepasa */
+    scroll-behavior: smooth;        /* scroll animado */
+    
+  }
+}
+
+
+/* WebKit (Chrome, Safari, Edge) */
+.english-text::-webkit-scrollbar {
+  width: 8px;                          /* grosor del scrollbar */
+}
+.english-text::-webkit-scrollbar-track {
+  background: linear-gradient(135deg, #191d50 0%, #0a1a2e 100%);;                 /* color del track */
+}
+.english-text::-webkit-scrollbar-thumb {
+  background-color: linear-gradient(135deg, #0c0e4e 0%, #113663 100%);;              /* color de la “pala” */
+  border-radius: 3px;
+  border: 0.5px solid #2e24ad;           /* espacio interior para “pulir” */
+}
+.english-text::-webkit-scrollbar-thumb:hover {
+  background-color: #682424;              /* color al pasar el ratón/tocar */
+}
+
+
+
+
+* {
+  /* Cambia “rgba(255,0,0,0.3)” por el color que prefieras */
+  -webkit-tap-highlight-color: rgba(36, 30, 30, 0.3);
+}
+
+
+
+
+
+
+
+
+
+
+
   </style>
   
   
@@ -4315,14 +4364,39 @@ popup.querySelector('.popup-listen').addEventListener('click', e => {
   this.audio.playbackRate = rate;
 
   const playSentence = (i) => {
-    if (i >= sentenceMarks.length) {
-      this.pausedTime = 0;
-      this.resumeSentenceIndex = null;
-      this.isPlaying = false;
-      const iconEnd = document.getElementById('mainAudioButton')?.querySelector('i');
-      if (iconEnd) iconEnd.classList.replace('fa-pause', 'fa-play');
-      return;
-    }
+
+     // ── AUTO‑SCROLL: que la frase actual suba/baje dentro del div
+    const currentDiv = sentenceDivs?.[i];
+ if (currentDiv) {
+   currentDiv.scrollIntoView({
+     behavior: 'smooth',
+     block:    'center'
+   });
+ }
+
+  if (i >= sentenceMarks.length) {
+   // 1) Limpiar estados de reproducción
+   this.pausedTime = 0;
+   this.resumeSentenceIndex = null;
+   this.isPlaying = false;
+
+   // 2) Restaurar icono Play en el botón principal
+   const iconEnd = document.getElementById('mainAudioButton')?.querySelector('i');
+   if (iconEnd) iconEnd.classList.replace('fa-pause', 'fa-play');
+
+   // 3) Añadir hint‑shine al botón Next
+   const nextBtn = document.getElementById('nextCardBtn');
+   if (nextBtn) {
+     nextBtn.classList.add('hint-shine', 'hint-color');
+     // Al hacer clic, removemos el efecto para que no brille indefinidamente
+     nextBtn.addEventListener('click', function _removeNextHint() {
+       nextBtn.classList.remove('hint-shine', 'hint-color');
+       nextBtn.removeEventListener('click', _removeNextHint);
+     });
+   }
+
+   return;
+ }
 
     const marksForSentence = sentenceMarks[i];
     if (!marksForSentence.length) return playSentence(i + 1);
@@ -4341,16 +4415,36 @@ popup.querySelector('.popup-listen').addEventListener('click', e => {
     const iconPlay = document.getElementById('mainAudioButton')?.querySelector('i');
     if (iconPlay) iconPlay.classList.replace('fa-play', 'fa-pause');
 
-    marksForSentence.forEach((m, idx) => {
-      const highlightDelay = Math.max(0, (m.start - actualStart) / rate * 1000);
-      const unhighlightDelay = Math.max(0, (m.end - actualStart) / rate * 1000);
+ marksForSentence.forEach((m, idx) => {
+  // 1) Acceso seguro al elemento
+  const el = sentencesWords?.[i]?.[idx];
+  if (!el) {
+    // Si no existe la etiqueta <span>, ni siquiera agendamos timeouts
+    return;
+  }
 
-      if (this.resumeSentenceIndex === i && m.end <= this.pausedTime) return;
+  // 2) Cálculo de delays (igual que tu original)
+  const highlightDelay   = Math.max(0, (m.start - actualStart) / rate * 1000);
+  const unhighlightDelay = Math.max(0, (m.end   - actualStart) / rate * 1000);
 
-      const hTO = setTimeout(() => sentencesWords[i][idx].classList.add('active'), highlightDelay);
-      const uTO = setTimeout(() => sentencesWords[i][idx].classList.remove('active'), unhighlightDelay);
-      this.wordTimeouts.push(hTO, uTO);
+  // 3) Highlight + scroll
+  const hTO = setTimeout(() => {
+    el.classList.add('active');
+    el.scrollIntoView({
+      behavior: 'smooth',
+      block:    'center',
+      inline:   'center'
     });
+  }, highlightDelay);
+
+  // 4) Un-highlight
+  const uTO = setTimeout(() => {
+    el.classList.remove('active');
+  }, unhighlightDelay);
+
+  // 5) Guardamos los timeouts
+  this.wordTimeouts.push(hTO, uTO);
+});
 
     const phraseEndDelay = (endTime - actualStart) / rate * 1000;
     const endTO = setTimeout(() => {
